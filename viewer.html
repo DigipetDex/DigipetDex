@@ -1596,7 +1596,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.1</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.1</span> <span id="live-sync-indicator" style="display:none; font-size:0.68rem; color:#4ADE80; font-weight:600; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle;" title="구글 시트의 최신 진화 조건이 실시간으로 동기화되었습니다.">⚡ 라이브</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -1636,6 +1636,9 @@
       <button class="editor-only" id="btn-open-reports" style="background:#0284C7; font-weight:700; display:inline-flex; align-items:center; gap:5px;" title="구글 시트에 수집된 유저 제보 목록을 확인하고 진화트리에 1초 만에 즉시 적용합니다.">
         <span>📬 제보 확인</span>
         <span id="report-badge-count" style="display:none; background:#EF4444; color:#fff; font-size:0.7rem; padding:1px 6px; border-radius:10px;">0</span>
+      </button>
+      <button class="editor-only" id="btn-sync-live-conditions" style="background:#0284C7; font-weight:700; display:inline-flex; align-items:center; gap:5px;" title="현재 에디터의 모든 진화 조건을 구글 시트에 실시간 배포합니다. 뷰어에 깃 배포 없이 즉시 반영됩니다!">
+        <span>📡 조건 실시간 배포</span>
       </button>
       <button id="btn-open-training-calc" style="background:#8B5CF6; font-weight:700; display:inline-flex; align-items:center; gap:5px;" title="30회 훈련 손익 계산기">훈련 계산기</button>
       <button id="btn-toggle-mode" style="background: rgb(88, 101, 242); font-weight: 700; display: inline-flex;" title="편집 요소를 숨기고 완성된 진화 트리 뷰어 모드로 확인합니다.">뷰어 모드로 보기</button>
@@ -10356,6 +10359,144 @@
       showToast(`[${report.fromName || '-'} ➔ ${report.toName}] 제보 조건이 트리에 즉시 적용되었습니다!`);
     }
 
+    // 에디터: 현재 모든 진화 조건을 구글 시트에 실시간 배포 (깃허브 배포 불필요)
+    async function syncLiveConditionsToGas() {
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
+      if (!gasUrl) {
+        alert("구글 스프레드시트 연동 URL이 등록되지 않았습니다.");
+        return;
+      }
+
+      const syncBtn = document.getElementById("btn-sync-live-conditions");
+      const origHtml = syncBtn ? syncBtn.innerHTML : "";
+
+      if (!confirm("현재 에디터의 모든 진화 조건을 구글 시트에 실시간으로 배포하시겠습니까?\n뷰어 유저들은 깃 배포를 기다릴 필요 없이 즉시 업데이트된 조건을 확인하게 됩니다.")) {
+        return;
+      }
+
+      if (syncBtn) {
+        syncBtn.disabled = true;
+        syncBtn.innerHTML = "<span>📡 배포 중... ⏳</span>";
+      }
+
+      try {
+        const conditions = [];
+        (project.evolutions || []).forEach(ev => {
+          const fromD = project.digimons[ev.from];
+          const toD = project.digimons[ev.to];
+          if (!toD) return;
+          const req = getEvoRequirements(ev, toD);
+          conditions.push({
+            dim: (toD.dim || (fromD ? fromD.dim : "") || "").split(",")[0].trim(),
+            from: fromD ? fromD.name : "",
+            to: toD.name,
+            time: req.time || "",
+            vital: req.vital !== undefined && req.vital !== null ? req.vital : "",
+            pp: req.pp !== undefined && req.pp !== null ? req.pp : "",
+            battle: req.battle !== undefined && req.battle !== null ? req.battle : "",
+            winRate: req.winRate !== undefined && req.winRate !== null ? req.winRate : "",
+            jogress: req.jogress || "",
+            item: req.item || "",
+            note: req.note || ""
+          });
+        });
+
+        await fetch(gasUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({
+            action: "sync_live_conditions",
+            conditions: conditions
+          })
+        });
+
+        showToast(`🎉 총 <strong>${conditions.length}개</strong>의 진화 조건이 구글 시트에 실시간 배포되었습니다!<br>이제 뷰어에서 깃 배포 없이 즉시 최신 조건이 표시됩니다.`);
+      } catch (err) {
+        console.error("실시간 조건 배포 실패:", err);
+        alert("실시간 조건 배포 중 오류가 발생했습니다: " + err.message);
+      } finally {
+        if (syncBtn) {
+          syncBtn.disabled = false;
+          syncBtn.innerHTML = origHtml;
+        }
+      }
+    }
+
+    // 뷰어 및 에디터: 구글 시트에서 최신 진화 조건 실시간 로드 및 트리 덮어쓰기
+    async function fetchAndApplyLiveConditions() {
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
+      if (!gasUrl) return;
+
+      try {
+        const fetchUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=get_live_conditions&t=${Date.now()}`;
+        const res = await fetch(fetchUrl);
+        const data = await res.json();
+
+        if (data.status === "success" && Array.isArray(data.conditions) && data.conditions.length > 0) {
+          let updatedCount = 0;
+
+          data.conditions.forEach(c => {
+            if (!c.to) return;
+            const toNameLower = c.to.trim().toLowerCase();
+            const fromNameLower = (c.from || "").trim().toLowerCase();
+
+            // 1. 진화선(evo) 매칭 및 오버라이드
+            let matchedEvos = (project.evolutions || []).filter(ev => {
+              const tD = project.digimons[ev.to];
+              const fD = project.digimons[ev.from];
+              if (!tD || tD.name.trim().toLowerCase() !== toNameLower) return false;
+              if (fromNameLower && fD) {
+                return fD.name.trim().toLowerCase() === fromNameLower;
+              }
+              return true;
+            });
+
+            matchedEvos.forEach(ev => {
+              if (c.time !== undefined && c.time !== "") ev.time = c.time;
+              if (c.vital !== undefined && c.vital !== "") ev.vital = c.vital;
+              if (c.pp !== undefined && c.pp !== "") ev.pp = c.pp;
+              if (c.battle !== undefined && c.battle !== "") ev.battle = c.battle;
+              if (c.winRate !== undefined && c.winRate !== "") ev.winRate = c.winRate;
+              if (c.jogress !== undefined) ev.jogress = c.jogress;
+              if (c.item !== undefined) ev.item = c.item;
+              if (c.note !== undefined) ev.note = c.note;
+              updatedCount++;
+            });
+
+            // 2. 디지몬 기본 조건(req) 매칭 및 오버라이드
+            Object.values(project.digimons || {}).forEach(d => {
+              if (d.name.trim().toLowerCase() === toNameLower) {
+                if (!d.req) d.req = getDefaultReqForStage(d.stage);
+                if (c.time !== undefined && c.time !== "") d.req.time = c.time;
+                if (c.vital !== undefined && c.vital !== "") d.req.vital = c.vital;
+                if (c.pp !== undefined && c.pp !== "") d.req.pp = c.pp;
+                if (c.battle !== undefined && c.battle !== "") d.req.battle = c.battle;
+                if (c.winRate !== undefined && c.winRate !== "") d.req.winRate = c.winRate;
+                if (c.jogress !== undefined) d.req.jogress = c.jogress;
+                if (c.item !== undefined) d.req.item = c.item;
+                if (c.note !== undefined) d.req.note = c.note;
+              }
+            });
+          });
+
+          if (updatedCount > 0) {
+            renderTree();
+            if (selectedDigiId) updateSidebar();
+
+            const indEl = document.getElementById("live-sync-indicator");
+            if (indEl) {
+              indEl.style.display = "inline-block";
+              indEl.title = `구글 시트에서 최신 진화 조건 ${updatedCount}개가 실시간으로 반영되었습니다!`;
+            }
+            console.log(`[라이브 조건 동기화] ${updatedCount}개 조건 갱신 완료.`);
+          }
+        }
+      } catch (err) {
+        console.warn("실시간 조건 동기화 스킵 (로컬 데이터 사용):", err);
+      }
+    }
+
     // 제보 시스템 이벤트 리스너 바인딩 초기화
     function initReportsSystem() {
       // 뷰어 제보 모달 닫기
@@ -10379,6 +10520,10 @@
       // 에디터 제보 확인 버튼
       const openReviewBtn = document.getElementById("btn-open-reports");
       if (openReviewBtn) openReviewBtn.addEventListener("click", openReviewReportsModal);
+
+      // 에디터 조건 실시간 배포 버튼
+      const syncLiveBtn = document.getElementById("btn-sync-live-conditions");
+      if (syncLiveBtn) syncLiveBtn.addEventListener("click", syncLiveConditionsToGas);
 
       // 에디터 제보 확인 모달 닫기
       const closeReviewBtn = document.getElementById("review-reports-close");
@@ -10432,6 +10577,7 @@
         fitEditorView();
         drawConnections();
       }, 100);
+      fetchAndApplyLiveConditions();
     });
   </script>
 
