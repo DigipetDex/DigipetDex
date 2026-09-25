@@ -1841,11 +1841,9 @@
         </div>
 
         <div class="form-group">
-          <label>소속 DiM (카테고리)</label>
-          <input type="text" id="edit-dim" list="dim-datalist" class="form-control" placeholder="예: 아구몬 EX">
-          <datalist id="dim-datalist"><option value="아구몬 EX"></option><option value="파피몬 EX"></option><option value="감마몬"></option><option value="길몬 EX"></option></datalist>
-          <div style="font-size:0.7rem; color:var(--text-sub); margin-top:3px;">
-            이 디지몬 노드가 속한 고유 DiM 카테고리입니다. (동일 디지몬이라도 DiM별로 독립 소속)
+          <label style="font-size:0.8rem; color:var(--text-sub); display:block; margin-bottom:5px;">소속 DiM (자동 고정)</label>
+          <div id="display-dim" style="font-size:0.85rem; font-weight:700; color:#5865F2; background:rgba(88,101,242,0.12); padding:7px 12px; border-radius:6px; border:1px solid rgba(88,101,242,0.3);">
+            -
           </div>
         </div>
 
@@ -6534,38 +6532,14 @@
       return (dimStr || "default").replace(/[^a-zA-Z0-9_-]/g, "_");
     }
 
-    // 디지몬이 특정 DiM 화면에 표시되어야 하는지 판별
-    // 1) 소속 DiM 목록에 targetDim이 포함되어 있는지 (쉼표 구분 다중 DiM 지원)
-    // 2) 현재 DiM의 디지몬으로부터 직접 진화하는 결과물(자식 노드)인지 (예: 타 DiM 공통 오메가몬 등)
-    // * 주의: 조그레스 파트너 상대 개체는 진화선 위의 조그레스 칩으로만 표시되며, 카드 노드로 튀어나오지 않습니다.
+    // 디지몬이 특정 DiM 화면에 표시되어야 하는지 엄격하게 판별 (각 DiM 간 100% 완전 격리!)
     function isDigimonVisibleInDim(digi, targetDim) {
       if (!targetDim || targetDim === "ALL") return true;
-      if (!digi) return false;
+      if (!digi || !digi.dim) return false;
 
       const tDimLower = targetDim.trim().toLowerCase();
-
-      // 1. 소속 DiM에 포함되어 있는지 확인
-      if (digi.dim) {
-        const dimList = digi.dim.split(",").map(s => s.trim().toLowerCase());
-        if (dimList.includes(tDimLower) || dimList.includes("all") || dimList.includes("공통")) {
-          return true;
-        }
-      }
-
-      // 2. 현재 DiM의 디지몬으로부터 직접 진화하는 결과물(자식 노드)인 경우만 허용
-      const isChildOfTargetDim = project.evolutions.some(evo => {
-        if (evo.to === digi.id) {
-          const fromDigi = project.digimons[evo.from];
-          if (fromDigi && fromDigi.dim && fromDigi.dim.split(",").map(s => s.trim().toLowerCase()).includes(tDimLower)) {
-            return true;
-          }
-        }
-        return false;
-      });
-
-      if (isChildOfTargetDim) return true;
-
-      return false;
+      const dDimLower = digi.dim.trim().toLowerCase();
+      return dDimLower === tDimLower;
     }
 
     function updateDimFilterOptions() {
@@ -7577,6 +7551,12 @@
             if (!exists) {
               const srcDigi = project.digimons[connectFromId];
               const tgtDigi = project.digimons[id];
+              if (srcDigi && tgtDigi && srcDigi.dim && tgtDigi.dim && srcDigi.dim.trim().toLowerCase() !== tgtDigi.dim.trim().toLowerCase()) {
+                showToast(`서로 다른 DiM 간에는 진화선을 연결할 수 없습니다! ([${srcDigi.dim}] ➔ [${tgtDigi.dim}])`, "warn");
+                connectFromId = null;
+                renderTree();
+                return;
+              }
               const stageDefault = getDefaultReqForStage(tgtDigi?.stage);
               project.evolutions.push({
                 from: connectFromId,
@@ -8014,8 +7994,8 @@
         renderViewerSidebar(null);
         const nameInput = document.getElementById("edit-name");
         if (nameInput) nameInput.value = "";
-        const dimInput = document.getElementById("edit-dim");
-        if (dimInput) dimInput.value = "";
+        const dimDisplay = document.getElementById("display-dim");
+        if (dimDisplay) dimDisplay.textContent = "-";
         const imgInput = document.getElementById("edit-img");
         if (imgInput) imgInput.value = "";
         const previewImg = document.getElementById("dropzone-preview");
@@ -8032,7 +8012,8 @@
       }
 
       document.getElementById("edit-name").value = digi.name;
-      document.getElementById("edit-dim").value = digi.dim || "";
+      const displayDim = document.getElementById("display-dim");
+      if (displayDim) displayDim.textContent = digi.dim || "(미지정)";
       document.getElementById("edit-stage").value = digi.stage;
       document.getElementById("edit-attr").value = digi.attr;
       document.getElementById("edit-img").value = digi.img;
@@ -8532,14 +8513,6 @@
       applyDigimonInfoByName(selectedDigiId, nameInput, true);
     });
 
-    document.getElementById("edit-dim").addEventListener("input", (e) => {
-      if (project.digimons[selectedDigiId]) {
-        project.digimons[selectedDigiId].dim = e.target.value.trim();
-        updateDimFilterOptions();
-        saveState();
-      }
-    });
-
     document.getElementById("edit-stage").addEventListener("change", (e) => {
       if (project.digimons[selectedDigiId]) {
         project.digimons[selectedDigiId].stage = e.target.value;
@@ -8662,8 +8635,8 @@
       );
       if (!name || !name.trim()) return;
 
-      const trimmedName = name.trim();
-      const currentDim = filterDim !== "ALL" ? filterDim : (project.digimons[selectedDigiId]?.dim || "Agumon EX");
+      let currentDim = filterDim !== "ALL" ? filterDim : (selectedDimContext || project.digimons[selectedDigiId]?.dim || project.dims?.[0] || "아구몬 EX");
+      if (currentDim && currentDim.includes(',')) currentDim = currentDim.split(',')[0].trim();
 
       // 1순위: 기존 프로젝트 내 동일 이름의 디지몬이 있는 경우
       // 기존 디지몬의 정보(속성, 세대, 이미지, 진화조건)를 그대로 연동/공유하여 현재 DiM의 독립된 디지몬으로 등록!
@@ -8721,82 +8694,27 @@
       const digi = project.digimons[selectedDigiId];
       if (!digi) return;
 
-      const currentDim = (filterDim !== "ALL" ? filterDim : selectedDimContext) || null;
-      const dims = (digi.dim || "").split(",").map(s => s.trim()).filter(Boolean);
+      if (!confirm(`'${digi.name}' 디지몬을 현재 DiM([${digi.dim || '미지정'}])에서 삭제하시겠습니까?\n\n※ 다른 DiM에 있는 동일 이름 디지몬은 절대 삭제되지 않고 100% 안전하게 유지됩니다.`)) return;
 
-      // 1) 해당 디지몬이 쉼표로 여러 DiM에 소속된 단일 객체인 경우
-      if (dims.length > 1) {
-        const targetDim = (currentDim && dims.some(d => d.toLowerCase() === currentDim.toLowerCase()))
-          ? currentDim
-          : dims[0];
-        const otherDims = dims.filter(d => d.toLowerCase() !== targetDim.toLowerCase());
+      const delId = selectedDigiId;
+      delete project.digimons[delId];
+      project.evolutions = project.evolutions.filter(e => e.from !== delId && e.to !== delId);
 
-        const choice = prompt(
-          `'${digi.name}' 디지몬은 여러 DiM([${dims.join(", ")}])에 등록되어 있습니다.\n\n` +
-          `• [1] 입력 (또는 확인): 현재 DiM [${targetDim}]에서만 삭제 (다른 DiM [${otherDims.join(", ")}] 안전 보존)\n` +
-          `• [2] 입력: 모든 DiM 및 프로젝트 전체에서 완전 삭제\n\n` +
-          `원하시는 번호를 입력하세요 (취소: ESC 또는 빈칸):`,
-          "1"
-        );
-
-        if (!choice) return;
-
-        if (choice.trim() === "2") {
-          if (!confirm(`정말로 '${digi.name}' 디지몬을 모든 DiM과 프로젝트 전체에서 완전히 삭제하시겠습니까?`)) return;
-          delete project.digimons[selectedDigiId];
-          project.evolutions = project.evolutions.filter(e => e.from !== selectedDigiId && e.to !== selectedDigiId);
-          selectedDigiId = Object.keys(project.digimons)[0] || null;
-          showToast(`'${digi.name}' 디지몬이 프로젝트 전체에서 완전히 삭제되었습니다.`);
-        } else {
-          // 현재 DiM에서만 제외하고 다른 DiM은 보존!
-          digi.dim = otherDims.join(", ");
-
-          // 현재 DiM에 속한 디지몬과의 연결선만 선별 제거
-          project.evolutions = project.evolutions.filter(evo => {
-            if (evo.from === digi.id) {
-              const toDigi = project.digimons[evo.to];
-              if (toDigi && toDigi.dim && toDigi.dim.split(",").map(s => s.trim().toLowerCase()).includes(targetDim.toLowerCase())) {
-                return false;
-              }
-            }
-            if (evo.to === digi.id) {
-              const fromDigi = project.digimons[evo.from];
-              if (fromDigi && fromDigi.dim && fromDigi.dim.split(",").map(s => s.trim().toLowerCase()).includes(targetDim.toLowerCase())) {
-                return false;
-              }
-            }
-            return true;
-          });
-
-          showToast(`'${digi.name}' 디지몬이 [${targetDim}] DiM에서만 제외되었습니다. (다른 DiM [${otherDims.join(", ")}]에는 안전하게 유지됩니다)`);
-
-          const visibleDigis = Object.values(project.digimons).filter(d => isDigimonVisibleInDim(d, filterDim !== "ALL" ? filterDim : null));
-          selectedDigiId = visibleDigis[0]?.id || Object.keys(project.digimons)[0] || null;
-        }
-
-        saveState();
-        updateDimFilterOptions();
-        renderTree();
-        updateSidebar();
-        return;
-      }
-
-      // 2) 독립 디지몬인 경우 (본인만 삭제되므로 다른 DiM에 등록된 동명 디지몬은 전혀 영향 없음)
-      if (!confirm(`'${digi.name}' 디지몬과 모든 연결을 삭제하시겠습니까?`)) return;
-      delete project.digimons[selectedDigiId];
-      project.evolutions = project.evolutions.filter(e => e.from !== selectedDigiId && e.to !== selectedDigiId);
-      const remainingDigis = Object.values(project.digimons).filter(d => isDigimonVisibleInDim(d, filterDim !== "ALL" ? filterDim : null));
+      const curDim = filterDim !== "ALL" ? filterDim : null;
+      const remainingDigis = Object.values(project.digimons).filter(d => isDigimonVisibleInDim(d, curDim));
       selectedDigiId = remainingDigis[0]?.id || Object.keys(project.digimons)[0] || null;
+
       saveState();
       updateDimFilterOptions();
       renderTree();
       updateSidebar();
-      showToast(`'${digi.name}' 디지몬이 삭제되었습니다.`);
+      showToast(`'${digi.name}' 디지몬이 삭제되었습니다. (다른 DiM은 영향 없음)`);
     });
 
     document.getElementById("btn-add-branch").addEventListener("click", async () => {
-      const otherDigis = Object.values(project.digimons).filter(d => d.id !== selectedDigiId);
-      if (otherDigis.length === 0) return alert("연결할 다른 디지몬이 없습니다.");
+      const curDim = filterDim !== "ALL" ? filterDim : null;
+      const otherDigis = Object.values(project.digimons).filter(d => d.id !== selectedDigiId && isDigimonVisibleInDim(d, curDim));
+      if (otherDigis.length === 0) return alert("현재 DiM 내에 연결할 다른 디지몬이 없습니다.");
 
       const options = otherDigis.map((d, i) => `${i + 1}. ${d.name} (${d.stage})`).join("\n");
       const choice = await showCustomPrompt("진화 연결 대상 선택", `진화할 대상 디지몬 번호를 입력하세요:\n\n${options}`, "1", "번호 입력");
