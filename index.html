@@ -1633,7 +1633,7 @@
       <button id="btn-open-training-calc" style="background:#8B5CF6; font-weight:700; display:inline-flex; align-items:center; gap:5px;" title="30회 훈련 손익 계산기">훈련 계산기</button>
       <button id="btn-toggle-mode" style="background: rgb(88, 101, 242); font-weight: 700; display: inline-flex;" title="편집 요소를 숨기고 완성된 진화 트리 뷰어 모드로 확인합니다.">뷰어 모드로 보기</button>
       <button id="btn-sync-viewer" class="editor-only" style="background:#23A55A; font-weight:700;" title="현재 작업한 최신 데이터를 project_data.js로 직접 저장합니다.">💾 파일 직접 저장</button>
-      <button id="btn-desktop-deploy" class="editor-only" style="background:#00ADB5; font-weight:700;" title="Netlify 서버(digipetdex.netlify.app)로 즉시 원클릭 배포합니다.">🚀 서버 즉시 배포</button>
+      <button id="btn-desktop-deploy" class="editor-only" style="background:#00ADB5; font-weight:700;" title="GitHub Pages(https://digipetdex.github.io/DigipetDex/)로 즉시 원클릭 배포합니다.">🚀 서버 즉시 배포</button>
       <input type="file" id="file-input-json" style="display:none;" accept=".json">
     </div>
   </header>
@@ -9676,16 +9676,16 @@
       }
     });
 
-    // 앱 내부 원클릭 Netlify 배포 버튼
+    // 앱 내부 원클릭 배포 버튼 (GitHub Pages)
     const desktopDeployBtn = document.getElementById("btn-desktop-deploy");
     if (desktopDeployBtn) {
       desktopDeployBtn.addEventListener("click", async () => {
-        if (!confirm("현재 작업 내용을 'project_data.js'에 저장하고 Netlify 서버(digipetdex.netlify.app)로 즉시 배포하시겠습니까?")) return;
+        if (!confirm("현재 작업 내용을 저장하고 GitHub Pages(https://digipetdex.github.io/DigipetDex/)로 즉시 배포하시겠습니까?")) return;
 
         // 먼저 최신 데이터 저장
         await executeDirectSave();
 
-        showToast("🚀 Netlify 서버로 배포 중입니다... (약 10초 소요)");
+        showToast("🚀 GitHub Pages로 배포 중입니다... (약 5~10초 소요)");
         desktopDeployBtn.disabled = true;
         desktopDeployBtn.style.opacity = "0.5";
 
@@ -9695,7 +9695,7 @@
           desktopDeployBtn.style.opacity = "1";
 
           if (res.success) {
-            alert("🎉 [배포 성공]\n\nhttps://digipetdex.netlify.app\n최신 버전이 서버에 성공적으로 배포되었습니다!");
+            alert("🎉 [배포 성공]\n\nhttps://digipetdex.github.io/DigipetDex/\n최신 버전이 GitHub Pages에 성공적으로 배포되었습니다!\n(반영까지 약 30초~1분 정도 소요될 수 있습니다.)");
           } else {
             alert("❌ [배포 오류]\n" + (res.error || "배포에 실패했습니다."));
           }

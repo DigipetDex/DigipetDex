@@ -64,13 +64,22 @@ ipcMain.handle('deploy-to-netlify', async (event) => {
         return resolve({ success: false, step: 'packaging', error: stderr1 || err1.message });
       }
 
-      // 2단계: git add, commit, push
-      const gitCmd = 'git add -A && (git diff-index --quiet HEAD -- || git commit -m "Auto deploy update") && git push origin main';
-      exec(gitCmd, { cwd: __dirname }, (err2, stdout2, stderr2) => {
-        if (err2) {
-          return resolve({ success: false, step: 'deploy', error: stderr2 || err2.message });
+      // 2단계: git add -A
+      exec('git add -A', { cwd: __dirname }, (errAdd) => {
+        if (errAdd) {
+          return resolve({ success: false, step: 'git add', error: errAdd.message });
         }
-        resolve({ success: true, log: stdout2 });
+
+        // 3단계: git commit (변경사항이 없더라도 계속 진행)
+        exec('git commit -m "Auto deploy update from Editor"', { cwd: __dirname }, () => {
+          // 4단계: git push origin main
+          exec('git push origin main', { cwd: __dirname }, (errPush, stdoutPush, stderrPush) => {
+            if (errPush) {
+              return resolve({ success: false, step: 'git push', error: stderrPush || errPush.message });
+            }
+            resolve({ success: true, log: stdoutPush });
+          });
+        });
       });
     });
   });
