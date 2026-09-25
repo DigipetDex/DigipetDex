@@ -29,13 +29,13 @@ def main():
     shutil.copy2(editor_path, os.path.join(legacy_dist, "index.html"))
     print("[1/5] index.html (루트 및 dist) 생성 완료 (최신 뷰어 템플릿)")
 
-    # 2. digimon_db.js 및 project_data.js 복사 (데이터 완벽 분리!)
-    for f in ["digimon_db.js", "project_data.js"]:
+    # 2. digimon_db.js, project_data.js, xlsx.full.min.js 및 google_apps_script.js 복사
+    for f in ["digimon_db.js", "project_data.js", "xlsx.full.min.js", "google_apps_script.js"]:
         src = os.path.join(base_dir, f)
         if os.path.exists(src):
             shutil.copy2(src, os.path.join(dist_dir, f))
             shutil.copy2(src, os.path.join(legacy_dist, f))
-    print("[2/5] digimon_db.js 및 project_data.js 데이터 파일 복사 완료")
+    print("[2/5] digimon_db.js, project_data.js, xlsx.full.min.js 및 google_apps_script.js 복사 완료")
 
     # 3. 커스텀 아이콘 (바이탈.webp, PP.webp, 배틀.webp, 승률.webp, 진화시간.webp) 복사
     webp_icons = ["바이탈.webp", "PP.webp", "배틀.webp", "승률.webp", "진화시간.webp"]

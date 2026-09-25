@@ -122,10 +122,11 @@ def export_excel_by_dim():
             cell.alignment = align_center if c != 2 else align_left
         summary_row_idx += 1
 
-    # 2. 각 DiM별 시트 생성
+    # 2. 데이터가 등록된 유효 DiM별 시트 생성
+    active_dims = [d for d in all_dims if len(dim_digimons.get(d, [])) > 0 or len(dim_data.get(d, [])) > 0]
     headers = ["진화 전", "진화 후", "세대", "속성", "바이탈", "PP/트로피", "배틀수", "승률", "진화시간", "조그레스 / 특이조건"]
     
-    for dim in all_dims:
+    for dim in active_dims:
         base_title = clean_sheet_name(dim)
         title = base_title
         counter = 1
