@@ -1842,10 +1842,10 @@
 
         <div class="form-group">
           <label>소속 DiM (카테고리)</label>
-          <input type="text" id="edit-dim" list="dim-datalist" class="form-control" placeholder="예: Agumon EX, Gabumon EX">
+          <input type="text" id="edit-dim" list="dim-datalist" class="form-control" placeholder="예: 아구몬 EX">
           <datalist id="dim-datalist"><option value="아구몬 EX"></option><option value="파피몬 EX"></option><option value="감마몬"></option><option value="길몬 EX"></option></datalist>
           <div style="font-size:0.7rem; color:var(--text-sub); margin-top:3px;">
-            쉼표(,)로 구분하여 여러 DiM에 동시 등록 가능 (예: Agumon EX, Gabumon EX)
+            이 디지몬 노드가 속한 고유 DiM 카테고리입니다. (동일 디지몬이라도 DiM별로 독립 소속)
           </div>
         </div>
 
@@ -6338,8 +6338,8 @@
         noticeEl.className = "ref-badge ref-badge-sync";
         noticeEl.style.display = "block";
         const syncDesc = (digi.independentReq !== false || existing.independentReq !== false) 
-          ? "기본 정보(속성/이미지) 공유 중 (진화조건은 DiM별 독립)"
-          : "전체 정보(속성/이미지/진화조건) 공유 중";
+          ? "기본 정보(속성/세대/이미지) 공유 중 (소속 DiM 및 진화조건은 독립)"
+          : "전체 정보(속성/세대/이미지/진화조건) 공유 중 (소속 DiM은 독립)";
         noticeEl.innerHTML = `<strong>동일 디지몬 감지:</strong> 기존 '${existing.name}'와 ${syncDesc}`;
         return;
       }
@@ -8534,8 +8534,7 @@
 
     document.getElementById("edit-dim").addEventListener("input", (e) => {
       if (project.digimons[selectedDigiId]) {
-        project.digimons[selectedDigiId].dim = e.target.value;
-        syncSameNameDigimons(project.digimons[selectedDigiId]);
+        project.digimons[selectedDigiId].dim = e.target.value.trim();
         updateDimFilterOptions();
         saveState();
       }
