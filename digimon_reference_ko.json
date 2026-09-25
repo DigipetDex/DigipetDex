@@ -1,0 +1,6552 @@
+{
+  "노스페라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "nosferamon"
+  },
+  "아르티오몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "artiomon"
+  },
+  "아트라타스몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "atratusmon"
+  },
+  "알바타스몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "albatusmon"
+  },
+  "헬리오스보아몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "heliosboamon"
+  },
+  "하바키리몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "habakirimon"
+  },
+  "베어캣몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "bearcatmon"
+  },
+  "타오우몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "taowumon"
+  },
+  "스커지카이롭몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "scourgechiropmon"
+  },
+  "모나크리자몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "monarchlizamon"
+  },
+  "아폴로몬:위스퍼드": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "apollomon_whispered"
+  },
+  "킹고래몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "kingwhamon"
+  },
+  "아루마몬：버스트 모드": {
+    "attr": "free",
+    "stage": "궁극체",
+    "dir": "armamon_burstmode"
+  },
+  "아루마몬": {
+    "attr": "free",
+    "stage": "궁극체",
+    "dir": "armamon"
+  },
+  "샤우트몬X5S": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "shoutmonx5s"
+  },
+  "볼텍스드라몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "vortexdramon"
+  },
+  "샤우트몬X4S": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "shoutmonx4s"
+  },
+  "샤우트몬X3SD": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "shoutmonx3sd"
+  },
+  "샤우트몬X3GM": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "shoutmonx3gm"
+  },
+  "아즈다르몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "azhdarmon"
+  },
+  "텐구몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "tengumon"
+  },
+  "아마테라스몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "amaterasumon"
+  },
+  "염마몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "enmamon"
+  },
+  "제천손오공몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "seitengokuwmon"
+  },
+  "엑스마키나몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "exmaquinamon"
+  },
+  "달포몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "dalphomon"
+  },
+  "시시마몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "shishimamon"
+  },
+  "다루마몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "darumamon"
+  },
+  "람포몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "rhamphomon"
+  },
+  "크로노몬: 디스트로이 모드": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "chronomon_destroy"
+  },
+  "크로노몬: 홀리 모드": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "chronomon_holy"
+  },
+  "부텐몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "butenmon"
+  },
+  "부라이몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "buraimon"
+  },
+  "효코몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "hyokomon"
+  },
+  "치치몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "chicchimon"
+  },
+  "좀비플루토몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "zombieplutomon"
+  },
+  "마네키몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "manekimon"
+  },
+  "백마몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "hakubamon"
+  },
+  "멍멍몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "wankomon"
+  },
+  "가사몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "gasamon"
+  },
+  "타키몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "takinmon"
+  },
+  "후자오몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "fujamon"
+  },
+  "카카몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "kakamon"
+  },
+  "아르마리자몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "armalizamon"
+  },
+  "오니비몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "onibimon"
+  },
+  "토모리몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "tomorimon"
+  },
+  "모코코몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "mococomon"
+  },
+  "후카몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "fukamon"
+  },
+  "패럴렐몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "parallelmon"
+  },
+  "나이트카이롭몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "nightchiropmon"
+  },
+  "스티라코몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "styracomon"
+  },
+  "타오티에몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "taotiemon"
+  },
+  "크레니엄몬+안바르몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "craniummon_enbarrmon"
+  },
+  "안바르몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "enbarrmon"
+  },
+  "메타트로몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "metatromon"
+  },
+  "그레이트 그리즈몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "greatgryzmon"
+  },
+  "타이타몬 + 스컬벌키몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "titamon_skullbaluchimon"
+  },
+  "쿠거몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "cougarmon"
+  },
+  "마스터브링프몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "masterblimpmon"
+  },
+  "하이에몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "hyemon"
+  },
+  "무라사메몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "murasamemon"
+  },
+  "울버몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "wolvermon"
+  },
+  "카이롭몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "chiropmon"
+  },
+  "프리스티몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "pristimon"
+  },
+  "듀라하몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "dullahamon"
+  },
+  "겟코몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "gekkomon"
+  },
+  "켓코몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "kekkomon"
+  },
+  "케코몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "kekomon"
+  },
+  "마그네틱드라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "magneticdramon"
+  },
+  "메뉴버몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "maneuvermon"
+  },
+  "터보몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "turbomon"
+  },
+  "냥부트몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "nyabootmon"
+  },
+  "이후몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "yihumon"
+  },
+  "아리에몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "ariemon"
+  },
+  "스컬시드라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "skullseadramon"
+  },
+  "샤크몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "sharkmon"
+  },
+  "카구야몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "kaguyamon"
+  },
+  "카라쿠루몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "karakurumon"
+  },
+  "코케시몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "kokeshimon"
+  },
+  "하니와몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "hanimon"
+  },
+  "모킹버몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "mockingbirdmon"
+  },
+  "뮬몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "mulemon"
+  },
+  "마키나몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "maquinamon"
+  },
+  "나타몬: 크림슨 모드": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "nazhamon_crimson"
+  },
+  "사가라몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "shagaramon"
+  },
+  "메두사몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "medusamon"
+  },
+  "라미아몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "lamiamon"
+  },
+  "네크로몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "necromon"
+  },
+  "상아몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "jougamon"
+  },
+  "피라미디몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "pyramidimon"
+  },
+  "프로가노몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "proganomon"
+  },
+  "랜드라몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "landramon"
+  },
+  "인비지몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "invisimon"
+  },
+  "오블리비몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "oblivimon"
+  },
+  "디메트로몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "dimetromon"
+  },
+  "용궁몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "ryugumon"
+  },
+  "케르누몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "cerunumon"
+  },
+  "마린불몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "marinbullmon"
+  },
+  "엘리자몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "elizamon"
+  },
+  "나타몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "nezhamon"
+  },
+  "다이너몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "dinomon"
+  },
+  "스카디몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "skadimon"
+  },
+  "폴라베어몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "polarbearmon"
+  },
+  "이랑몬: 블래스트 모드": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "erlangmon_blast"
+  },
+  "여왕벌몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "queenbeemon"
+  },
+  "베스파몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "vespamon"
+  },
+  "일벌몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "forgebeemon"
+  },
+  "헤비메탈드라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "heavymetaldramon"
+  },
+  "라우드몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "loudmon"
+  },
+  "펑크몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "punkmon"
+  },
+  "탁탑몬: 래스 모드": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "takutoumon_wrath"
+  },
+  "이랑몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "erlangmon"
+  },
+  "상드리몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "cendrillmon"
+  },
+  "샤프로몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "chaperomon"
+  },
+  "제퍼가몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "zephagamon"
+  },
+  "그랑게일몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "grandgalemon"
+  },
+  "플러피몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "fluffymon"
+  },
+  "요크몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "yolkmon"
+  },
+  "칼리스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "callismon"
+  },
+  "틀랄록몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "tlalocmon"
+  },
+  "슈슈몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "shoeshoemon"
+  },
+  "슈몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "shoemon"
+  },
+  "게일몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "galemon"
+  },
+  "프테로몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "pteromon"
+  },
+  "탁탑몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "takutoumon"
+  },
+  "펜리루가몬: 타케미 카즈치": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "fenriloogamon_takemikazuchi"
+  },
+  "빅웃코몬": {
+    "attr": "free",
+    "stage": "궁극체",
+    "dir": "bigukkomon"
+  },
+  "웃코몬": {
+    "attr": "free",
+    "stage": "성장기",
+    "dir": "ukkomon"
+  },
+  "디지앙몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "dijiangmon"
+  },
+  "싱티안몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "xingtianmon"
+  },
+  "리엔푸몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "lianpumon"
+  },
+  "도미니몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "dominimon"
+  },
+  "아르케엔젤몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "arkhaiangemon"
+  },
+  "럭스몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "luxmon"
+  },
+  "황룡몬: 루인모드": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "huanglongmon_ruin"
+  },
+  "문몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "moonmon"
+  },
+  "썬몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "sunmon"
+  },
+  "브리가드라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "brigadramon"
+  },
+  "하이코만드라몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "hi-commandramon"
+  },
+  "펜리루가몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "fenriloogamon"
+  },
+  "헬루가몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "helloogarmon"
+  },
+  "솔루가몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "soloogarmon"
+  },
+  "카고드라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "cargodramon"
+  },
+  "루갈몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "loogarmon"
+  },
+  "바우몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "bowmon"
+  },
+  "후사몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "fusamon"
+  },
+  "퀀타몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "quantumon"
+  },
+  "루가몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "loogamon"
+  },
+  "프록시마몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "proximamon"
+  },
+  "아크투루스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "arcturusmon"
+  },
+  "그레이나이츠몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "greyknightsmon"
+  },
+  "잔메츠몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "zanmetsumon"
+  },
+  "보머몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "bombermon"
+  },
+  "길리두몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "ghilliedhumon"
+  },
+  "후우마몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "fumamon"
+  },
+  "쿠티라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "cthyllamon"
+  },
+  "레굴루스몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "regulusmon"
+  },
+  "라그나몬": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "ragnamon"
+  },
+  "디스트로몬": {
+    "attr": "none",
+    "stage": "완전체",
+    "dir": "destromon"
+  },
+  "스내치몬": {
+    "attr": "none",
+    "stage": "성숙기",
+    "dir": "snatchmon"
+  },
+  "벰몬": {
+    "attr": "none",
+    "stage": "성장기",
+    "dir": "bemmon"
+  },
+  "바알몬(X항체)": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "baalmon_x"
+  },
+  "안피몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "amphimon"
+  },
+  "딜비트몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "diarbbitmon"
+  },
+  "시리우스몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "siriusmon"
+  },
+  "샤인그레이몬: 루인모드": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "shinegreymon_ruin"
+  },
+  "샴블몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "chamblemon"
+  },
+  "퍼블리몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "publimon"
+  },
+  "올리아몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "oleamon"
+  },
+  "환쿤몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "huankunmon"
+  },
+  "샹펑몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "xiangpengmon"
+  },
+  "시취에몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "xiquemon"
+  },
+  "황제드라몬: 파이터 모드(흑)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "imperialdramonfightermode_vi"
+  },
+  "그레이몬(청)(X항체)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "greymon_blue_x"
+  },
+  "오보로몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "oboromon"
+  },
+  "규우키몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "gyukimon"
+  },
+  "신퍼펫몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "shinmonzaemon"
+  },
+  "호버에스피몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "hoverespimon"
+  },
+  "에스피몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "espimon"
+  },
+  "유피테르몬: 래스 모드": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "jupitermmon_wrath"
+  },
+  "플루토몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "plutomon"
+  },
+  "케레스몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "ceresmon"
+  },
+  "바커스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "bacchusmon"
+  },
+  "유노몬: 히스테릭 모드": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "junomon_hysteric"
+  },
+  "유노몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "junomon"
+  },
+  "테티스몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "thetismon"
+  },
+  "라모르몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "lamortmon"
+  },
+  "카노바이스몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "canoweissmon"
+  },
+  "시스터몬 시엘(각성)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "sistermon_ciel_Awake"
+  },
+  "시스터몬 느와르(각성)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "sistermon_noir_Awake"
+  },
+  "시스터몬 블랑(각성)": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "sistermon_blanc_Awake"
+  },
+  "그루스감마몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "gulusgammamon"
+  },
+  "테슬라젤리몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "teslajellymon"
+  },
+  "진바앙고라몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "symbareangoramon"
+  },
+  "블랙가트몬 Uver.": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "blacktailmon_uver"
+  },
+  "웨딩몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "weddinmon"
+  },
+  "쇼트몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "shortmon"
+  },
+  "블랙래피드몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "blackrapidmon"
+  },
+  "블랙가르고몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "blackgalgomon"
+  },
+  "오메가몬 즈왈트 DEFEAT": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "omegamonzwart_d"
+  },
+  "웨즌감마몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "wezengammamon"
+  },
+  "카우스감마몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "kausgammamon"
+  },
+  "베텔감마몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "betelgammamon"
+  },
+  "아바도몬 코어": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "abbadomoncore"
+  },
+  "루미나몬(유라 Ver.)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "luminamon_nene"
+  },
+  "샤우트몬x7: 슈페리올 모드": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "shoutmonx7_superior"
+  },
+  "젤리몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "jellymon"
+  },
+  "뿌요요몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "puyoyomon"
+  },
+  "뿌요몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "puyomon"
+  },
+  "앙고라몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "angoramon"
+  },
+  "보사몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "bosamon"
+  },
+  "뿅몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "pyonmon"
+  },
+  "감마몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "gammamon"
+  },
+  "구리몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "gurimon"
+  },
+  "쿠리몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "curimon"
+  },
+  "아바도몬": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "abbadomon"
+  },
+  "네가몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "negamon"
+  },
+  "파일볼케몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "pilevolcamon"
+  },
+  "라이덴몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "raidenmon"
+  },
+  "뇌신몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "raijinmon"
+  },
+  "도쿠네몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "dokunemon"
+  },
+  "투베타몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "modokibetamon"
+  },
+  "히드라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "hydramon"
+  },
+  "블룸로드몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "bloomlordmon"
+  },
+  "아야타라몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "ajatarmon"
+  },
+  "가드로몬(금)": {
+    "attr": "free",
+    "stage": "성숙기",
+    "dir": "gardromon_gold"
+  },
+  "버거몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "burgamon"
+  },
+  "피드몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "pidmon"
+  },
+  "왕모래잠자리몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "sandyammamon"
+  },
+  "왕잠자리몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "yammamon"
+  },
+  "그린쉘몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "morishellmon"
+  },
+  "폭탄모야몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "bombernanimon"
+  },
+  "헤라클레스캅테리몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "heraklekabuterimon_x"
+  },
+  "스타몬(X항체)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "starmon_x"
+  },
+  "그라우몬(X항체)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "growmon_x"
+  },
+  "톱니몬(X항체)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "hagurumon_x"
+  },
+  "가이오몬: 엄도의 형": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "gaioumon_itto"
+  },
+  "브라키몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "brachiomon"
+  },
+  "큐우키몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "kyukimon"
+  },
+  "버밀리몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "vermillimon"
+  },
+  "어설트몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "assaultmon"
+  },
+  "테카몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "tekkamon"
+  },
+  "벌처몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "vulturemon"
+  },
+  "고로몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "goromon"
+  },
+  "스나몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "sunamon"
+  },
+  "바푸몬": {
+    "attr": "none",
+    "stage": "불명",
+    "dir": "burpmon"
+  },
+  "블랙킹워매몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "blackkingnumemon"
+  },
+  "골드워매몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "goldnumemon"
+  },
+  "동글몬": {
+    "attr": "none",
+    "stage": "불명",
+    "dir": "culumon"
+  },
+  "그라디몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "gladimon"
+  },
+  "샤우트몬X4K": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "shoutmonx4k"
+  },
+  "코스파이더몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "kodokugumon"
+  },
+  "요!요!몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "yoxtuyoxtumon"
+  },
+  "미니데카치몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "minidekachimon"
+  },
+  "아타마데카치몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "atamadekachimon"
+  },
+  "트레일몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "trailmon"
+  },
+  "스카몬 대왕": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "greatkingscumon"
+  },
+  "슈라우드몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "shroudmon"
+  },
+  "프로스베르그몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "frosvelgrmon"
+  },
+  "프로조몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "frozomon"
+  },
+  "히야리몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "hiyarimon"
+  },
+  "블랙세라피몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "blackseraphimon"
+  },
+  "레어레어몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "rareraremon"
+  },
+  "클라이몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "climbmon"
+  },
+  "다이브몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "divemon"
+  },
+  "투명아구몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "clearagumon"
+  },
+  "반쵸릴리몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "bancholilimon"
+  },
+  "메탈그레이몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "metalgreymon_va_x"
+  },
+  "화이트레오몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "panjyamon_x"
+  },
+  "메탈콩알몬(X항체)": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "metalmamemon_x"
+  },
+  "번개콩알몬(X항체)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "thunderballmon_x"
+  },
+  "모노크로몬(X항체)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "monochromon_x"
+  },
+  "도베르몬(X항체)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "dobermon_x"
+  },
+  "연체몬(X항체)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "gesomon_x"
+  },
+  "울퉁몬(X항체)": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "gottsumon_x"
+  },
+  "크랩몬(X항체)": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "ganimon_x"
+  },
+  "길몬(X항체)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "guilmon_x"
+  },
+  "샤우트몬 EX6": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "shoutmon_ex6"
+  },
+  "병아리버거몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "torikaraballmon"
+  },
+  "포테몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "potamon"
+  },
+  "아킬레우스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "achillesmon"
+  },
+  "시바몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "shivamon"
+  },
+  "카즈치몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "kazuchimon"
+  },
+  "피스트몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "pistmon"
+  },
+  "템포몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "tempomon"
+  },
+  "슛몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "shootmon"
+  },
+  "바우트몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "boutmon"
+  },
+  "미타마몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "mitamamon"
+  },
+  "러블리엔젤몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "lovelyangemon"
+  },
+  "비비몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "bibimon"
+  },
+  "도키몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "dokimon"
+  },
+  "나마케몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "namakemon"
+  },
+  "런너몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "runnermon"
+  },
+  "엑서몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "exermon"
+  },
+  "벌크몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "bulkmon"
+  },
+  "코몬도몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "komondomon"
+  },
+  "펄스몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "pulsemon"
+  },
+  "오메가몬: 머시풀 모드": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "omegamon_merciful"
+  },
+  "단데블몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "donedevimon"
+  },
+  "워가루몬: 사지타리우스 모드": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "waregarurumon_sagittarius"
+  },
+  "황제드라몬: 드래곤 모드(흑)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "imperialdramon_dragon_black"
+  },
+  "만티코어몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "manticoremon"
+  },
+  "미믹몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "mimicmon"
+  },
+  "발루키몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "baluchimon"
+  },
+  "다크메일드라몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "darkmaildramon"
+  },
+  "메탈그레이몬: 알타라우스 모드": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "metalgreymon_alter"
+  },
+  "리벨리몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "rebellimon"
+  },
+  "마하몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "machmon"
+  },
+  "정크몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "junkmon"
+  },
+  "헤비레오몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "heavyleomon"
+  },
+  "호프몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "hopmon"
+  },
+  "케토몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "ketomon"
+  },
+  "니즈헤그몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "nidhoggmon"
+  },
+  "엔트몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "entmon"
+  },
+  "파라사우몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "parasaurmon"
+  },
+  "트로피아몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "toropiamon"
+  },
+  "폼몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "pomumon"
+  },
+  "아이즈몬: 스캐터모드": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "eyesmon_scatter"
+  },
+  "아이즈몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "eyesmon"
+  },
+  "베타몬(X항체)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "betamon_x"
+  },
+  "가지몬(X항체)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "gazimon_x"
+  },
+  "아르고몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "algomon-ultimate"
+  },
+  "아이고스몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "ghostmon"
+  },
+  "레가렉스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "regalecusmon"
+  },
+  "피라니몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "piranimon"
+  },
+  "기간테우스몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "gusokumon"
+  },
+  "마린키메라몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "marinchimairamon"
+  },
+  "플라잉피쉬몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "tobiumon"
+  },
+  "산호몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "sangomon"
+  },
+  "고그마몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "gogmamon"
+  },
+  "바분몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "baboongamon"
+  },
+  "샌드리자몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "sunarizamon"
+  },
+  "주엘비몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "jewelbeemon"
+  },
+  "후디에몬": {
+    "attr": "free",
+    "stage": "성숙기",
+    "dir": "hudiemon"
+  },
+  "아레스타드라몬: 슈페리올 모드": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "arresterdramon_superior"
+  },
+  "가루몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "garurumon_x"
+  },
+  "그레이몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "greymon_x"
+  },
+  "스파다몬": {
+    "attr": "free",
+    "stage": "성장기",
+    "dir": "spadamon"
+  },
+  "모르포몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "morphomon"
+  },
+  "에오스몬": {
+    "attr": "none",
+    "stage": "성숙기",
+    "dir": "eosmon_lv4"
+  },
+  "파피몬 -우정의 유대-": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "gabumon_kizuna"
+  },
+  "아구몬 -용기의 유대-": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "agumon_kizuna"
+  },
+  "토노사마콩알몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "tonosamamamemon"
+  },
+  "오메가몬 즈왈트": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "omegamon_zwart"
+  },
+  "테리어몬 조수": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "terriermon_assistant"
+  },
+  "크리스페일드라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "cryspaledramon"
+  },
+  "메탈릭드라몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "metallicdramon"
+  },
+  "쟈자리히몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "jazarichmon"
+  },
+  "쟈자드몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "jazardmon"
+  },
+  "쟈자몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "jazamon"
+  },
+  "헥세블라우몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "hexeblaumon"
+  },
+  "페일드라몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "paledramon"
+  },
+  "노블펌프몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "noblepumpmon"
+  },
+  "오그도몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "ogudomon_x"
+  },
+  "제스몬GX": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "jesmongx"
+  },
+  "케라몬(X항체)": {
+    "attr": "none",
+    "stage": "성장기",
+    "dir": "keramon_x"
+  },
+  "오메가샤우트몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "omegashoutmon_x"
+  },
+  "메라몬(X항체)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "meramon_x"
+  },
+  "페가수스몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "pegasmon_x"
+  },
+  "래피드몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "rapidmon_x"
+  },
+  "퍼펫몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "monzaemon_x"
+  },
+  "간쿠몬(X항체)": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "gankoomon_x"
+  },
+  "엑자몬(X항체)": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "examon_x"
+  },
+  "사이버드라몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "cyberdramon_x"
+  },
+  "라이즈그레이몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "rizegreymon_x"
+  },
+  "페닉스몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "hououmon_x"
+  },
+  "저스티몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "justimon_x"
+  },
+  "위자몬(X항체)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "wizarmon_x"
+  },
+  "시사몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "siesamon_x"
+  },
+  "케루비몬(선)(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "cherubimon_x"
+  },
+  "오파니몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ofanimon_x"
+  },
+  "엔젤우몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "angewomon_x"
+  },
+  "디아블로몬(X항체)": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "diablomon_x"
+  },
+  "듀나스몬(X항체)": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "dynasmon_x"
+  },
+  "두프트몬(X항체)": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "duftmon_x"
+  },
+  "홀리드라몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "holydramon_x"
+  },
+  "플레시오몬(X항체)": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "plesiomon_x"
+  },
+  "갓드라몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "goddramon_x"
+  },
+  "가루다몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "garudamon_x"
+  },
+  "가트몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "tailmon_x"
+  },
+  "니드몬(X항체)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "togemon_x"
+  },
+  "티로몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "tylomon_x"
+  },
+  "로프몬(X항체)": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "lopmon_x"
+  },
+  "샤코몬(X항체)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "shakomon_x"
+  },
+  "테리어몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "terriermon_x"
+  },
+  "팔몬(X항체)": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "palmon_x"
+  },
+  "프테라몬(X항체)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "pteranomon_x"
+  },
+  "콩알몬(X항체)": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "mamemon_x"
+  },
+  "이바몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "ebemon_x"
+  },
+  "슬레이프몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "sleipmon_x"
+  },
+  "크레니엄몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "craniummon_x"
+  },
+  "알포스브이드라몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ulforcevdramon_x"
+  },
+  "매그너몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "magnamon_x"
+  },
+  "메가시드라몬(X항체)": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "megaseadramon_x"
+  },
+  "트리케라몬(X항체)": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "triceramon_x"
+  },
+  "왕쿠가몬(X항체)": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "okuwamon_x"
+  },
+  "가오리몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "mantaraymon_x"
+  },
+  "네페르티몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "nefertimon_x"
+  },
+  "시드라몬(X항체)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "seadramon_x"
+  },
+  "쿠가몬(X항체)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "kuwagamon_x"
+  },
+  "알로몬(X항체)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "allomon_x"
+  },
+  "쉬라몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "gomamon_x"
+  },
+  "코쿠와몬(X항체)": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "kokuwamon_x"
+  },
+  "블랙워그레이몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "blackwargreymon_x"
+  },
+  "레이디데블몬(X항체)": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "ladydevimon_x"
+  },
+  "메탈그레이몬(바이러스종)(X항체)": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "metalgreymon_vi_x"
+  },
+  "우가몬(X항체)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "orgemon_x"
+  },
+  "아구몬(흑)(X항체)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "agumon_b_x"
+  },
+  "라센몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "rasenmon"
+  },
+  "라센몬: 격앙 모드": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "rasenmon_f"
+  },
+  "스티필몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "stiffilmon"
+  },
+  "필몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "filmon"
+  },
+  "로제몬(X항체)": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "rosemon_x"
+  },
+  "프린스콩알몬(X항체)": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "princemamemon_x"
+  },
+  "스컬맘몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "skullmammon_x"
+  },
+  "맘몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "mammon_x"
+  },
+  "메피스몬(X항체)": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "mephismon_x"
+  },
+  "묘티스몬(X항체)": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "vamdemon_x"
+  },
+  "플롯트몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "plotmon_x"
+  },
+  "올챙몬(X항체)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "otamamon_x"
+  },
+  "야몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "yarmon"
+  },
+  "키몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "keemon"
+  },
+  "임프몬(X항체)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "impmon_x"
+  },
+  "다크티라노몬(X항체)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "darktyranomon_x"
+  },
+  "워매몬(X항체)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "numemon_x"
+  },
+  "루체몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "lucemon_x"
+  },
+  "리리스몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "lilithmon_x"
+  },
+  "리바이어몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "leviamon_x"
+  },
+  "벨페몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "belphemon_x"
+  },
+  "발바몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "barbamon_x"
+  },
+  "마왕몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "demon_x"
+  },
+  "다크나이트몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "darkknightmon_x"
+  },
+  "케루비몬(악)(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "cherubimondark_x"
+  },
+  "오파니몬: 폴다운 모드(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ofanimonfdm_x"
+  },
+  "얼티메이트카오스몬": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "ultimatechaosmon"
+  },
+  "프스리몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "pusurimon"
+  },
+  "프스몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "pusumon"
+  },
+  "서피몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "surfimon"
+  },
+  "블루코몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "bulucomon"
+  },
+  "에리스몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "herissmon"
+  },
+  "메탈가루몬(흑)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "metalgarurumon_black"
+  },
+  "워가루몬(흑)": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "weregarurumon_black"
+  },
+  "가루몬(흑)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "garurumon_black"
+  },
+  "저스티몬: 블리츠 암": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "justimon_blitzarm"
+  },
+  "긴카쿠몬 프로모트": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "ginkakumon_promote"
+  },
+  "아이스데블몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "icedevimon"
+  },
+  "쿠즈하몬: 무녀 모드": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "kuzuhamon_miko"
+  },
+  "메가로그라우몬(황)": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "megalograwmon_orange"
+  },
+  "그레이몬(청)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "greymon_blue"
+  },
+  "샤우트몬(킹 Ver.)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "shoutmon_king"
+  },
+  "워그레이몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "wargreymon_x"
+  },
+  "메탈가루몬(X항체)": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "metalgarurumon_x"
+  },
+  "메기드라몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "megidramon_x"
+  },
+  "워가루몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "weregarurumon_x"
+  },
+  "릴리몬(X항체)": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "lilimon_x"
+  },
+  "샤크라몬(X항체)": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "sakuyamon_x"
+  },
+  "베르제브몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "beelzebumon_x"
+  },
+  "메가로그라우몬(X항체)": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "megalogrowmon_x"
+  },
+  "리노몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "rhinomon_x"
+  },
+  "레나몬(X항체)": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "renamon_x"
+  },
+  "토코몬(X항체)": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "tokomon_x"
+  },
+  "베르스타몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "beelstarmon_x"
+  },
+  "듀크몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "dukemon_x"
+  },
+  "케르베로스몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "cerberumon_x"
+  },
+  "티라노몬(X항체)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "tyranomon_x"
+  },
+  "드라코몬(X항체)": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "dracomon_x"
+  },
+  "파피몬(X항체)": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "gabumon_x"
+  },
+  "미네르바몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "minervamon_x"
+  },
+  "로드나이트몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "lordknightmon_x"
+  },
+  "시스터몬 시엘": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "sistermon_ciel"
+  },
+  "메탈티라노몬(X항체)": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "metaltyranomon_x"
+  },
+  "레오몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "leomon_x"
+  },
+  "아구몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "agumon_x"
+  },
+  "제스몬(X항체)": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "jesmon_x"
+  },
+  "라그나로드몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "ragnaloardmon"
+  },
+  "라플레시몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "rafflesimon"
+  },
+  "오르디네몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "ordinemon"
+  },
+  "랩터스패로우몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "raptorsparrowmon"
+  },
+  "반쵸록몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "banchogolemon"
+  },
+  "케르베로스몬: 인랑 모드": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "cerberumon_werewolfmode"
+  },
+  "그라우몬(황)": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "growmon_orange"
+  },
+  "토이아구몬(흑)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "toyagumon_black"
+  },
+  "슈팅스타몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "shootingstarmon"
+  },
+  "저스티몬: 크리티컬 암": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "justimon_criticalarm"
+  },
+  "야타가라몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "yatagaramon_axcel"
+  },
+  "다이노휴몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "dinohumon"
+  },
+  "래피드몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "rapidmon"
+  },
+  "예거도루루몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "yaegerdorurumon"
+  },
+  "건드라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "gundramon"
+  },
+  "아이기오투스몬: 홀리": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "aegiochusmon_holly"
+  },
+  "파피몬(흑)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "gabumon_black"
+  },
+  "통통몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "pipimon"
+  },
+  "라구엘몬": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "raguelmon"
+  },
+  "브리웨루드라몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "bryweludramon"
+  },
+  "볼케닉드라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "volcanicdramon"
+  },
+  "라보가리타몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "lavogaritamon"
+  },
+  "메이크랙몬: 비셔스 모드": {
+    "attr": "none",
+    "stage": "완전체",
+    "dir": "meicrackmon_v"
+  },
+  "마스테몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "mastemon"
+  },
+  "볼토바우타몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "voltobautamon"
+  },
+  "라이지루도몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "raijiludomon"
+  },
+  "티아루도몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "tialudomon"
+  },
+  "라보보몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "lavorvomon"
+  },
+  "무사아구몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "bushiagumon"
+  },
+  "루도몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "ludomon"
+  },
+  "캇킨몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "kakkinmon"
+  },
+  "코츠코몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "cotsucomon"
+  },
+  "안티라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "andiramon_2"
+  },
+  "메이쿠몬": {
+    "attr": "none",
+    "stage": "성숙기",
+    "dir": "meicoomon"
+  },
+  "고래몬(성숙기)": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "whamon_2"
+  },
+  "개굴몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "gekomon"
+  },
+  "보보몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "vorvomon"
+  },
+  "아트라바리스타몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "atlurballistamon"
+  },
+  "오메가몬 alter-B": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "omegamon_alter-b"
+  },
+  "블랙마하가오가몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "blackmachgaogamon"
+  },
+  "블랙가오가몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "blackgaogamon"
+  },
+  "팔코몬(2006)": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "falcomon-2006"
+  },
+  "쿠다몬(2006)": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "kudamon-2006"
+  },
+  "네오": {
+    "attr": "none",
+    "stage": "불명",
+    "dir": "neo"
+  },
+  "야키이몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "yakiimon"
+  },
+  "모니몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "monimon"
+  },
+  "모니터몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "monitamon"
+  },
+  "메르바몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "mervamon"
+  },
+  "메탈그레이몬 + 사이버 런처": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "metalgreymon_cyberlauncher"
+  },
+  "메탈그레이몬(2010)": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "metalgreymon"
+  },
+  "메일버드라몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "mailbirdramon"
+  },
+  "무소나이트몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "musoknightmon"
+  },
+  "매드레오몬: 암드 모드": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "madleomon:armedmode"
+  },
+  "매드레오몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "madleomon"
+  },
+  "봄몬(2010)": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "bombmon-xwars"
+  },
+  "베르제브몬(2010)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "beelzebumon-xwars"
+  },
+  "블래스트몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "blastmon"
+  },
+  "풋몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "footmon"
+  },
+  "필로몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "pillomon"
+  },
+  "픽크몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "pickmon"
+  },
+  "바리스타몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "baristamon"
+  },
+  "바코몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "bacomon"
+  },
+  "바그라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "bagramon"
+  },
+  "하이비전 모니터몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "hi-visionmonitamon"
+  },
+  "바알몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "baalmon"
+  },
+  "네오묘티스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "neovamdemon"
+  },
+  "두둥몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "dondokomon"
+  },
+  "두둥샤우트몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "donshoutmon"
+  },
+  "도루루몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "dorulumon"
+  },
+  "도르빅크몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "dorbickmon"
+  },
+  "트루프몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "troopmon"
+  },
+  "데들리액스몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "deadlyaxemon"
+  },
+  "데커드라몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "deckerdramon"
+  },
+  "데커그레이몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "deckergreymon"
+  },
+  "츠와몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "tuwarmon"
+  },
+  "츄츄몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "tyutyumon"
+  },
+  "치빅크몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "chibickmon"
+  },
+  "치쿠리몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "chikurimon"
+  },
+  "다메몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "damemon"
+  },
+  "택티몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "tactimon"
+  },
+  "다크네스바그라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "darknessbagramon"
+  },
+  "다크나이트몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "darkknightmon"
+  },
+  "제니몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "zenimon"
+  },
+  "스플래시몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "splashmon"
+  },
+  "스패로우몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "sparrowmon"
+  },
+  "스타몬즈": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "starmons"
+  },
+  "스컬나이트몬: 빅 액스 모드": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "skullknightmonbigaxemode"
+  },
+  "스컬나이트몬: 기마 모드": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "skullknightmoncavaliermode"
+  },
+  "스컬나이트몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "skullknightmon"
+  },
+  "조커몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "jokermon"
+  },
+  "샤니터몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "shonitamon"
+  },
+  "샤우트몬+도루루캐논": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "dorulucannon"
+  },
+  "샤우트몬+스타소드": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "starsword"
+  },
+  "샤우트몬+제트 스패로우": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "jetsparrow"
+  },
+  "샤우트몬x7": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "shoutmonx7"
+  },
+  "샤우트몬X5B": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "shoutmonx5b"
+  },
+  "샤우트몬X5": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "shoutmonx5"
+  },
+  "샤우트몬X4B": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "shoutmonx4b"
+  },
+  "샤우트몬X4": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "shoutmonx4"
+  },
+  "샤우트몬X3": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "shoutmonx3"
+  },
+  "샤우트몬X2": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "shoutmonx2"
+  },
+  "샤우트몬 DX": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "shoutmondx"
+  },
+  "샤우트몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "shoutmon"
+  },
+  "제트메르바몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "jetmervamon"
+  },
+  "지크그레이몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "zekegreymon"
+  },
+  "자미엘몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "zamielmon"
+  },
+  "사운드버드몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "soundbirdmon"
+  },
+  "사이버드라몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "cyberdramon"
+  },
+  "코제니몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "kozenimon"
+  },
+  "그레이몬(2010)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "greymon"
+  },
+  "그라비몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "gravimon"
+  },
+  "큐트몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "cutemon"
+  },
+  "가무드라몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "gumdramon"
+  },
+  "가네몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "ganemon"
+  },
+  "가오스몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "gaossmon"
+  },
+  "오레그몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "olegmon"
+  },
+  "오메가샤우트몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "omegashoutmon"
+  },
+  "에카키몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "ekakimon"
+  },
+  "이그니트몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "iguneetmon"
+  },
+  "아레스타드라몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "arresterdramon"
+  },
+  "레베몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "louwemon"
+  },
+  "라나몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "ranamon"
+  },
+  "라이히몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "raihimon"
+  },
+  "라이노캅테리몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "rhinokabuterimon"
+  },
+  "머큐레몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "mercuremon"
+  },
+  "매그너가루몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "magnagarurumon"
+  },
+  "보르그몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "bolgmon"
+  },
+  "베르그몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "velgrmon"
+  },
+  "페탈드라몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "petaldramon"
+  },
+  "베오울프몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "beowolfmon"
+  },
+  "화염몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "flamon"
+  },
+  "블리츠몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "blitzmon"
+  },
+  "블리자몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "blizzarmon"
+  },
+  "페어리몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "fairimon"
+  },
+  "챠크몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "chackmon"
+  },
+  "더스크몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "duskmon"
+  },
+  "왕펭귄몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "daipenmon"
+  },
+  "세피로트몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "sephirothmon"
+  },
+  "스트라비몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "storabimon"
+  },
+  "슈츠몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "shutumon"
+  },
+  "제트실피드몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "jetsilphymon"
+  },
+  "그로트몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "grottemon"
+  },
+  "기가스몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "gigasmon"
+  },
+  "가름몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "garummon"
+  },
+  "카르마라몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "calamaramon"
+  },
+  "카이젤그레이몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "kaisergreymon"
+  },
+  "카이저레오몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "kaiserleomon"
+  },
+  "브리트라몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "vritramon"
+  },
+  "볼프몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "wolfmon"
+  },
+  "알볼몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "arbormon"
+  },
+  "아루다몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "aldamon"
+  },
+  "아그니몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "agnimon"
+  },
+  "링크몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "rinkmon"
+  },
+  "링스몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "lynxmon"
+  },
+  "리노몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "rhinomon"
+  },
+  "번개드라몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "lighdramon"
+  },
+  "야차몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "yaksamon"
+  },
+  "나방몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "mothmon"
+  },
+  "메일드라몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "maildramon"
+  },
+  "무스몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "moosemon"
+  },
+  "맘보몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "manbomon"
+  },
+  "가오리몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "mantaraymon"
+  },
+  "매그너몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "magnamon"
+  },
+  "판초몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "ponchomon"
+  },
+  "호루스몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "holsmon"
+  },
+  "멧돼지몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "boarmon"
+  },
+  "페가수스몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "pegasmon"
+  },
+  "프로그몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "frogmon"
+  },
+  "프라리몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "prairiemon"
+  },
+  "화염드라몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "fladramon"
+  },
+  "화염위자몬": {
+    "attr": "virus",
+    "stage": "아머체",
+    "dir": "flawizarmon"
+  },
+  "황소몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "bullmon"
+  },
+  "플라몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "flybeemon"
+  },
+  "프테라몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "pteranomon"
+  },
+  "푸치몬(녹)": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "pucchiemon-green"
+  },
+  "푸치몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "pucchiemon"
+  },
+  "피피스몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "pipismon"
+  },
+  "비트몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "bitmon"
+  },
+  "피콕몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "peacockmon"
+  },
+  "바로몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "baromon"
+  },
+  "하니몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "honeybeemon"
+  },
+  "나비몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "butterflamon"
+  },
+  "하피몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "harpymon"
+  },
+  "노헤몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "nohemon"
+  },
+  "네페르티몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "nefertimon"
+  },
+  "토게모구몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "togemogumon"
+  },
+  "토칸몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "tocanmon"
+  },
+  "마린몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "depthmon"
+  },
+  "티로몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "tylomon"
+  },
+  "디그몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "digmon"
+  },
+  "세피몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "sepikmon"
+  },
+  "세트몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "sethmon"
+  },
+  "백조몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "swanmon"
+  },
+  "스테고몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "stegomon"
+  },
+  "수리몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "shurimon"
+  },
+  "샤드라몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "shadramon"
+  },
+  "해마몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "seahomon"
+  },
+  "시프몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "sheepmon"
+  },
+  "썬더버드몬": {
+    "attr": "data",
+    "stage": "아머체",
+    "dir": "thunderbirmon"
+  },
+  "사라만다몬": {
+    "attr": "virus",
+    "stage": "아머체",
+    "dir": "salamandamon"
+  },
+  "잠수몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "sabmarimon"
+  },
+  "사수몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "sagittarimon"
+  },
+  "서치몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "searchmon"
+  },
+  "콩고몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "kongoumon"
+  },
+  "골드브이드라몬": {
+    "attr": "vaccine",
+    "stage": "아머체",
+    "dir": "goldv-dramon"
+  },
+  "고트몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "goatmon"
+  },
+  "크레인몬": {
+    "attr": "data",
+    "stage": "아머체",
+    "dir": "kenkimon"
+  },
+  "백사몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "quetzalmon"
+  },
+  "캥거루몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "kangarumon"
+  },
+  "카멜레온몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "chamelemon"
+  },
+  "카부키몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "kabukimon"
+  },
+  "고르고몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "gargomon"
+  },
+  "돌고래몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "orcamon"
+  },
+  "토토몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "opossummon"
+  },
+  "코끼몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "elephamon"
+  },
+  "알로몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "allomon"
+  },
+  "왕거북몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "archelomon"
+  },
+  "아울몬": {
+    "attr": "free",
+    "stage": "아머체",
+    "dir": "owlmon"
+  },
+  "로드나이트몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "lordknightmon"
+  },
+  "로터스몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "lotusmon"
+  },
+  "로제몬: 버스트 모드": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "rosemonburstmode"
+  },
+  "로제몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "rosemon"
+  },
+  "레이브몬: 버스트 모드": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ravmonburstmode"
+  },
+  "레이브몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ravmon"
+  },
+  "루체몬: 라르바": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "lucemonlarva"
+  },
+  "루체몬: 사탄 모드": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "lucemonsatanmode"
+  },
+  "리리스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "lilithmon"
+  },
+  "리바이어몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "leviamon"
+  },
+  "램프몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "lampmon"
+  },
+  "러스트티라노몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "rusttyranomon"
+  },
+  "라지엘몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "rasielmon"
+  },
+  "유피테르몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "jupitermon"
+  },
+  "메르크리몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "mercurymon"
+  },
+  "메디벌듀크몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "medievaldukemon"
+  },
+  "메탈피라니몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "metalpiranimon"
+  },
+  "메탈시드라몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "metalseadramon"
+  },
+  "메탈가루몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "metalgarurumon"
+  },
+  "메탈에테몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "metaletemon"
+  },
+  "메기드라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "megidramon"
+  },
+  "문밀레니엄몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "moonmillenniumon"
+  },
+  "무르무크스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "murmukusmon"
+  },
+  "파워드라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "mugendramon"
+  },
+  "밀레니엄몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "millenniumon"
+  },
+  "미라쥬가오가몬: 버스트 모드": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "miragegaogamon:burstmode"
+  },
+  "미라쥬가오가몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "miragegaogamon"
+  },
+  "미네르바몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "minervamon"
+  },
+  "마르스몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "marsmon"
+  },
+  "마린엔젤몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "marinangemon"
+  },
+  "매그너키드몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "magnakidmon"
+  },
+  "볼트몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "boltmon"
+  },
+  "홀리드라몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "holydramon"
+  },
+  "페닉스몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "hououmon"
+  },
+  "벨페몬: 레이지 모드": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "belphemonragemode"
+  },
+  "벨페몬: 슬립 모드": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "belphemonsleepmode"
+  },
+  "베르제브몬: 블래스트 모드": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "beelzebumonblastmode"
+  },
+  "베르제브몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "beelzebumon"
+  },
+  "베르스타몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "beelstarmon"
+  },
+  "베리얼묘티스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "belialvamdemon"
+  },
+  "헤라클레스캅테리몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "heraklekabuterimon"
+  },
+  "플레시오몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "plesiomon"
+  },
+  "브레이크드라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "breakdramon"
+  },
+  "프린스콩알몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "princemamemon"
+  },
+  "블리츠그레이몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "blitzgreymon"
+  },
+  "블랙세인트가르고몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "blacksaintgalgomon"
+  },
+  "블랙워그레이몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "blackwargreymon"
+  },
+  "플래티넘워매몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "platinumnumemon"
+  },
+  "푸쿠몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "pukumon"
+  },
+  "풍신몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "fujinmon"
+  },
+  "황룡몬": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "huanglongmon"
+  },
+  "파라오몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "pharaohmon"
+  },
+  "피노키몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "pinochimon"
+  },
+  "빅토리그레이몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "victorygreymon"
+  },
+  "피에몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "piemon"
+  },
+  "반쵸레오몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "bancholeomon"
+  },
+  "반쵸콩알몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "banchomamemon"
+  },
+  "반쵸스팅몬": {
+    "attr": "free",
+    "stage": "궁극체",
+    "dir": "banchostingmon"
+  },
+  "발바몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "barbamon"
+  },
+  "패러사이몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "parasimon"
+  },
+  "할매몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "babamon"
+  },
+  "백호몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "baihumon"
+  },
+  "하이안드로몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "hiandromon"
+  },
+  "넵튠몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "neptunemon"
+  },
+  "도루고라몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "dorugoramon"
+  },
+  "두프트몬: 레오파드 모드": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "duftmonleopardmode"
+  },
+  "두프트몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "duftmon"
+  },
+  "듀란다몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "durandamon"
+  },
+  "듀나스몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "dynasmon"
+  },
+  "듀크몬: 크림슨 모드": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "dukemoncrimsonmode"
+  },
+  "듀크몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "dukemon"
+  },
+  "데블타몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "devitamamon"
+  },
+  "데스몬(흑)": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "deathmon-black"
+  },
+  "데스몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "deathmon"
+  },
+  "데크스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "death-x-mon"
+  },
+  "마왕몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "demon"
+  },
+  "데크스도루고라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "death-x-dorugoramon"
+  },
+  "다이노렉스몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "dinorexmon"
+  },
+  "다이노타이거몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "dinotigermon"
+  },
+  "디아블로몬": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "diablomon"
+  },
+  "디아나몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "dianamon"
+  },
+  "청룡몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "qinglongmon"
+  },
+  "다크드라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "darkdramon"
+  },
+  "타이런트캅테리몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "tyrantkabuterimon"
+  },
+  "타이타몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "titamon"
+  },
+  "타이거베스파몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "tigervespamon"
+  },
+  "세인트가르고몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "saintgalgomon"
+  },
+  "세라피몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "seraphimon"
+  },
+  "슬레이어드라몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "slayerdramon"
+  },
+  "슬레이프몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "sleipmon"
+  },
+  "슬래쉬엔젤몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "slashangemon"
+  },
+  "스피노몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "spinomon"
+  },
+  "스사노오몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "susanoomon"
+  },
+  "스컬맘몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "skullmammon"
+  },
+  "주작몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "zhuqiaomon"
+  },
+  "수신몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "suijinmon"
+  },
+  "지드밀레니엄몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "zeedmillenniumon"
+  },
+  "지드가루몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "zdgarurumon"
+  },
+  "점보가메몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "jumbogamemon"
+  },
+  "저스티몬: 액셀 암": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "justimon"
+  },
+  "샤카몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "shakamon"
+  },
+  "샤인그레이몬: 버스트 모드": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "shinegreymonburstmode"
+  },
+  "샤인그레이몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "shinegreymon"
+  },
+  "할배몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "jijimon"
+  },
+  "현무몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "xuanwumon"
+  },
+  "제스몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "jesmon"
+  },
+  "황금무사몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "zanbamon"
+  },
+  "샤크라몬: 무녀 모드": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "sakuyamon:mikomode"
+  },
+  "샤크라몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "sakuyamon"
+  },
+  "샤벨레오몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "saberleomon"
+  },
+  "갓드라몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "goddramon"
+  },
+  "고쿠몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "gokumon"
+  },
+  "케루비몬(악)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "cherubimon-vice"
+  },
+  "케루비몬(선)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "cherubimon"
+  },
+  "크로스몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "crossmon"
+  },
+  "크레니엄몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "craniummon"
+  },
+  "그레이스노바몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "gracenovamon"
+  },
+  "그리포몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "griffomon"
+  },
+  "그랜드로코몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "grandlocomon"
+  },
+  "그란드라큐몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "granddracumon"
+  },
+  "그랑디스쿠가몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "grandiskuwagamon"
+  },
+  "그랜쿠가몬": {
+    "attr": "free",
+    "stage": "궁극체",
+    "dir": "grankuwagamon"
+  },
+  "클라비스엔젤몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "clavisangemon"
+  },
+  "쿠즈하몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "kuzuhamon"
+  },
+  "쿼츠몬": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "quartzmon"
+  },
+  "크레스가루몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "cresgarurumon"
+  },
+  "퀸체스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "queenchessmon"
+  },
+  "킹체스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "kingchessmon"
+  },
+  "킹에테몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "kingetemon"
+  },
+  "캐논드라몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "cannondramon"
+  },
+  "기가시드라몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "gigaseadramon"
+  },
+  "간쿠몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "gankoomon"
+  },
+  "가르프몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "gulfmon"
+  },
+  "카오스몬: 발두르 암": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "chaosmonvaldurarm"
+  },
+  "카오스몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "chaosmon"
+  },
+  "카오스드라몬(X항체)": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "chaosdramon-x"
+  },
+  "카오스드라몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "chaosdramon"
+  },
+  "카오스듀크몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "chaosdukemon"
+  },
+  "가이오몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "gaioumon"
+  },
+  "오메가몬 alter-S": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "omegamon-alter-s"
+  },
+  "오메가몬(X항체)": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "omegamon-x"
+  },
+  "오메가몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "omegamon"
+  },
+  "오파니몬: 폴다운 모드": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ofanimonfalldownmode"
+  },
+  "오파니몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ofanimon"
+  },
+  "오니스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "ornismon"
+  },
+  "오그도몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "ogudomon"
+  },
+  "오류우몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ouryumon"
+  },
+  "에이션트와이즈몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "ancientwisetmon"
+  },
+  "에이션트메가테리우몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "ancientmegatheriumon"
+  },
+  "에이션트머메이몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "ancientmermaimon"
+  },
+  "에이션트볼케몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "ancientvolcamon"
+  },
+  "에이션트비트몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ancientbeatmon"
+  },
+  "에이션트트로이몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "ancienttroiamon"
+  },
+  "에이션트스핑크스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "ancientsphinkmon"
+  },
+  "에이션트그레이몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ancientgreymon"
+  },
+  "에이션트가루몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "ancientgarurumon"
+  },
+  "에이션트이리스몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ancientirismon"
+  },
+  "엘도라디몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "eldoradimon"
+  },
+  "엑자몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "examon"
+  },
+  "불카누스몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "vulcanusmon"
+  },
+  "워그레이몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "wargreymon"
+  },
+  "베놈묘티스몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "venomvamdemon"
+  },
+  "베누스몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "venusmon"
+  },
+  "발두르몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "valdurmon"
+  },
+  "발키리몬": {
+    "attr": "free",
+    "stage": "궁극체",
+    "dir": "valkyrimon"
+  },
+  "바이킹몬": {
+    "attr": "free",
+    "stage": "궁극체",
+    "dir": "vikemon"
+  },
+  "이바몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "ebemon"
+  },
+  "이지스드라몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ageisdramon"
+  },
+  "황제드라몬: 파이터 모드": {
+    "attr": "free",
+    "stage": "궁극체",
+    "dir": "imperialdramonfightermode"
+  },
+  "황제드라몬: 팔라딘 모드": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "imperialdramonpaladinmode"
+  },
+  "황제드라몬: 드래곤 모드": {
+    "attr": "free",
+    "stage": "궁극체",
+    "dir": "imperialdramondragonmode"
+  },
+  "위그드라실_7D6": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "yggdrasill7d6"
+  },
+  "알포스브이드라몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "ulforcevdramon"
+  },
+  "알파몬: 왕룡검": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "alphamon:ouryuken"
+  },
+  "알파몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "alphamon"
+  },
+  "얼티메이트브라키몬": {
+    "attr": "data",
+    "stage": "궁극체",
+    "dir": "ultimatebrakimon"
+  },
+  "아폴로몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "apollomon"
+  },
+  "아포카리몬": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "apoclymon"
+  },
+  "아누비스몬": {
+    "attr": "vaccine",
+    "stage": "궁극체",
+    "dir": "anubimon"
+  },
+  "아마게몬": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "armagemon"
+  },
+  "어벤지키드몬": {
+    "attr": "virus",
+    "stage": "궁극체",
+    "dir": "avengekidmon"
+  },
+  "배드퍼펫몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "warumonzaemon"
+  },
+  "데블시드라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "waruseadramon"
+  },
+  "와이즈몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "wisemon"
+  },
+  "워가루몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "weregarrumon"
+  },
+  "로코몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "locomon"
+  },
+  "로더레오몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "loaderleomon"
+  },
+  "레이디데블몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "ladydevimon"
+  },
+  "루미나몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "luminamon"
+  },
+  "루체몬: 폴다운 모드": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "rucemonfalldownmode"
+  },
+  "룩체스몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "rookchessmon"
+  },
+  "릴리몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "lilimon"
+  },
+  "라일라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "lilamon"
+  },
+  "라이즈그레이몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "rizegreymon"
+  },
+  "야타가라몬(2006)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "yatagaramon"
+  },
+  "퍼펫몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "monzaemon"
+  },
+  "메피스몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "mephismon"
+  },
+  "메탈콩알몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "metalmamemon"
+  },
+  "메탈팬텀몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "metalfantomon"
+  },
+  "메탈티라노몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "metaltyranomon"
+  },
+  "메탈그레이몬(백신종)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "metalgreymon-v"
+  },
+  "메탈그레이몬(바이러스종)": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "metalgreymon-web"
+  },
+  "메탈리퍼쿠가몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "metallifekuwagamon"
+  },
+  "메가로그라우몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "megalogrowmon"
+  },
+  "메가드라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "megadramon"
+  },
+  "메가시드라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "megaseadramon"
+  },
+  "메이크랙몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "meicrackmon"
+  },
+  "미히라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "mihiramon"
+  },
+  "미스티몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "mistymon"
+  },
+  "맘몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "mammon"
+  },
+  "마린데블몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "marindevimon"
+  },
+  "콩알티라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "mametyramon"
+  },
+  "콩알몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "mamemon"
+  },
+  "미이라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "mummymon"
+  },
+  "마하가오가몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "machgaogamon"
+  },
+  "마타돌몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "matadrmon"
+  },
+  "마스터티라노몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "mastertyranomon"
+  },
+  "마지라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "majiramon"
+  },
+  "마쿠라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "makuramon"
+  },
+  "인어몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "mermaimon"
+  },
+  "볼케몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "volcamon"
+  },
+  "홀리엔젤몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "holyangemon"
+  },
+  "고래몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "whamon"
+  },
+  "베츠몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "betsumon"
+  },
+  "베이더몬(X항체)": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "vademon2"
+  },
+  "베이더몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "vademon"
+  },
+  "브롯사몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "blossomon"
+  },
+  "플레어몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "flaremon"
+  },
+  "블루메라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "bluemeramon"
+  },
+  "블랙메가로그라우몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "blackmegalogrowmon"
+  },
+  "펠레스몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "phelesmon"
+  },
+  "팬텀몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "fantomon"
+  },
+  "히포그리포몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "hippogriffomon"
+  },
+  "피콜몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "picklemon"
+  },
+  "빅콩알몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "bigmamemon"
+  },
+  "비숍체스몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "bishopchessmon"
+  },
+  "히샤류우몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "hisyaryumon"
+  },
+  "펌프몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "pumpmon"
+  },
+  "팬더몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "pandamon"
+  },
+  "화이트레오몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "panjyamon"
+  },
+  "다이버몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "hangyomon"
+  },
+  "패롯몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "parrotmon"
+  },
+  "밸브몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "valvemon"
+  },
+  "바스테몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "bastemon"
+  },
+  "파지라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "pajiramon"
+  },
+  "파일드라몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "paildramon"
+  },
+  "네오데블몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "neodevimon"
+  },
+  "데이터몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "nanomon"
+  },
+  "나이트몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "knightmon"
+  },
+  "도루그레몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "doruguremon"
+  },
+  "트리케라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "triceramon"
+  },
+  "왕개굴몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "tonosamagekomon"
+  },
+  "도우몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "doumon"
+  },
+  "뿌띠몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "delumon"
+  },
+  "듀라몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "duramon"
+  },
+  "데드메라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "deathmeramon"
+  },
+  "디지타몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "digitamamon"
+  },
+  "데크스도루그레몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "death-x-doruguremon"
+  },
+  "다이노몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "dinobeemon"
+  },
+  "초핫카이몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "chohakkaimon"
+  },
+  "챠츠라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "caturamon"
+  },
+  "치린몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "tyilinmon"
+  },
+  "탱크드라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "tankdramon"
+  },
+  "드라고몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "dagomon"
+  },
+  "도사몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "taomon"
+  },
+  "다크슈퍼스타몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "darksuperstarmon"
+  },
+  "세이렌몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "sirenmon"
+  },
+  "세이버헉몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "saviorhuckmon"
+  },
+  "쥬드몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "zudomon"
+  },
+  "전갈몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "scorpiomon"
+  },
+  "스컬벌키몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "skullbaluchimon"
+  },
+  "스컬사탄몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "skullsatamon"
+  },
+  "스컬그레이몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "skullgreymon"
+  },
+  "슈퍼스타몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "superstarmon"
+  },
+  "신드라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "sinduramon"
+  },
+  "실피드몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "silphymon"
+  },
+  "쥬레이몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "jyureimon"
+  },
+  "토우몬": {
+    "attr": "free",
+    "stage": "완전체",
+    "dir": "shakkoumon"
+  },
+  "쟈가몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "jyagamon"
+  },
+  "사우자몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "shawujinmon"
+  },
+  "산티라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "sandiramon"
+  },
+  "삼장몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "sanzomon"
+  },
+  "사고몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "sagomon"
+  },
+  "손오공몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "gokuwmon"
+  },
+  "케르베로스몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "cerberumon"
+  },
+  "굼비라몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "kumbhiramon"
+  },
+  "크레세몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "crescemon"
+  },
+  "그레이드몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "grademon"
+  },
+  "아이언레오몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "grappuleomon"
+  },
+  "그라운드라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "groundramon"
+  },
+  "째리몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "giromon"
+  },
+  "캡틴후크몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "captainhookmon"
+  },
+  "캐논벌몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "cannonbeemon"
+  },
+  "캐치콩알몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "catchmamemon"
+  },
+  "키메라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "chimairamon"
+  },
+  "기가드라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "gigadramon"
+  },
+  "가루다몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "garudamon"
+  },
+  "크로우몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "karatenmon"
+  },
+  "가비지몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "gerbemon"
+  },
+  "오로치몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "orochimon"
+  },
+  "왕쿠가몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "okuwamon"
+  },
+  "엔젤우몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "angewomon"
+  },
+  "에테몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "etemon"
+  },
+  "엑스티라노몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "ex-tyranomon"
+  },
+  "에어로브이드라몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "earov-dramon"
+  },
+  "볼크드라몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "volcdoramon"
+  },
+  "윙드라몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "wingdramon"
+  },
+  "비가라몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "vikaralamon"
+  },
+  "묘티스몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "vamdemon"
+  },
+  "바지라몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "vajramon"
+  },
+  "인펠몬": {
+    "attr": "none",
+    "stage": "완전체",
+    "dir": "infermon"
+  },
+  "인다라몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "indaramon"
+  },
+  "운석몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "insekimon"
+  },
+  "안드로몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "andromon"
+  },
+  "안티라몬(데바)": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "andiramon"
+  },
+  "아라크네몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "archnemon"
+  },
+  "스콜피오몬(X항체)": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "anomalocarimon-x"
+  },
+  "스콜피오몬": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "anomalocarimon"
+  },
+  "아트라캅테리몬(레드)": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "atlurkabuterimon"
+  },
+  "아트라캅테리몬(청)": {
+    "attr": "data",
+    "stage": "완전체",
+    "dir": "atlurkabuterimon-blue"
+  },
+  "아스타몬": {
+    "attr": "virus",
+    "stage": "완전체",
+    "dir": "astamon"
+  },
+  "아수라몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "asuramon"
+  },
+  "아이기오투스몬: 블루": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "aegiochusmon:blue"
+  },
+  "아이기오투스몬: 다크": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "aegiochusmon:dark"
+  },
+  "아이기오투스몬: 그린": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "aegiochusmon:green"
+  },
+  "아이기오투스몬": {
+    "attr": "vaccine",
+    "stage": "완전체",
+    "dir": "aegiochusmon"
+  },
+  "말벌몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "waspmon"
+  },
+  "레파몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "reppamon"
+  },
+  "레드베지몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "redvegimon"
+  },
+  "레키스몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "lekismon"
+  },
+  "레오몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "leomon"
+  },
+  "레어몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "raremon"
+  },
+  "루카몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "rukamon"
+  },
+  "카우보이몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "revolmon"
+  },
+  "라프타드라몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "raptordramon"
+  },
+  "라이아몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "liamon"
+  },
+  "요우코몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "youkomon"
+  },
+  "유니몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "yunimon"
+  },
+  "프리지몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "yukidarumon"
+  },
+  "모노크로몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "monochromon"
+  },
+  "모털몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "mojyamon"
+  },
+  "메라몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "meramon"
+  },
+  "메카노몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "mechanorimon"
+  },
+  "무사몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "musyamon"
+  },
+  "미노타몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "minotaurmon"
+  },
+  "미케몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "mikemon"
+  },
+  "포큐파몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "porcupamon"
+  },
+  "펙크몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "peckmon"
+  },
+  "베지몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "vegimon"
+  },
+  "블레이드쿠가몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "bladekuwagamon"
+  },
+  "화염리자몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "flarelizamon"
+  },
+  "브링프몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "blimpmon"
+  },
+  "블랙가트몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "blacktailmon"
+  },
+  "블랙그라우몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "blackgrowmon"
+  },
+  "화이트스카몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "platinasukamon"
+  },
+  "플라이몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "flymon"
+  },
+  "후크몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "hookmon"
+  },
+  "부기몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "boogiemon"
+  },
+  "푸가몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "fugamon"
+  },
+  "브이드라몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "v-dramon"
+  },
+  "팡그몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "fangmon"
+  },
+  "파이라몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "firamon"
+  },
+  "블루우가몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "hyougamon"
+  },
+  "피터몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "petermon"
+  },
+  "에이프몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "hanumon"
+  },
+  "고스몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "bakemon"
+  },
+  "바오헉몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "baohuckmon"
+  },
+  "버드라몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "birdramon"
+  },
+  "워매몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "numemon"
+  },
+  "수염두리몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "nisedrimogemon"
+  },
+  "모야몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "nanimon"
+  },
+  "나이트체스몬(백)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "knightchessmon"
+  },
+  "나이트체스몬(흑)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "knightchessmon_black"
+  },
+  "도루가몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "dorugamon"
+  },
+  "두리몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "drimogemon"
+  },
+  "토브캐트몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "tobucatmon"
+  },
+  "도그몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "dogmon"
+  },
+  "니드몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "togemon"
+  },
+  "스파이더몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "dokugumon"
+  },
+  "도베르몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "dobermon"
+  },
+  "토타몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "tortamon"
+  },
+  "토리에몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "turuiemon"
+  },
+  "델타몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "deltamon"
+  },
+  "데블몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "devimon"
+  },
+  "데블드라몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "devidramon"
+  },
+  "데크스도루가몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "death-x-dorugamon"
+  },
+  "가트몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "tailmon"
+  },
+  "티라노몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "tyranomon"
+  },
+  "디아트리몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "diatrymon"
+  },
+  "머드프리지몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "tuchidarumon"
+  },
+  "탱크몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "tankmon"
+  },
+  "다르크몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "darcmon"
+  },
+  "태스크몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "tuskmon"
+  },
+  "타겟몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "targetmon"
+  },
+  "다크리자몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "darklizamon"
+  },
+  "다크티라노몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "darktyranomon"
+  },
+  "소서리몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "sorcerimon"
+  },
+  "소울몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "soulmon"
+  },
+  "블랙버드라몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "saberdramon"
+  },
+  "즈바이거몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "zubaeagermon"
+  },
+  "스나이몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "snimon"
+  },
+  "스트라이크드라몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "strikedramon"
+  },
+  "스팅몬": {
+    "attr": "free",
+    "stage": "성숙기",
+    "dir": "stingmon"
+  },
+  "스타몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "starmon"
+  },
+  "스카몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "scumon"
+  },
+  "정글모쟈몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "junglemojamon"
+  },
+  "얼룩유니몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "shimaunimon"
+  },
+  "시스터몬 느와르": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "sistermonnoir"
+  },
+  "지오그레이몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "geogreymon"
+  },
+  "쉘몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "shellmon"
+  },
+  "셰이드몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "shademon"
+  },
+  "실즈드라몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "sealsdramon"
+  },
+  "실리컨몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "coelamon"
+  },
+  "시드라몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "seadramon"
+  },
+  "시사몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "siesamon"
+  },
+  "해바라기몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "sunflowmon"
+  },
+  "번개콩알몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "thunderballmon"
+  },
+  "상굴몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "sangloupmon"
+  },
+  "그린베지몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "zassoumon"
+  },
+  "사이크로몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "cyclomon"
+  },
+  "고릴라몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "gorimon"
+  },
+  "고키몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "gokimon"
+  },
+  "록몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "golemon"
+  },
+  "꼬끼몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "cockatrimon"
+  },
+  "코가몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "kougamon"
+  },
+  "코어드라몬(녹)": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "coredramon_g"
+  },
+  "코어드라몬(청)": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "coredramon_b"
+  },
+  "켄터스몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "centalmon"
+  },
+  "옐로우워매몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "geremon"
+  },
+  "연체몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "gesomon"
+  },
+  "쿠가몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "kuwagamon"
+  },
+  "타임몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "clockmon"
+  },
+  "그레이몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "greymon-first"
+  },
+  "구루몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "gururumon"
+  },
+  "그리즈몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "gryzmon"
+  },
+  "크리사리몬": {
+    "attr": "none",
+    "stage": "성숙기",
+    "dir": "chrysalimon"
+  },
+  "그라우몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "growmon"
+  },
+  "긴류우몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "ginryumon"
+  },
+  "긴카쿠몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "ginkakumon"
+  },
+  "킨카쿠몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "kinkakumon"
+  },
+  "구미호몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "kyubimon"
+  },
+  "키위몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "kiwimon"
+  },
+  "가와파몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "gawappamon"
+  },
+  "가루몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "garurumon"
+  },
+  "가르고몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "galgomon"
+  },
+  "달팽이워매몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "karatukinumemon"
+  },
+  "캅테리몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "kabuterimon"
+  },
+  "가드로몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "guardromon"
+  },
+  "가오가몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "gaogamon"
+  },
+  "오메카몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "omekamon"
+  },
+  "옥토몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "octmon"
+  },
+  "우가몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "orgemon"
+  },
+  "엔젤몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "angemon"
+  },
+  "가재드라몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "ebidramon"
+  },
+  "엑스브이몬": {
+    "attr": "free",
+    "stage": "성숙기",
+    "dir": "xv-mon"
+  },
+  "에어드라몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "airdramon"
+  },
+  "우드몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "woodmon"
+  },
+  "웬디몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "wendimon"
+  },
+  "위치몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "witchmon"
+  },
+  "위자몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "wizarmon"
+  },
+  "이블몬": {
+    "attr": "virus",
+    "stage": "성숙기",
+    "dir": "evilmon"
+  },
+  "원뿔몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "ikkakumon"
+  },
+  "닌자몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "igamon"
+  },
+  "황금아르마몬": {
+    "attr": "free",
+    "stage": "성숙기",
+    "dir": "ankylomon"
+  },
+  "아큐라몬": {
+    "attr": "free",
+    "stage": "성숙기",
+    "dir": "aquilamon"
+  },
+  "레드꼬끼몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "akatorimon"
+  },
+  "아이스몬": {
+    "attr": "data",
+    "stage": "성숙기",
+    "dir": "icemon"
+  },
+  "아이기오몬": {
+    "attr": "vaccine",
+    "stage": "성숙기",
+    "dir": "aegiomon"
+  },
+  "추추몬": {
+    "attr": "free",
+    "stage": "성장기",
+    "dir": "wormmon"
+  },
+  "로프몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "lopmon"
+  },
+  "레나몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "renamon"
+  },
+  "레오르몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "liollmon"
+  },
+  "루나몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "lunamon"
+  },
+  "루체몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "lucemon"
+  },
+  "류우다몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "ryudamon"
+  },
+  "라라몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "lalamon"
+  },
+  "래브라몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "labramon"
+  },
+  "스노우아구몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "yukiagumon"
+  },
+  "모노드라몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "monodramon"
+  },
+  "레드펭귄몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "muchomon"
+  },
+  "머슈몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "mushmon"
+  },
+  "보코몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "bokomon"
+  },
+  "폰체스몬(백)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "paunchessmon-white"
+  },
+  "폰체스몬(흑)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "paunchessmon"
+  },
+  "호크몬": {
+    "attr": "free",
+    "stage": "성장기",
+    "dir": "hawkmon"
+  },
+  "펭귄몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "penmon"
+  },
+  "베타몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "betamon"
+  },
+  "베어몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "bearmon"
+  },
+  "플롯트몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "plotmon"
+  },
+  "플로라몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "floramon"
+  },
+  "브이몬": {
+    "attr": "free",
+    "stage": "성장기",
+    "dir": "v-mon"
+  },
+  "아기벌몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "funbeemon"
+  },
+  "팔코몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "falcomon"
+  },
+  "파스코몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "phascomon"
+  },
+  "피요몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "piyomon"
+  },
+  "피코데블몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "picodevimon"
+  },
+  "팔몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "palmon"
+  },
+  "헉몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "huckmon"
+  },
+  "파닥몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "patamon"
+  },
+  "톱니몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "hagurumon"
+  },
+  "테이파몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "bakumon"
+  },
+  "네몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "neamon"
+  },
+  "가짜 아구몬 박사": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "niseagumonhakase"
+  },
+  "도루몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "dorumon"
+  },
+  "드라코몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "dracomon"
+  },
+  "드라큐몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "dracumon"
+  },
+  "토이아구몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "toyagumon"
+  },
+  "텐타몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "tentomon"
+  },
+  "테리어몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "terriermon"
+  },
+  "팅커몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "tinkermon"
+  },
+  "츠카이몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "tukaimon"
+  },
+  "츄몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "tyumon"
+  },
+  "황금톱니몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "solarmon"
+  },
+  "즈바몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "zubamon"
+  },
+  "스노우고부리몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "snowgoburimon"
+  },
+  "스윔몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "swimmon"
+  },
+  "샤코몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "shakomon"
+  },
+  "원시고부리몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "shamamon"
+  },
+  "시스터몬 블랑": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "sistermonblanc"
+  },
+  "사이케몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "psychemon"
+  },
+  "코로나몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "coronamon"
+  },
+  "코만드라몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "commandramon"
+  },
+  "쉬라몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "gomamon"
+  },
+  "고부리몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "goburimon"
+  },
+  "코테몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "kotemon"
+  },
+  "울퉁몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "gottsumon"
+  },
+  "코쿠와몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "kokuwamon"
+  },
+  "코캅테리몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "kokabuterimon"
+  },
+  "코에몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "koemon"
+  },
+  "케라몬": {
+    "attr": "none",
+    "stage": "성장기",
+    "dir": "keramon"
+  },
+  "쿠네몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "kunemon"
+  },
+  "쿠다몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "kudamon"
+  },
+  "길몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "guilmon"
+  },
+  "캔들몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "candmon"
+  },
+  "기자몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "gizamon"
+  },
+  "카메몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "kamemon"
+  },
+  "파피몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "gabumon"
+  },
+  "크랩몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "ganimon"
+  },
+  "가지몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "gazimon"
+  },
+  "가오몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "gaomon"
+  },
+  "올챙몬(레드)": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "otamamon-red"
+  },
+  "올챙몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "otamamon"
+  },
+  "에렉몬(보라)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "elecmon-violet"
+  },
+  "에렉몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "elecmon"
+  },
+  "에비버거몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "ebiburgamon"
+  },
+  "임프몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "impmon"
+  },
+  "알라우몬": {
+    "attr": "data",
+    "stage": "성장기",
+    "dir": "alraumon"
+  },
+  "아르마몬": {
+    "attr": "free",
+    "stage": "성장기",
+    "dir": "armadimon"
+  },
+  "알카디몬": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "arkadimon"
+  },
+  "아구몬 박사": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "agumonhakase"
+  },
+  "아구몬(흑)": {
+    "attr": "virus",
+    "stage": "성장기",
+    "dir": "agumon-black"
+  },
+  "아구몬(2006)": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "agumon-2006"
+  },
+  "아구몬": {
+    "attr": "vaccine",
+    "stage": "성장기",
+    "dir": "agumon"
+  },
+  "와냐몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "wanyamon"
+  },
+  "모티몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "mochimon"
+  },
+  "데롱몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "minomon"
+  },
+  "미사일몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "missimon"
+  },
+  "포로몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "poromon"
+  },
+  "포코몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "pokomon"
+  },
+  "베이비드몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "babydmon"
+  },
+  "푸로로몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "puroromon"
+  },
+  "프리몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "frimon"
+  },
+  "푸치메라몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "petimeramon"
+  },
+  "둥실몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "pukamon"
+  },
+  "어니몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "pyocomon"
+  },
+  "피나몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "pinamon"
+  },
+  "버드몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "budmon"
+  },
+  "퍼그몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "pagumon"
+  },
+  "야옹몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "nyaromon"
+  },
+  "도리몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "dorimon"
+  },
+  "토코몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "tokomon"
+  },
+  "츠메몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "tsumemon"
+  },
+  "뿔몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "tunomon"
+  },
+  "초코몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "chocomon"
+  },
+  "챠프몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "chapmon"
+  },
+  "꼬마몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "chibimon"
+  },
+  "시드몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "tanemon"
+  },
+  "샤오몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "xiaomon"
+  },
+  "사쿳토몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "sakuttomon"
+  },
+  "코로몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "koromon"
+  },
+  "구미몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "gummymon"
+  },
+  "쿄쿄몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "kyokyomon"
+  },
+  "큐피몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "cupimon"
+  },
+  "캬로몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "kyaromon"
+  },
+  "기기몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "gigimon"
+  },
+  "카프리몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "capromon"
+  },
+  "우파몬": {
+    "attr": "none",
+    "stage": "유년기 II",
+    "dir": "upamon"
+  },
+  "레레몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "relemon"
+  },
+  "잎새몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "leafmon"
+  },
+  "유라몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "yuramon"
+  },
+  "하얀몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "yukimibotamon"
+  },
+  "모크몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "mokumon"
+  },
+  "포요몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "poyomon"
+  },
+  "봄몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "bommon"
+  },
+  "포포몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "popomon"
+  },
+  "깜몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "botamon"
+  },
+  "푸와몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "puwamon"
+  },
+  "푸르르몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "pururumon"
+  },
+  "푸푸몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "pupumon"
+  },
+  "후후몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "fufumon"
+  },
+  "푸니몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "punimon"
+  },
+  "푸티몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "puttimon"
+  },
+  "쁘띠몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "petitmon"
+  },
+  "피치몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "pitchmon"
+  },
+  "파후몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "pafumon"
+  },
+  "뽀글몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "bubbmon"
+  },
+  "파오몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "paomon"
+  },
+  "새싹몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "nyokimon"
+  },
+  "도도몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "dodomon"
+  },
+  "츠브몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "tsubumon"
+  },
+  "뽈뽈몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "choromon"
+  },
+  "치코몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "chicomon"
+  },
+  "제리몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "zerimon"
+  },
+  "얍실몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "zurumon"
+  },
+  "쟈리몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "jyarimon"
+  },
+  "사쿠몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "sakumon"
+  },
+  "코코몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "cocomon"
+  },
+  "쿠라몬": {
+    "attr": "none",
+    "stage": "유년기 I",
+    "dir": "kuramon"
+  }
+}

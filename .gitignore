@@ -1,0 +1,6 @@
+# Dependency & temp folders
+node_modules/
+.netlify/
+dist/
+배포용/
+*.log
