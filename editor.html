@@ -1896,7 +1896,7 @@
           <div class="condition-status-group" id="condition-status-selector">
             <label class="status-btn-opt status-opt-known active" data-status="known" title="모든 진화 조건 공개 (전체 컬러)">
               <input type="radio" name="condition-status" value="known" checked>
-              <span>🌈 조건 공개</span>
+              <span>조건 공개</span>
             </label>
             <label class="status-btn-opt status-opt-partial" data-status="partial" title="A➔C 등 일부 루트만 공개 (사선 회색/컬러 반반 분할)">
               <input type="radio" name="condition-status" value="partial">
@@ -1917,7 +1917,7 @@
             <span id="req-digi-name">아구몬</span> 달성 조건
           </h3>
           <label class="editor-only" style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none; font-size:0.75rem; color:#A78BFA; background:rgba(167,139,250,0.12); border:1px solid rgba(167,139,250,0.3); padding:3px 8px; border-radius:6px;" title="체크 시 다른 DiM의 동일 디지몬과 조건을 연동하지 않고 이 디지몬만의 고유 진화조건으로 분리합니다.">
-            <input type="checkbox" id="edit-independent-req" style="width:13px; height:13px; accent-color:#8B5CF6; cursor:pointer;">
+            <input type="checkbox" id="edit-independent-req" checked style="width:13px; height:13px; accent-color:#8B5CF6; cursor:pointer;">
             <span>DiM 고유 조건 분리</span>
           </label>
         </div>
@@ -6300,8 +6300,10 @@
           d.attr = sourceDigi.attr;
           d.stage = sourceDigi.stage;
           d.img = sourceDigi.img;
-          // source나 대상 디지몬 중 어느 하나라도 DiM 고유 조건 분리(independentReq)가 켜져 있으면 조건 동기화 건너뜀
-          if (!sourceDigi.independentReq && !d.independentReq) {
+          // source나 대상 디지몬 중 어느 하나라도 DiM 고유 조건 분리(independentReq !== false)가 켜져 있으면 조건 동기화 건너뜀 (기본값: true 분리)
+          const isIndepSource = (sourceDigi.independentReq !== false);
+          const isIndepTarget = (d.independentReq !== false);
+          if (!isIndepSource && !isIndepTarget) {
             if (sourceDigi.req) {
               const newReq = JSON.parse(JSON.stringify(sourceDigi.req));
               if (d.req && d.req.jogress !== undefined) {
@@ -6335,7 +6337,7 @@
       if (existing) {
         noticeEl.className = "ref-badge ref-badge-sync";
         noticeEl.style.display = "block";
-        const syncDesc = (digi.independentReq || existing.independentReq) 
+        const syncDesc = (digi.independentReq !== false || existing.independentReq !== false) 
           ? "기본 정보(속성/이미지) 공유 중 (진화조건은 DiM별 독립)"
           : "전체 정보(속성/이미지/진화조건) 공유 중";
         noticeEl.innerHTML = `<strong>동일 디지몬 감지:</strong> 기존 '${existing.name}'와 ${syncDesc}`;
@@ -6364,14 +6366,14 @@
       const cleanName = (newName || "").trim();
       if (!cleanName) return;
 
-      // 1순위: 기존 프로젝트 내 동일 이름 디지몬 탐색 (속성/세대/이미지/진화조건 공유)
+      // 1순위: 기존 프로젝트 내 동일 이름 디지몬 탐색 (속성/세대/이미지 공유, 진화조건은 둘 다 해제한 경우에만 연동)
       // 주의: 소속 DiM(dim)과 출신 알(digitama)은 현재 디지몬의 소속을 유지해야 하므로 덮어쓰지 않음!
       const existing = findExistingDigimonByName(cleanName, digiId);
       if (existing) {
         digi.attr = existing.attr;
         if (existing.stage) digi.stage = existing.stage;
         if (existing.img) digi.img = existing.img;
-        if (!digi.independentReq && !existing.independentReq && existing.req) {
+        if (digi.independentReq === false && existing.independentReq === false && existing.req) {
           digi.req = JSON.parse(JSON.stringify(existing.req));
         }
         syncSameNameDigimons(digi);
@@ -8059,7 +8061,7 @@
       const reqNameEl = document.getElementById("req-digi-name");
       if (reqNameEl) reqNameEl.textContent = digi.name;
       const elIndepReq = document.getElementById("edit-independent-req");
-      if (elIndepReq) elIndepReq.checked = !!digi.independentReq;
+      if (elIndepReq) elIndepReq.checked = (digi.independentReq !== false);
 
       // 조건 클립보드 표시 갱신
       updateClipIndicator();
@@ -8679,6 +8681,7 @@
           img: existing.img || "sprites/Agumon.gif",
           dim: currentDim,
           order: 999,
+          independentReq: true,
           req: existing.req ? JSON.parse(JSON.stringify(existing.req)) : getDefaultReqForStage(existing.stage || "성숙기")
         };
 
@@ -8687,7 +8690,7 @@
         updateDimFilterOptions();
         renderTree();
         updateSidebar();
-        showToast(`기존 등록된 '${existing.name}'의 정보(속성/세대/이미지/진화조건)를 공유하여 [${currentDim}] DiM에 등록했습니다!`, "success");
+        showToast(`기존 등록된 '${existing.name}'의 기본 정보(속성/세대/이미지)를 가져와 [${currentDim}] DiM에 등록했습니다! (진화조건은 DiM 고유 조건으로 분리)`, "success");
         return;
       }
 
@@ -8704,6 +8707,7 @@
         img: "sprites/Agumon.gif",
         dim: currentDim,
         order: 999,
+        independentReq: true,
         req: getDefaultReqForStage(initialStage)
       };
 
