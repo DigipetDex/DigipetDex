@@ -14173,5 +14173,6 @@ window.DIGIPET_DEFAULT_DATA = {
     "홀리 윙(파닥몬/럭스몬)": {
       "location": "제로 터미널"
     }
-  }
+  },
+  "gasWebhookUrl": "https://script.google.com/macros/s/AKfycbx1XUIl4kVde4m0G1RhLNiNAloJIR7BVpfvqnSV2Eah8scuEA79Bg3fKYTnqEOttjji/exec"
 };
