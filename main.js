@@ -55,7 +55,7 @@ ipcMain.handle('save-project-data', async (event, projectJson) => {
   }
 });
 
-// IPC 핸들러 2: Netlify 원클릭 배포 실행
+// IPC 핸들러 2: GitHub Pages 원클릭 배포 실행
 ipcMain.handle('deploy-to-netlify', async (event) => {
   return new Promise((resolve) => {
     // 1단계: make_deploy.py 패키징
@@ -64,8 +64,9 @@ ipcMain.handle('deploy-to-netlify', async (event) => {
         return resolve({ success: false, step: 'packaging', error: stderr1 || err1.message });
       }
 
-      // 2단계: netlify.cmd deploy --prod --dir=dist 실행
-      exec('netlify.cmd deploy --prod --dir=dist', { cwd: __dirname }, (err2, stdout2, stderr2) => {
+      // 2단계: git add, commit, push
+      const gitCmd = 'git add -A && (git diff-index --quiet HEAD -- || git commit -m "Auto deploy update") && git push origin main';
+      exec(gitCmd, { cwd: __dirname }, (err2, stdout2, stderr2) => {
         if (err2) {
           return resolve({ success: false, step: 'deploy', error: stderr2 || err2.message });
         }

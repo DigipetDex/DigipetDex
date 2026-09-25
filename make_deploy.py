@@ -22,12 +22,12 @@ def main():
             shutil.rmtree(d, ignore_errors=True)
         os.makedirs(d, exist_ok=True)
 
-    # 1. dist 및 배포용 폴더에 editor.html을 index.html로 복사 (항상 최신 UI 템플릿 유지)
+    # 1. 루트 index.html 및 dist, 배포용 폴더에 editor.html을 index.html로 복사 (항상 최신 UI 템플릿 유지)
     editor_path = os.path.join(base_dir, "editor.html")
+    shutil.copy2(editor_path, os.path.join(base_dir, "index.html"))
     shutil.copy2(editor_path, os.path.join(dist_dir, "index.html"))
     shutil.copy2(editor_path, os.path.join(legacy_dist, "index.html"))
-    print("[1/5] dist/index.html 생성 완료 (최신 뷰어 템플릿)")
-    print("[1/5] 배포용/index.html 생성 완료 (최신 뷰어 템플릿)")
+    print("[1/5] index.html (루트 및 dist) 생성 완료 (최신 뷰어 템플릿)")
 
     # 2. digimon_db.js 및 project_data.js 복사 (데이터 완벽 분리!)
     for f in ["digimon_db.js", "project_data.js"]:
