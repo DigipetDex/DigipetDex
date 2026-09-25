@@ -1596,7 +1596,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.2</span> <span id="live-sync-indicator" style="display:none; font-size:0.68rem; color:#4ADE80; font-weight:600; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle;" title="구글 시트의 최신 진화 조건이 실시간으로 동기화되었습니다.">⚡ 라이브</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.4</span> <span id="live-sync-indicator" style="display:none; font-size:0.68rem; color:#4ADE80; font-weight:600; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle;" title="구글 시트의 최신 진화 조건이 실시간으로 동기화되었습니다.">⚡ 라이브</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -2447,7 +2447,7 @@
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.2 (09.26 05:10)";
+    const APP_VERSION = "v1.3.4 (09.26 05:22)";
 
     // 브라우저 및 Electron 앱 공용 비동기 입력 대화상자 (도감 검색 및 연동 미리보기 지원)
     function showCustomPrompt(title, desc, defaultValue = "", placeholder = "", datalistId = "") {
@@ -10381,13 +10381,16 @@
 
       try {
         const conditions = [];
+
+        // 1. 모든 진화선 수집
         (project.evolutions || []).forEach(ev => {
           const fromD = project.digimons[ev.from];
           const toD = project.digimons[ev.to];
           if (!toD) return;
           const req = getEvoRequirements(ev, toD);
+          const dimVal = (toD.dim || (fromD ? fromD.dim : "") || "").split(",")[0].trim();
           conditions.push({
-            dim: (toD.dim || (fromD ? fromD.dim : "") || "").split(",")[0].trim(),
+            dim: dimVal,
             from: fromD ? fromD.name : "",
             to: toD.name,
             attr: toD.attr || "",
@@ -10400,6 +10403,29 @@
             item: req.item || "",
             note: req.note || ""
           });
+        });
+
+        // 2. 디지타마(알) 및 진화 도착점으로 등록되지 않은 최초 세대 디지몬들의 속성 수집 (진화선 대상 외 디지몬)
+        const evolvedToIds = new Set((project.evolutions || []).map(ev => ev.to));
+        Object.values(project.digimons || {}).forEach(d => {
+          if (!d || !d.name) return;
+          if (d.stage === "디지타마" || !evolvedToIds.has(d.id)) {
+            const dimVal = (d.dim || "").split(",")[0].trim();
+            conditions.push({
+              dim: dimVal,
+              from: "(시작/알)",
+              to: d.name,
+              attr: d.attr || "",
+              time: (d.req && d.req.time) ? d.req.time : "-",
+              vital: "",
+              pp: "",
+              battle: "",
+              winRate: "",
+              jogress: "",
+              item: "",
+              note: ""
+            });
+          }
         });
 
         await fetch(gasUrl, {
@@ -10441,33 +10467,41 @@
             if (!c.to) return;
             const toNameLower = c.to.trim().toLowerCase();
             const fromNameLower = (c.from || "").trim().toLowerCase();
+            const cDim = (c.dim || "").trim();
 
             // 1. 진화선(evo) 매칭 및 오버라이드
-            let matchedEvos = (project.evolutions || []).filter(ev => {
-              const tD = project.digimons[ev.to];
-              const fD = project.digimons[ev.from];
-              if (!tD || tD.name.trim().toLowerCase() !== toNameLower) return false;
-              if (fromNameLower && fD) {
-                return fD.name.trim().toLowerCase() === fromNameLower;
-              }
-              return true;
-            });
+            // DiM이 지정된 경우 해당 DiM에 속한 디지몬 쌍의 진화선만 매칭하여 타 DiM 덮어쓰기 방지
+            if (fromNameLower !== "(시작/알)" && fromNameLower !== "(디지타마)") {
+              let matchedEvos = (project.evolutions || []).filter(ev => {
+                const tD = project.digimons[ev.to];
+                const fD = project.digimons[ev.from];
+                if (!tD || tD.name.trim().toLowerCase() !== toNameLower) return false;
+                if (fromNameLower && fD && fD.name.trim().toLowerCase() !== fromNameLower) return false;
+                if (cDim) {
+                  const dimMatch = isDigimonVisibleInDim(tD, cDim) || (fD && isDigimonVisibleInDim(fD, cDim));
+                  if (!dimMatch) return false;
+                }
+                return true;
+              });
 
-            matchedEvos.forEach(ev => {
-              if (c.time !== undefined && c.time !== "") ev.time = c.time;
-              if (c.vital !== undefined && c.vital !== "") ev.vital = c.vital;
-              if (c.pp !== undefined && c.pp !== "") ev.pp = c.pp;
-              if (c.battle !== undefined && c.battle !== "") ev.battle = c.battle;
-              if (c.winRate !== undefined && c.winRate !== "") ev.winRate = c.winRate;
-              if (c.jogress !== undefined) ev.jogress = c.jogress;
-              if (c.item !== undefined) ev.item = c.item;
-              if (c.note !== undefined) ev.note = c.note;
-              updatedCount++;
-            });
+              matchedEvos.forEach(ev => {
+                if (c.time !== undefined && c.time !== "") ev.time = c.time;
+                if (c.vital !== undefined && c.vital !== "") ev.vital = c.vital;
+                if (c.pp !== undefined && c.pp !== "") ev.pp = c.pp;
+                if (c.battle !== undefined && c.battle !== "") ev.battle = c.battle;
+                if (c.winRate !== undefined && c.winRate !== "") ev.winRate = c.winRate;
+                if (c.jogress !== undefined) ev.jogress = c.jogress;
+                if (c.item !== undefined) ev.item = c.item;
+                if (c.note !== undefined) ev.note = c.note;
+                updatedCount++;
+              });
+            }
 
             // 2. 디지몬 기본 조건(req) 및 속성(attr) 매칭 및 오버라이드
             Object.values(project.digimons || {}).forEach(d => {
               if (d.name.trim().toLowerCase() === toNameLower) {
+                if (cDim && !isDigimonVisibleInDim(d, cDim)) return;
+
                 if (c.attr && c.attr.trim()) {
                   const cleanAttr = c.attr.trim().toLowerCase();
                   if (d.attr !== cleanAttr) {
@@ -10476,20 +10510,21 @@
                   }
                 }
                 if (!d.req) d.req = getDefaultReqForStage(d.stage);
-                if (c.time !== undefined && c.time !== "") d.req.time = c.time;
+                if (c.time !== undefined && c.time !== "" && c.time !== "-") d.req.time = c.time;
                 if (c.vital !== undefined && c.vital !== "") d.req.vital = c.vital;
                 if (c.pp !== undefined && c.pp !== "") d.req.pp = c.pp;
                 if (c.battle !== undefined && c.battle !== "") d.req.battle = c.battle;
                 if (c.winRate !== undefined && c.winRate !== "") d.req.winRate = c.winRate;
-                if (c.jogress !== undefined) d.req.jogress = c.jogress;
-                if (c.item !== undefined) d.req.item = c.item;
-                if (c.note !== undefined) d.req.note = c.note;
+                if (c.jogress !== undefined && c.jogress !== "") d.req.jogress = c.jogress;
+                if (c.item !== undefined && c.item !== "") d.req.item = c.item;
+                if (c.note !== undefined && c.note !== "") d.req.note = c.note;
               }
             });
           });
 
           if (updatedCount > 0) {
             renderTree();
+            drawConnections();
             if (selectedDigiId) updateSidebar();
 
             const indEl = document.getElementById("live-sync-indicator");

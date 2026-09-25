@@ -201,27 +201,51 @@ function doGet(e) {
       }
 
       var lastR = condSheet.getLastRow();
-      var lastC = CONDITION_HEADERS.length;
-      var cValues = condSheet.getRange(2, 1, lastR - 1, lastC).getValues();
+      var lastC = condSheet.getLastColumn();
+      var allValues = condSheet.getRange(1, 1, lastR, lastC).getValues();
+      var headerRow = allValues[0];
+
+      // 헤더 열 위치 동적 맵핑 (속성 컬럼 추가 전후 호환 지원)
+      var colMap = {};
+      for (var hi = 0; hi < headerRow.length; hi++) {
+        colMap[String(headerRow[hi]).trim()] = hi;
+      }
+
+      var dimIdx = colMap["DiM"] !== undefined ? colMap["DiM"] : 0;
+      var fromIdx = colMap["출발 디지몬"] !== undefined ? colMap["출발 디지몬"] : 1;
+      var toIdx = colMap["진화 디지몬"] !== undefined ? colMap["진화 디지몬"] : 2;
+      var attrIdx = colMap["속성"];
+      var timeIdx = colMap["진화 시간"] !== undefined ? colMap["진화 시간"] : (attrIdx !== undefined ? 4 : 3);
+      var vitalIdx = colMap["필요 바이탈"] !== undefined ? colMap["필요 바이탈"] : (attrIdx !== undefined ? 5 : 4);
+      var ppIdx = colMap["필요 PP"] !== undefined ? colMap["필요 PP"] : (attrIdx !== undefined ? 6 : 5);
+      var battleIdx = colMap["배틀 횟수"] !== undefined ? colMap["배틀 횟수"] : (attrIdx !== undefined ? 7 : 6);
+      var winRateIdx = colMap["필요 승률(%)"] !== undefined ? colMap["필요 승률(%)"] : (attrIdx !== undefined ? 8 : 7);
+      var jogressIdx = colMap["조그레스 파트너"] !== undefined ? colMap["조그레스 파트너"] : (attrIdx !== undefined ? 9 : 8);
+      var itemIdx = colMap["필요 아이템"] !== undefined ? colMap["필요 아이템"] : (attrIdx !== undefined ? 10 : 9);
+      var noteIdx = colMap["비고/메모"] !== undefined ? colMap["비고/메모"] : (attrIdx !== undefined ? 11 : 10);
+      var updatedIdx = colMap["최종 갱신일시"] !== undefined ? colMap["최종 갱신일시"] : (attrIdx !== undefined ? 12 : 11);
 
       var condList = [];
-      for (var ci = 0; ci < cValues.length; ci++) {
-        var cr = cValues[ci];
-        if (!cr[1] && !cr[2]) continue;
+      for (var ci = 1; ci < allValues.length; ci++) {
+        var cr = allValues[ci];
+        var fromVal = fromIdx !== undefined ? String(cr[fromIdx] || "").trim() : "";
+        var toVal = toIdx !== undefined ? String(cr[toIdx] || "").trim() : "";
+        if (!fromVal && !toVal) continue;
+
         condList.push({
-          dim: cr[0],
-          from: cr[1],
-          to: cr[2],
-          attr: cr[3],
-          time: cr[4],
-          vital: cr[5],
-          pp: cr[6],
-          battle: cr[7],
-          winRate: cr[8],
-          jogress: cr[9],
-          item: cr[10],
-          note: cr[11],
-          updatedAt: cr[12]
+          dim: dimIdx !== undefined ? cr[dimIdx] : "",
+          from: fromVal,
+          to: toVal,
+          attr: attrIdx !== undefined ? cr[attrIdx] : "",
+          time: timeIdx !== undefined ? cr[timeIdx] : "",
+          vital: vitalIdx !== undefined ? cr[vitalIdx] : "",
+          pp: ppIdx !== undefined ? cr[ppIdx] : "",
+          battle: battleIdx !== undefined ? cr[battleIdx] : "",
+          winRate: winRateIdx !== undefined ? cr[winRateIdx] : "",
+          jogress: jogressIdx !== undefined ? cr[jogressIdx] : "",
+          item: itemIdx !== undefined ? cr[itemIdx] : "",
+          note: noteIdx !== undefined ? cr[noteIdx] : "",
+          updatedAt: updatedIdx !== undefined ? cr[updatedIdx] : ""
         });
       }
 
