@@ -2317,9 +2317,10 @@
             <button type="button" class="btn-report-time-preset" data-time="1시간" style="padding: 3px 9px; font-size: 0.75rem; background: #2B2D31; border: 1px solid #4E5058; color: #D1D5DB; border-radius: 4px; cursor: pointer;">1시간</button>
             <button type="button" class="btn-report-time-preset" data-time="24시간" style="padding: 3px 9px; font-size: 0.75rem; background: #2B2D31; border: 1px solid #4E5058; color: #D1D5DB; border-radius: 4px; cursor: pointer;">24시간</button>
             <button type="button" class="btn-report-time-preset" data-time="36시간" style="padding: 3px 9px; font-size: 0.75rem; background: #2B2D31; border: 1px solid #4E5058; color: #D1D5DB; border-radius: 4px; cursor: pointer;">36시간</button>
+            <button type="button" class="btn-report-time-preset" data-time="48시간" style="padding: 3px 9px; font-size: 0.75rem; background: #2B2D31; border: 1px solid #4E5058; color: #D1D5DB; border-radius: 4px; cursor: pointer;">48시간</button>
             <button type="button" class="btn-report-time-preset" data-time="불명" style="padding: 3px 9px; font-size: 0.75rem; background: #2B2D31; border: 1px solid #4E5058; color: #D1D5DB; border-radius: 4px; cursor: pointer;">불명</button>
           </div>
-          <input type="text" id="report-input-time" class="form-control" placeholder="예: 24시간 또는 직접 입력" style="font-size: 0.85rem; padding: 7px 10px;">
+          <input type="text" id="report-input-time" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -2328,14 +2329,14 @@
               <img src="바이탈.webp" alt="바이탈" style="width: 13px; height: 13px; object-fit: contain; image-rendering: pixelated;">
               <span>필요 바이탈</span>
             </label>
-            <input type="number" id="report-input-vital" class="form-control" placeholder="예: 2500" style="font-size: 0.85rem; padding: 7px 10px;">
+            <input type="number" id="report-input-vital" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
           </div>
           <div>
             <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
               <img src="PP.webp" alt="PP" style="width: 13px; height: 13px; object-fit: contain; image-rendering: pixelated;">
               <span>필요 PP (트로피)</span>
             </label>
-            <input type="number" id="report-input-pp" class="form-control" placeholder="예: 8" style="font-size: 0.85rem; padding: 7px 10px;">
+            <input type="number" id="report-input-pp" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
           </div>
         </div>
 
@@ -2345,14 +2346,14 @@
               <img src="배틀.webp" alt="배틀" style="width: 13px; height: 13px; object-fit: contain; image-rendering: pixelated;">
               <span>배틀 횟수</span>
             </label>
-            <input type="text" id="report-input-battle" class="form-control" placeholder="예: 10회 또는 10" style="font-size: 0.85rem; padding: 7px 10px;">
+            <input type="text" id="report-input-battle" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
           </div>
           <div>
             <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
               <img src="승률.webp" alt="승률" style="width: 13px; height: 13px; object-fit: contain; image-rendering: pixelated;">
               <span>필요 승률 (%)</span>
             </label>
-            <input type="text" id="report-input-winrate" class="form-control" placeholder="예: 70% 또는 70" style="font-size: 0.85rem; padding: 7px 10px;">
+            <input type="text" id="report-input-winrate" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
           </div>
         </div>
 
@@ -2360,25 +2361,25 @@
           <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; display: block;">
             🤝 조그레스 파트너 (선택)
           </label>
-          <input type="text" id="report-input-jogress" list="official-digimon-datalist" class="form-control" placeholder="예: 가루몬 (입력 또는 목록 검색)" style="font-size: 0.85rem; padding: 7px 10px;">
+          <input type="text" id="report-input-jogress" list="official-digimon-datalist" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
         </div>
 
         <div>
           <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; display: block;">
             📦 필요 아이템 / 캡슐 (선택)
           </label>
-          <input type="text" id="report-input-item" class="form-control" placeholder="예: 용기의 캡슐 등" style="font-size: 0.85rem; padding: 7px 10px;">
+          <input type="text" id="report-input-item" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
         </div>
 
         <div>
           <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; display: block;">
             📝 비고 / 메모 (선택)
           </label>
-          <input type="text" id="report-input-note" class="form-control" placeholder="예: 모험 모드 15스테이지 클리어 후 해금 등" style="font-size: 0.85rem; padding: 7px 10px;">
+          <input type="text" id="report-input-note" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
         </div>
 
         <div style="background: rgba(88,101,242,0.08); border: 1px solid rgba(88,101,242,0.25); border-radius: 6px; padding: 8px 12px; font-size: 0.74rem; color: #A5B4FC; line-height: 1.45;">
-          💡 제보해주신 정보는 관리자가 검토 후 진화 트리에 즉시 반영됩니다. 정확한 정보 공유에 감사드립니다!
+          💡 제보해주신 정보는 검토 후 진화 트리에 반영됩니다.
         </div>
 
       </div>
@@ -6066,7 +6067,8 @@
     "파피몬 EX",
     "감마몬",
     "길몬 EX"
-  ]
+  ],
+  "gasWebhookUrl": "https://script.google.com/macros/s/AKfycbx1XUIl4kVde4m0G1RhLNiNAloJIR7BVpfvqnSV2Eah8scuEA79Bg3fKYTnqEOttjji/exec"
 };
 
     // project_data.js가 로드되어 있으면 해당 데이터를 우선 사용, 없으면 인라인 defaultProject 사용
@@ -9873,6 +9875,7 @@
     // -------------------------------------------------------------
     // 유저 진화 조건 제보 & 관리자 1클릭 트리 연동 시스템 (Google Sheets)
     // -------------------------------------------------------------
+    const DEFAULT_GAS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbx1XUIl4kVde4m0G1RhLNiNAloJIR7BVpfvqnSV2Eah8scuEA79Bg3fKYTnqEOttjji/exec";
     let activeReportContext = null;
     let currentReportsCache = [];
 
@@ -9952,7 +9955,7 @@
     // 유저 제보 전송 핸들러
     async function submitReport() {
       if (!activeReportContext) return;
-      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || "";
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
 
       if (!gasUrl) {
         alert("구글 스프레드시트 연동 URL이 아직 설정되지 않았습니다.\n에디터 상단 [📬 제보 확인] 메뉴에서 웹 앱 URL을 먼저 등록해 주세요.");
@@ -10024,7 +10027,7 @@
       modal.style.display = "flex";
 
       const urlInput = document.getElementById("report-gas-url-input");
-      const savedUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || "";
+      const savedUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
       if (urlInput) {
         urlInput.value = savedUrl;
       }
@@ -10068,7 +10071,7 @@
 
     // 구글 시트에서 제보 목록 가져오기 (GET)
     async function fetchReportsFromGas() {
-      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || "";
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
       const listEl = document.getElementById("review-reports-list");
       const countEl = document.getElementById("review-reports-count");
       const badgeEl = document.getElementById("report-badge-count");
