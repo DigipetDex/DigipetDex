@@ -1596,7 +1596,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.3</span> <span id="live-sync-indicator" style="display:none; font-size:0.68rem; color:#4ADE80; font-weight:600; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle;" title="구글 시트의 최신 진화 조건이 실시간으로 동기화되었습니다.">⚡ 라이브</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.2</span> <span id="live-sync-indicator" style="display:none; font-size:0.68rem; color:#4ADE80; font-weight:600; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle;" title="구글 시트의 최신 진화 조건이 실시간으로 동기화되었습니다.">⚡ 라이브</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -2447,7 +2447,7 @@
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.3 (09.26 05:06)";
+    const APP_VERSION = "v1.3.2 (09.26 05:10)";
 
     // 브라우저 및 Electron 앱 공용 비동기 입력 대화상자 (도감 검색 및 연동 미리보기 지원)
     function showCustomPrompt(title, desc, defaultValue = "", placeholder = "", datalistId = "") {
@@ -10390,6 +10390,7 @@
             dim: (toD.dim || (fromD ? fromD.dim : "") || "").split(",")[0].trim(),
             from: fromD ? fromD.name : "",
             to: toD.name,
+            attr: toD.attr || "",
             time: req.time || "",
             vital: req.vital !== undefined && req.vital !== null ? req.vital : "",
             pp: req.pp !== undefined && req.pp !== null ? req.pp : "",
@@ -10411,7 +10412,7 @@
           })
         });
 
-        showToast(`🎉 총 <strong>${conditions.length}개</strong>의 진화 조건이 구글 시트에 실시간 배포되었습니다!<br>이제 뷰어에서 깃 배포 없이 즉시 최신 조건이 표시됩니다.`);
+        showToast(`🎉 총 <strong>${conditions.length}개</strong>의 진화 조건 및 속성이 구글 시트에 실시간 배포되었습니다!<br>이제 뷰어에서 깃 배포 없이 즉시 최신 조건이 표시됩니다.`);
       } catch (err) {
         console.error("실시간 조건 배포 실패:", err);
         alert("실시간 조건 배포 중 오류가 발생했습니다: " + err.message);
@@ -10464,9 +10465,16 @@
               updatedCount++;
             });
 
-            // 2. 디지몬 기본 조건(req) 매칭 및 오버라이드
+            // 2. 디지몬 기본 조건(req) 및 속성(attr) 매칭 및 오버라이드
             Object.values(project.digimons || {}).forEach(d => {
               if (d.name.trim().toLowerCase() === toNameLower) {
+                if (c.attr && c.attr.trim()) {
+                  const cleanAttr = c.attr.trim().toLowerCase();
+                  if (d.attr !== cleanAttr) {
+                    d.attr = cleanAttr;
+                    updatedCount++;
+                  }
+                }
                 if (!d.req) d.req = getDefaultReqForStage(d.stage);
                 if (c.time !== undefined && c.time !== "") d.req.time = c.time;
                 if (c.vital !== undefined && c.vital !== "") d.req.vital = c.vital;

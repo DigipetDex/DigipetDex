@@ -39,6 +39,7 @@ var CONDITION_HEADERS = [
   "DiM",
   "출발 디지몬",
   "진화 디지몬",
+  "속성",
   "진화 시간",
   "필요 바이탈",
   "필요 PP",
@@ -86,6 +87,7 @@ function doPost(e) {
           c.dim || "",
           c.from || "",
           c.to || "",
+          c.attr || "",
           c.time || "",
           c.vital !== undefined && c.vital !== null ? c.vital : "",
           c.pp !== undefined && c.pp !== null ? c.pp : "",
@@ -210,15 +212,16 @@ function doGet(e) {
           dim: cr[0],
           from: cr[1],
           to: cr[2],
-          time: cr[3],
-          vital: cr[4],
-          pp: cr[5],
-          battle: cr[6],
-          winRate: cr[7],
-          jogress: cr[8],
-          item: cr[9],
-          note: cr[10],
-          updatedAt: cr[11]
+          attr: cr[3],
+          time: cr[4],
+          vital: cr[5],
+          pp: cr[6],
+          battle: cr[7],
+          winRate: cr[8],
+          jogress: cr[9],
+          item: cr[10],
+          note: cr[11],
+          updatedAt: cr[12]
         });
       }
 
@@ -335,6 +338,7 @@ function initConditionSheetHeaders(sheet) {
     sheet.setColumnWidth(col, 130);
   }
   sheet.setColumnWidth(1, 140); // DiM
-  sheet.setColumnWidth(11, 220); // 비고
-  sheet.setColumnWidth(12, 160); // 갱신일시
+  sheet.setColumnWidth(4, 100); // 속성
+  sheet.setColumnWidth(12, 220); // 비고
+  sheet.setColumnWidth(13, 160); // 갱신일시
 }
