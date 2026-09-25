@@ -64,6 +64,29 @@ function doPost(e) {
       initSheetHeaders(sheet);
     }
 
+    // [추가] 개별 제보 삭제 액션
+    if (data.action === "delete") {
+      var rowToDel = parseInt(data.row || data.id, 10);
+      if (rowToDel > 1 && rowToDel <= sheet.getLastRow()) {
+        sheet.deleteRow(rowToDel);
+      }
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "제보가 삭제되었습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // [추가] 전체 제보 비우기 액션
+    if (data.action === "clear_all") {
+      if (sheet.getLastRow() > 1) {
+        sheet.deleteRows(2, sheet.getLastRow() - 1);
+      }
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "모든 제보가 삭제되었습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     var now = new Date();
     var timeZone = Session.getScriptTimeZone() || "Asia/Seoul";
     var formattedDate = Utilities.formatDate(now, timeZone, "yyyy-MM-dd HH:mm:ss");
@@ -106,6 +129,31 @@ function doGet(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName(SHEET_NAME);
+
+    var action = (e && e.parameter && e.parameter.action) ? e.parameter.action : "";
+
+    // [추가] GET 방식 개별 제보 삭제 지원
+    if (action === "delete") {
+      var rowToDel = parseInt(e.parameter.row || e.parameter.id, 10);
+      if (sheet && rowToDel > 1 && rowToDel <= sheet.getLastRow()) {
+        sheet.deleteRow(rowToDel);
+      }
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "제보가 삭제되었습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // [추가] GET 방식 전체 제보 비우기 지원
+    if (action === "clear_all") {
+      if (sheet && sheet.getLastRow() > 1) {
+        sheet.deleteRows(2, sheet.getLastRow() - 1);
+      }
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "모든 제보가 삭제되었습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
 
     if (!sheet || sheet.getLastRow() <= 1) {
       return ContentService.createTextOutput(JSON.stringify({

@@ -1596,7 +1596,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.1</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -2415,6 +2415,9 @@
           <button type="button" id="btn-refresh-reports" style="padding: 5px 12px; font-size: 0.78rem; background: #2B2D31; border: 1px solid #4E5058; color: #FFF; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap;">
             <span>🔄 새로고침</span>
           </button>
+          <button type="button" id="btn-clear-all-reports" style="padding: 5px 12px; font-size: 0.78rem; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.5); color: #FCA5A5; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap;" title="수집된 모든 제보를 구글 시트에서 비웁니다">
+            <span>🗑️ 전체 비우기</span>
+          </button>
         </div>
         <div style="font-size: 0.72rem; color: #94A3B8;">
           구글 스프레드시트의 <code>[확장 프로그램 ➔ Apps Script]</code>에 <code>google_apps_script.js</code>를 웹 앱으로 배포한 뒤 URL을 등록하세요.
@@ -2441,6 +2444,7 @@
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
+    const APP_VERSION = "v1.3.1 (09.26)";
 
     // 브라우저 및 Electron 앱 공용 비동기 입력 대화상자 (도감 검색 및 연동 미리보기 지원)
     function showCustomPrompt(title, desc, defaultValue = "", placeholder = "", datalistId = "") {
@@ -2565,6 +2569,10 @@
       const titleEl = document.getElementById("header-logo-title");
       const badgeEl = document.getElementById("header-logo-badge");
       const toggleBtn = document.getElementById("btn-toggle-mode");
+      const verEl = document.getElementById("app-version-tag");
+      if (verEl && typeof APP_VERSION !== "undefined") {
+        verEl.textContent = APP_VERSION;
+      }
 
       if (isViewerMode) {
         if (titleEl && badgeEl) {
@@ -10096,81 +10104,7 @@
 
         if (data.status === "success" && Array.isArray(data.reports)) {
           currentReportsCache = data.reports;
-          if (countEl) countEl.textContent = `총 ${data.reports.length}건의 제보`;
-          if (badgeEl) {
-            if (data.reports.length > 0) {
-              badgeEl.textContent = data.reports.length;
-              badgeEl.style.display = "inline-block";
-            } else {
-              badgeEl.style.display = "none";
-            }
-          }
-
-          if (data.reports.length === 0) {
-            listEl.innerHTML = `
-              <div style="text-align:center; padding:40px 20px; color:var(--text-sub); font-size:0.85rem;">
-                📬 아직 접수된 유저 제보가 없습니다.<br>
-                유저들이 뷰어에서 제보를 전송하면 이곳에 실시간으로 표시됩니다.
-              </div>
-            `;
-            return;
-          }
-
-          // 최신 제보가 위로 오도록 역순 정렬
-          const sortedReports = [...data.reports].reverse();
-
-          listEl.innerHTML = sortedReports.map((rep) => {
-            return `
-              <div class="report-item-card" style="background:#23272A; border:1px solid var(--border-color); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:6px;">
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="background:rgba(88,101,242,0.25); border:1px solid #5865F2; color:#C4B5FD; font-size:0.72rem; padding:2px 7px; border-radius:10px; font-weight:700;">${escapeHtml(rep.dim || '미지정')}</span>
-                    <span style="font-size:0.75rem; color:var(--text-sub);">${escapeHtml(rep.timestamp || '')}</span>
-                  </div>
-                  <div style="font-size:0.75rem; color:#A78BFA; font-weight:600;">
-                    시트 #${rep.id || ''}
-                  </div>
-                </div>
-
-                <div style="display:flex; align-items:center; justify-content:space-between; padding:4px 0; flex-wrap:wrap; gap:8px;">
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <strong style="color:#FFF; font-size:0.95rem;">${escapeHtml(rep.fromName || '-')}</strong>
-                    <span style="color:#5865F2; font-weight:800;">➔</span>
-                    <strong style="color:#57F287; font-size:0.95rem;">${escapeHtml(rep.toName || '-')}</strong>
-                  </div>
-                  <div>
-                    <button type="button" class="btn-apply-report-to-tree btn-success" data-id="${rep.id}" style="padding:5px 12px; font-size:0.8rem; font-weight:700; border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:5px;">
-                      <span>⚡ 트리에 즉시 적용</span>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- 제보 조건 상세 표시 -->
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:6px; background:#18191C; padding:8px 10px; border-radius:6px; font-size:0.78rem;">
-                  <div><span style="color:var(--text-sub);">시간:</span> <strong style="color:#FFF;">${escapeHtml(rep.time || '-')}</strong></div>
-                  <div><span style="color:var(--text-sub);">바이탈:</span> <strong style="color:#57F287;">${rep.vital !== "" && rep.vital !== undefined ? rep.vital : '-'}</strong></div>
-                  <div><span style="color:var(--text-sub);">PP:</span> <strong style="color:#FEE75C;">${rep.pp !== "" && rep.pp !== undefined ? rep.pp : '-'}</strong></div>
-                  <div><span style="color:var(--text-sub);">배틀:</span> <strong style="color:#FFF;">${escapeHtml(rep.battle || '-')}</strong></div>
-                  <div><span style="color:var(--text-sub);">승률:</span> <strong style="color:#FFF;">${escapeHtml(rep.winRate ? (String(rep.winRate).includes('%') ? rep.winRate : rep.winRate + '%') : '-')}</strong></div>
-                  ${rep.jogress ? `<div style="grid-column:span 2;"><span style="color:var(--text-sub);">조그레스:</span> <strong style="color:#C4B5FD;">${escapeHtml(rep.jogress)}</strong></div>` : ''}
-                  ${rep.item ? `<div style="grid-column:span 2;"><span style="color:var(--text-sub);">아이템:</span> <strong style="color:#FFF;">${escapeHtml(rep.item)}</strong></div>` : ''}
-                  ${rep.note ? `<div style="grid-column:span 2;"><span style="color:var(--text-sub);">비고:</span> <span style="color:#CBD5E1;">${escapeHtml(rep.note)}</span></div>` : ''}
-                </div>
-              </div>
-            `;
-          }).join("");
-
-          // 1클릭 적용 이벤트 바인딩
-          listEl.querySelectorAll(".btn-apply-report-to-tree").forEach(btn => {
-            btn.addEventListener("click", () => {
-              const repId = parseInt(btn.dataset.id, 10);
-              const report = currentReportsCache.find(r => r.id === repId);
-              if (report) {
-                applyReportToTree(report, btn);
-              }
-            });
-          });
-
+          renderReportsListUI();
         } else {
           throw new Error(data.message || "응답 데이터 형식이 올바르지 않습니다.");
         }
@@ -10183,6 +10117,146 @@
             <span style="font-size:0.75rem; color:#94A3B8;">구글 앱 스크립트 배포 시 액세스 권한이 <strong>'모든 사용자(Anyone)'</strong>로 설정되어 있는지 확인하세요.</span>
           </div>
         `;
+      }
+    }
+
+    // 제보 목록 UI 렌더링 함수
+    function renderReportsListUI() {
+      const listEl = document.getElementById("review-reports-list");
+      const countEl = document.getElementById("review-reports-count");
+      const badgeEl = document.getElementById("report-badge-count");
+      if (!listEl) return;
+
+      const total = currentReportsCache.length;
+      if (countEl) countEl.textContent = `총 ${total}건의 제보`;
+      if (badgeEl) {
+        if (total > 0) {
+          badgeEl.textContent = total;
+          badgeEl.style.display = "inline-block";
+        } else {
+          badgeEl.style.display = "none";
+        }
+      }
+
+      if (total === 0) {
+        listEl.innerHTML = `
+          <div style="text-align:center; padding:40px 20px; color:var(--text-sub); font-size:0.85rem;">
+            📬 접수된 유저 제보가 없습니다.<br>
+            유저들이 뷰어에서 제보를 전송하면 이곳에 실시간으로 표시됩니다.
+          </div>
+        `;
+        return;
+      }
+
+      // 최신 제보가 위로 오도록 역순 정렬
+      const sortedReports = [...currentReportsCache].reverse();
+
+      listEl.innerHTML = sortedReports.map((rep) => {
+        return `
+          <div class="report-item-card" data-row-id="${rep.id}" style="background:#23272A; border:1px solid var(--border-color); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:6px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="background:rgba(88,101,242,0.25); border:1px solid #5865F2; color:#C4B5FD; font-size:0.72rem; padding:2px 7px; border-radius:10px; font-weight:700;">${escapeHtml(rep.dim || '미지정')}</span>
+                <span style="font-size:0.75rem; color:var(--text-sub);">${escapeHtml(rep.timestamp || '')}</span>
+              </div>
+              <div style="font-size:0.75rem; color:#A78BFA; font-weight:600;">
+                시트 #${rep.id || ''}
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:4px 0; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <strong style="color:#FFF; font-size:0.95rem;">${escapeHtml(rep.fromName || '-')}</strong>
+                <span style="color:#5865F2; font-weight:800;">➔</span>
+                <strong style="color:#57F287; font-size:0.95rem;">${escapeHtml(rep.toName || '-')}</strong>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button type="button" class="btn-apply-report-to-tree btn-success" data-id="${rep.id}" style="padding:5px 12px; font-size:0.8rem; font-weight:700; border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:5px;">
+                  <span>⚡ 트리에 즉시 적용</span>
+                </button>
+                <button type="button" class="btn-delete-report-item" data-id="${rep.id}" style="padding:5px 10px; font-size:0.8rem; font-weight:600; background:#374151; border:1px solid #4B5563; color:#F87171; border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:4px;" title="이 제보 삭제">
+                  <span>🗑️ 삭제</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 제보 조건 상세 표시 -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:6px; background:#18191C; padding:8px 10px; border-radius:6px; font-size:0.78rem;">
+              <div><span style="color:var(--text-sub);">시간:</span> <strong style="color:#FFF;">${escapeHtml(rep.time || '-')}</strong></div>
+              <div><span style="color:var(--text-sub);">바이탈:</span> <strong style="color:#57F287;">${rep.vital !== "" && rep.vital !== undefined ? rep.vital : '-'}</strong></div>
+              <div><span style="color:var(--text-sub);">PP:</span> <strong style="color:#FEE75C;">${rep.pp !== "" && rep.pp !== undefined ? rep.pp : '-'}</strong></div>
+              <div><span style="color:var(--text-sub);">배틀:</span> <strong style="color:#FFF;">${escapeHtml(rep.battle || '-')}</strong></div>
+              <div><span style="color:var(--text-sub);">승률:</span> <strong style="color:#FFF;">${escapeHtml(rep.winRate ? (String(rep.winRate).includes('%') ? rep.winRate : rep.winRate + '%') : '-')}</strong></div>
+              ${rep.jogress ? `<div style="grid-column:span 2;"><span style="color:var(--text-sub);">조그레스:</span> <strong style="color:#C4B5FD;">${escapeHtml(rep.jogress)}</strong></div>` : ''}
+              ${rep.item ? `<div style="grid-column:span 2;"><span style="color:var(--text-sub);">아이템:</span> <strong style="color:#FFF;">${escapeHtml(rep.item)}</strong></div>` : ''}
+              ${rep.note ? `<div style="grid-column:span 2;"><span style="color:var(--text-sub);">비고:</span> <span style="color:#CBD5E1;">${escapeHtml(rep.note)}</span></div>` : ''}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      // 1클릭 적용 이벤트 바인딩
+      listEl.querySelectorAll(".btn-apply-report-to-tree").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const repId = parseInt(btn.dataset.id, 10);
+          const report = currentReportsCache.find(r => r.id === repId);
+          if (report) {
+            applyReportToTree(report, btn);
+          }
+        });
+      });
+
+      // 개별 삭제 이벤트 바인딩
+      listEl.querySelectorAll(".btn-delete-report-item").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const repId = parseInt(btn.dataset.id, 10);
+          deleteSingleReport(repId, btn);
+        });
+      });
+    }
+
+    // 개별 제보 삭제 (시트 및 로컬 동기화)
+    async function deleteSingleReport(repId, btnEl) {
+      if (!confirm(`시트 #${repId} 제보 항목을 삭제하시겠습니까?`)) return;
+
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
+      
+      // 로컬 캐시에서 즉시 제거 및 UI 갱신
+      currentReportsCache = currentReportsCache.filter(r => r.id !== repId);
+      renderReportsListUI();
+
+      if (gasUrl) {
+        try {
+          const delUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=delete&row=${repId}`;
+          await fetch(delUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ action: "delete", row: repId }) });
+          showToast(`시트 #${repId} 제보가 삭제되었습니다.`);
+        } catch (e) {
+          console.error("제보 삭제 요청 실패:", e);
+        }
+      }
+    }
+
+    // 전체 제보 비우기 (시트 및 로컬 동기화)
+    async function clearAllReports() {
+      if (!currentReportsCache || currentReportsCache.length === 0) {
+        alert("삭제할 제보가 없습니다.");
+        return;
+      }
+      if (!confirm(`현재 접수된 총 ${currentReportsCache.length}건의 제보를 모두 삭제하시겠습니까?\n구글 시트의 제보 데이터가 모두 비워집니다.`)) return;
+
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
+      
+      currentReportsCache = [];
+      renderReportsListUI();
+
+      if (gasUrl) {
+        try {
+          const clearUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=clear_all`;
+          await fetch(clearUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ action: "clear_all" }) });
+          showToast("모든 제보가 삭제되었습니다.");
+        } catch (e) {
+          console.error("전체 제보 삭제 요청 실패:", e);
+        }
       }
     }
 
@@ -10318,6 +10392,9 @@
 
       const refreshReportsBtn = document.getElementById("btn-refresh-reports");
       if (refreshReportsBtn) refreshReportsBtn.addEventListener("click", fetchReportsFromGas);
+
+      const clearAllBtn = document.getElementById("btn-clear-all-reports");
+      if (clearAllBtn) clearAllBtn.addEventListener("click", clearAllReports);
     }
 
     window.addEventListener("resize", () => {
