@@ -40,6 +40,7 @@ var CONDITION_HEADERS = [
   "출발 디지몬",
   "진화 디지몬",
   "속성",
+  "조건상태",
   "진화 시간",
   "필요 바이탈",
   "필요 PP",
@@ -88,6 +89,7 @@ function doPost(e) {
           c.from || "",
           c.to || "",
           c.attr || "",
+          c.status || "공개",
           c.time || "",
           c.vital !== undefined && c.vital !== null ? c.vital : "",
           c.pp !== undefined && c.pp !== null ? c.pp : "",
@@ -215,15 +217,16 @@ function doGet(e) {
       var fromIdx = colMap["출발 디지몬"] !== undefined ? colMap["출발 디지몬"] : 1;
       var toIdx = colMap["진화 디지몬"] !== undefined ? colMap["진화 디지몬"] : 2;
       var attrIdx = colMap["속성"];
-      var timeIdx = colMap["진화 시간"] !== undefined ? colMap["진화 시간"] : (attrIdx !== undefined ? 4 : 3);
-      var vitalIdx = colMap["필요 바이탈"] !== undefined ? colMap["필요 바이탈"] : (attrIdx !== undefined ? 5 : 4);
-      var ppIdx = colMap["필요 PP"] !== undefined ? colMap["필요 PP"] : (attrIdx !== undefined ? 6 : 5);
-      var battleIdx = colMap["배틀 횟수"] !== undefined ? colMap["배틀 횟수"] : (attrIdx !== undefined ? 7 : 6);
-      var winRateIdx = colMap["필요 승률(%)"] !== undefined ? colMap["필요 승률(%)"] : (attrIdx !== undefined ? 8 : 7);
-      var jogressIdx = colMap["조그레스 파트너"] !== undefined ? colMap["조그레스 파트너"] : (attrIdx !== undefined ? 9 : 8);
-      var itemIdx = colMap["필요 아이템"] !== undefined ? colMap["필요 아이템"] : (attrIdx !== undefined ? 10 : 9);
-      var noteIdx = colMap["비고/메모"] !== undefined ? colMap["비고/메모"] : (attrIdx !== undefined ? 11 : 10);
-      var updatedIdx = colMap["최종 갱신일시"] !== undefined ? colMap["최종 갱신일시"] : (attrIdx !== undefined ? 12 : 11);
+      var statusIdx = colMap["조건상태"] !== undefined ? colMap["조건상태"] : colMap["상태"];
+      var timeIdx = colMap["진화 시간"] !== undefined ? colMap["진화 시간"] : (attrIdx !== undefined ? (statusIdx !== undefined ? 5 : 4) : 3);
+      var vitalIdx = colMap["필요 바이탈"];
+      var ppIdx = colMap["필요 PP"];
+      var battleIdx = colMap["배틀 횟수"];
+      var winRateIdx = colMap["필요 승률(%)"];
+      var jogressIdx = colMap["조그레스 파트너"];
+      var itemIdx = colMap["필요 아이템"];
+      var noteIdx = colMap["비고/메모"];
+      var updatedIdx = colMap["최종 갱신일시"];
 
       var condList = [];
       for (var ci = 1; ci < allValues.length; ci++) {
@@ -237,6 +240,7 @@ function doGet(e) {
           from: fromVal,
           to: toVal,
           attr: attrIdx !== undefined ? cr[attrIdx] : "",
+          status: statusIdx !== undefined ? cr[statusIdx] : "",
           time: timeIdx !== undefined ? cr[timeIdx] : "",
           vital: vitalIdx !== undefined ? cr[vitalIdx] : "",
           pp: ppIdx !== undefined ? cr[ppIdx] : "",
@@ -363,6 +367,7 @@ function initConditionSheetHeaders(sheet) {
   }
   sheet.setColumnWidth(1, 140); // DiM
   sheet.setColumnWidth(4, 100); // 속성
-  sheet.setColumnWidth(12, 220); // 비고
-  sheet.setColumnWidth(13, 160); // 갱신일시
+  sheet.setColumnWidth(5, 110); // 조건상태
+  sheet.setColumnWidth(13, 220); // 비고
+  sheet.setColumnWidth(14, 160); // 갱신일시
 }

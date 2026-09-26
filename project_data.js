@@ -3456,7 +3456,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "즈바몬🚧",
       "order": 999,
       "req": {
-        "time": "24시간",
+        "time": "1시간",
         "vital": "",
         "pp": "",
         "battle": "",
@@ -3476,7 +3476,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "즈바몬🚧",
       "order": 999,
       "req": {
-        "time": "24시간",
+        "time": "1시간",
         "vital": "",
         "pp": "",
         "battle": "",
@@ -3693,7 +3693,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "즈바몬🚧",
       "order": 32,
       "req": {
-        "time": "24시간",
+        "time": "48시간",
         "vital": 1200,
         "pp": 8,
         "battle": "",
@@ -4619,7 +4619,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "다이너스티 오브 디 이블(임프몬)🚧",
       "order": 39,
       "req": {
-        "time": "24시간",
+        "time": "48시간",
         "vital": 1200,
         "pp": 8,
         "battle": "",
@@ -6928,9 +6928,9 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": "",
         "battle": "",
         "winRate": "",
-        "dungeon": "",
-        "jogress": "",
-        "item": "",
+        "dungeon": "-",
+        "jogress": "-",
+        "item": "-",
         "note": ""
       },
       "lineColor": "#38BDF8"
@@ -6972,9 +6972,9 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": "",
         "battle": "",
         "winRate": "",
-        "dungeon": "",
-        "jogress": "",
-        "item": "",
+        "dungeon": "-",
+        "jogress": "-",
+        "item": "-",
         "note": ""
       },
       "lineColor": "#38BDF8"
@@ -6994,9 +6994,9 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": "",
         "battle": "",
         "winRate": "",
-        "dungeon": "",
-        "jogress": "",
-        "item": "",
+        "dungeon": "-",
+        "jogress": "-",
+        "item": "-",
         "note": ""
       },
       "lineColor": "#22C55E"
@@ -7321,7 +7321,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "order": 96,
       "independentReq": true,
       "req": {
-        "time": "24시간",
+        "time": "36시간",
         "vital": "",
         "pp": "",
         "battle": "",
@@ -7419,9 +7419,9 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": "",
         "battle": "",
         "winRate": "",
-        "dungeon": "",
-        "jogress": "",
-        "item": "",
+        "dungeon": "-",
+        "jogress": "-",
+        "item": "-",
         "note": ""
       },
       "lineColor": "#38BDF8"
@@ -7463,9 +7463,9 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": "",
         "battle": "",
         "winRate": "",
-        "dungeon": "",
-        "jogress": "",
-        "item": "",
+        "dungeon": "-",
+        "jogress": "-",
+        "item": "-",
         "note": ""
       },
       "lineColor": "#38BDF8"
@@ -7481,16 +7481,16 @@ window.DIGIPET_DEFAULT_DATA = {
       "independentReq": true,
       "req": {
         "time": "24시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
+        "vital": 900,
+        "pp": 8,
+        "battle": "40",
         "winRate": "",
         "dungeon": "-",
         "jogress": "-",
-        "item": "-",
+        "item": "지식의 캡슐",
         "note": ""
       },
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "lineColor": "#38BDF8"
     },
@@ -7505,16 +7505,16 @@ window.DIGIPET_DEFAULT_DATA = {
       "independentReq": true,
       "req": {
         "time": "24시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
+        "vital": 1300,
+        "pp": 10,
+        "battle": "48",
         "winRate": "",
         "dungeon": "",
         "jogress": "",
         "item": "",
         "note": ""
       },
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "lineColor": "#EF4444"
     },
@@ -7538,7 +7538,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "lineColor": "#22C55E"
     },
@@ -7557,9 +7557,9 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": "",
         "battle": "",
         "winRate": "",
-        "dungeon": "",
-        "jogress": "",
-        "item": "",
+        "dungeon": "-",
+        "jogress": "-",
+        "item": "-",
         "note": ""
       },
       "lineColor": "#EF4444"
@@ -7575,16 +7575,16 @@ window.DIGIPET_DEFAULT_DATA = {
       "independentReq": true,
       "req": {
         "time": "24시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
+        "vital": 900,
+        "pp": 8,
+        "battle": "30",
         "winRate": "",
         "dungeon": "",
         "jogress": "",
         "item": "",
         "note": ""
       },
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "lineColor": "#F97316"
     },
@@ -7656,8 +7656,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "unknownTime": true,
-      "partialUnknown": false,
+      "unknownTime": false,
+      "partialUnknown": true,
       "lineColor": "#38BDF8"
     },
     "digi_1790393610998": {
@@ -7742,7 +7742,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "order": 999,
       "independentReq": true,
       "req": {
-        "time": "24시간",
+        "time": "48시간",
         "vital": "",
         "pp": "",
         "battle": "",
@@ -7886,9 +7886,9 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": "",
         "battle": "",
         "winRate": "",
-        "dungeon": "",
-        "jogress": "",
-        "item": "",
+        "dungeon": "-",
+        "jogress": "-",
+        "item": "-",
         "note": ""
       },
       "lineColor": "#38BDF8"
@@ -7930,9 +7930,9 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": "",
         "battle": "",
         "winRate": "",
-        "dungeon": "",
-        "jogress": "",
-        "item": "",
+        "dungeon": "-",
+        "jogress": "-",
+        "item": "-",
         "note": ""
       },
       "lineColor": "#38BDF8"
@@ -7976,9 +7976,9 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": "",
         "battle": "",
         "winRate": "",
-        "dungeon": "",
-        "jogress": "",
-        "item": "",
+        "dungeon": "-",
+        "jogress": "-",
+        "item": "-",
         "note": ""
       },
       "unknownTime": false,
@@ -15432,9 +15432,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": "",
       "battle": "",
       "winRate": "",
-      "dungeon": "",
-      "jogress": "",
-      "item": "",
+      "dungeon": "-",
+      "jogress": "-",
+      "item": "-",
       "note": ""
     },
     {
@@ -15446,9 +15446,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": "",
       "battle": "",
       "winRate": "",
-      "dungeon": "",
-      "jogress": "",
-      "item": "",
+      "dungeon": "-",
+      "jogress": "-",
+      "item": "-",
       "note": ""
     },
     {
@@ -15460,9 +15460,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": "",
       "battle": "",
       "winRate": "",
-      "dungeon": "",
-      "jogress": "",
-      "item": "",
+      "dungeon": "-",
+      "jogress": "-",
+      "item": "-",
       "note": ""
     },
     {
@@ -15936,9 +15936,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": "",
       "battle": "",
       "winRate": "",
-      "dungeon": "",
-      "jogress": "",
-      "item": "",
+      "dungeon": "-",
+      "jogress": "-",
+      "item": "-",
       "note": ""
     },
     {
@@ -15950,9 +15950,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": "",
       "battle": "",
       "winRate": "",
-      "dungeon": "",
-      "jogress": "",
-      "item": "",
+      "dungeon": "-",
+      "jogress": "-",
+      "item": "-",
       "note": ""
     },
     {
@@ -15964,9 +15964,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": "",
       "battle": "",
       "winRate": "",
-      "dungeon": "",
-      "jogress": "",
-      "item": "",
+      "dungeon": "-",
+      "jogress": "-",
+      "item": "-",
       "note": ""
     },
     {
@@ -15974,9 +15974,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790393537122",
       "lineColor": "#EF4444",
       "time": "24시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
+      "vital": 1300,
+      "pp": 10,
+      "battle": "48",
       "winRate": "",
       "dungeon": "",
       "jogress": "",
@@ -16002,9 +16002,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790393581301",
       "lineColor": "#EF4444",
       "time": "24시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
+      "vital": 900,
+      "pp": 8,
+      "battle": "30",
       "winRate": "",
       "dungeon": "",
       "jogress": "",
@@ -16015,14 +16015,14 @@ window.DIGIPET_DEFAULT_DATA = {
       "from": "digi_1790393537122",
       "to": "digi_1790393527421",
       "lineColor": "#EF4444",
-      "time": "24시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
+      "time": "-",
+      "vital": 900,
+      "pp": 8,
+      "battle": "40",
       "winRate": "",
       "dungeon": "",
       "jogress": "",
-      "item": "",
+      "item": "지식의 캡슐",
       "note": ""
     },
     {
@@ -16058,13 +16058,13 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790393604300",
       "lineColor": "#EF4444",
       "time": "36시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 2500,
+      "pp": 10,
+      "battle": "80",
+      "winRate": "50",
       "dungeon": "",
       "jogress": "",
-      "item": "",
+      "item": "빛의 캡슐",
       "note": ""
     },
     {
@@ -16398,9 +16398,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": "",
       "battle": "",
       "winRate": "",
-      "dungeon": "",
-      "jogress": "",
-      "item": "",
+      "dungeon": "-",
+      "jogress": "-",
+      "item": "-",
       "note": ""
     },
     {
@@ -16412,9 +16412,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": "",
       "battle": "",
       "winRate": "",
-      "dungeon": "",
-      "jogress": "",
-      "item": "",
+      "dungeon": "-",
+      "jogress": "-",
+      "item": "-",
       "note": ""
     },
     {
@@ -16426,9 +16426,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": "",
       "battle": "",
       "winRate": "",
-      "dungeon": "",
-      "jogress": "",
-      "item": "",
+      "dungeon": "-",
+      "jogress": "-",
+      "item": "-",
       "note": ""
     },
     {

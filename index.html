@@ -1596,7 +1596,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.7</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.9</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -2447,7 +2447,7 @@
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.7 (09.26 14:15)";
+    const APP_VERSION = "v1.3.9 (09.26 15:02)";
 
     // 브라우저 및 Electron 앱 공용 비동기 입력 대화상자 (도감 검색 및 연동 미리보기 지원)
     function showCustomPrompt(title, desc, defaultValue = "", placeholder = "", datalistId = "") {
@@ -8718,6 +8718,7 @@
       const initialImg = existing?.img || "sprites/Agumon.gif";
       const id = "digi_" + Date.now();
 
+      const isEgg = initialStage === "디지타마";
       project.digimons[id] = {
         id: id,
         name: trimmedName,
@@ -8727,6 +8728,8 @@
         dim: currentDim,
         order: 999,
         independentReq: true,
+        unknownTime: !isEgg, // 디지타마(알)를 제외하고 새로 추가하는 디지몬은 기본적으로 '진화조건 불명'
+        partialUnknown: false,
         req: getDefaultReqForStage(initialStage)
       };
 
@@ -10389,11 +10392,13 @@
           if (!toD) return;
           const req = getEvoRequirements(ev, toD);
           const dimVal = (toD.dim || (fromD ? fromD.dim : "") || "").split(",")[0].trim();
+          const condStatus = toD.partialUnknown ? "일부 불명" : (toD.unknownTime ? "조건 불명" : "공개");
           conditions.push({
             dim: dimVal,
             from: fromD ? fromD.name : "",
             to: toD.name,
             attr: toD.attr || "",
+            status: condStatus,
             time: req.time || "",
             vital: req.vital !== undefined && req.vital !== null ? req.vital : "",
             pp: req.pp !== undefined && req.pp !== null ? req.pp : "",
@@ -10405,17 +10410,19 @@
           });
         });
 
-        // 2. 디지타마(알) 및 진화 도착점으로 등록되지 않은 최초 세대 디지몬들의 속성 수집 (진화선 대상 외 디지몬)
+        // 2. 디지타마(알) 및 진화 도착점으로 등록되지 않은 최초 세대 디지몬들의 속성 및 공개상태 수집 (진화선 대상 외 디지몬)
         const evolvedToIds = new Set((project.evolutions || []).map(ev => ev.to));
         Object.values(project.digimons || {}).forEach(d => {
           if (!d || !d.name) return;
           if (d.stage === "디지타마" || !evolvedToIds.has(d.id)) {
             const dimVal = (d.dim || "").split(",")[0].trim();
+            const condStatus = d.partialUnknown ? "일부 불명" : (d.unknownTime ? "조건 불명" : "공개");
             conditions.push({
               dim: dimVal,
               from: "(시작/알)",
               to: d.name,
               attr: d.attr || "",
+              status: condStatus,
               time: (d.req && d.req.time) ? d.req.time : "-",
               vital: "",
               pp: "",
@@ -10438,7 +10445,7 @@
           })
         });
 
-        showToast(`🎉 총 <strong>${conditions.length}개</strong>의 진화 조건 및 속성이 구글 시트에 실시간 배포되었습니다!<br>이제 뷰어에서 깃 배포 없이 즉시 최신 조건이 표시됩니다.`);
+        showToast(`🎉 총 <strong>${conditions.length}개</strong>의 진화 조건, 속성 및 공개상태가 구글 시트에 실시간 배포되었습니다!<br>이제 뷰어에서 깃 배포 없이 즉시 최신 조건이 표시됩니다.`);
       } catch (err) {
         console.error("실시간 조건 배포 실패:", err);
         alert("실시간 조건 배포 중 오류가 발생했습니다: " + err.message);
@@ -10497,11 +10504,12 @@
               });
             }
 
-            // 2. 디지몬 기본 조건(req) 및 속성(attr) 매칭 및 오버라이드
+            // 2. 디지몬 기본 조건(req), 속성(attr), 조건공개상태(status) 매칭 및 오버라이드
             Object.values(project.digimons || {}).forEach(d => {
               if (d.name.trim().toLowerCase() === toNameLower) {
                 if (cDim && !isDigimonVisibleInDim(d, cDim)) return;
 
+                // 속성(attr) 갱신
                 if (c.attr && c.attr.trim()) {
                   const cleanAttr = c.attr.trim().toLowerCase();
                   if (d.attr !== cleanAttr) {
@@ -10509,6 +10517,29 @@
                     updatedCount++;
                   }
                 }
+
+                // 조건공개상태 (status: 공개, 조건 불명, 일부 불명) 갱신
+                if (c.status && String(c.status).trim()) {
+                  const rawStatus = String(c.status).trim().toLowerCase();
+                  let newUnknown = false;
+                  let newPartial = false;
+                  if (rawStatus === "조건 불명" || rawStatus === "unknown" || rawStatus === "불명") {
+                    newUnknown = true;
+                  } else if (rawStatus === "일부 불명" || rawStatus === "partial") {
+                    newPartial = true;
+                  } else if (rawStatus === "공개" || rawStatus === "known" || rawStatus === "정상") {
+                    newUnknown = false;
+                    newPartial = false;
+                  }
+
+                  if (Boolean(d.unknownTime) !== newUnknown || Boolean(d.partialUnknown) !== newPartial) {
+                    d.unknownTime = newUnknown;
+                    d.partialUnknown = newPartial;
+                    updatedCount++;
+                  }
+                }
+
+                // 기본 요구조건(req) 갱신
                 if (!d.req) d.req = getDefaultReqForStage(d.stage);
                 if (c.time !== undefined && c.time !== "" && c.time !== "-") d.req.time = c.time;
                 if (c.vital !== undefined && c.vital !== "") d.req.vital = c.vital;
