@@ -19,9 +19,27 @@
 
 var SHEET_NAME_REPORTS = "유저_제보";
 var SHEET_NAME_CONDITIONS = "실시간_진화조건";
+var SHEET_NAME_TRASH = "제보_휴지통";
 var SHEET_NAME_BLOCKED = "차단_목록";
 
 var REPORT_HEADERS = [
+  "접수일시",
+  "DiM",
+  "출발 디지몬",
+  "진화 디지몬",
+  "진화 시간",
+  "필요 바이탈",
+  "필요 PP",
+  "배틀 횟수",
+  "필요 승률(%)",
+  "조그레스 파트너",
+  "아이템/캡슐",
+  "비고/메모",
+  "제보자 UID"
+];
+
+var TRASH_HEADERS = [
+  "삭제일시",
   "접수일시",
   "DiM",
   "출발 디지몬",
@@ -132,26 +150,60 @@ function doPost(e) {
       initReportSheetHeaders(reportSheet);
     }
 
-    // 개별 제보 삭제 액션
-    if (data.action === "delete") {
+    // 개별 제보 삭제 액션 (휴지통으로 이동)
+    if (data.action === "delete" || data.action === "move_to_trash") {
       var rowToDel = parseInt(data.row || data.id, 10);
-      if (rowToDel > 1 && rowToDel <= reportSheet.getLastRow()) {
-        reportSheet.deleteRow(rowToDel);
-      }
+      var moved = moveReportRowToTrash(ss, rowToDel);
       return ContentService.createTextOutput(JSON.stringify({
         status: "success",
-        message: "제보가 삭제되었습니다."
+        message: moved ? "제보가 휴지통으로 이동되었습니다." : "삭제할 행을 찾을 수 없습니다."
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // 전체 제보 비우기 액션
-    if (data.action === "clear_all") {
-      if (reportSheet.getLastRow() > 1) {
-        reportSheet.deleteRows(2, reportSheet.getLastRow() - 1);
-      }
+    // 전체 제보 비우기 액션 (모두 휴지통으로 이동)
+    if (data.action === "clear_all" || data.action === "move_all_to_trash") {
+      var movedCount = moveAllReportsToTrash(ss);
       return ContentService.createTextOutput(JSON.stringify({
         status: "success",
-        message: "모든 제보가 삭제되었습니다."
+        message: movedCount + "건의 제보가 휴지통으로 이동되었습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 특정 UID의 모든 제보 일괄 휴지통 이동 액션
+    if (data.action === "delete_by_uid" && data.uid) {
+      var uidMoved = moveReportsByUidToTrash(ss, data.uid);
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "UID [" + data.uid + "] 의 제보 " + uidMoved + "건이 휴지통으로 이동되었습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 휴지통에서 복원 액션
+    if (data.action === "restore_trash") {
+      var tRow = parseInt(data.row || data.id, 10);
+      var restored = restoreTrashRow(ss, tRow);
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: restored ? "제보가 성공적으로 복구되었습니다." : "복구할 항목을 찾을 수 없습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 휴지통에서 개별 영구 삭제 액션
+    if (data.action === "delete_trash_permanent") {
+      var tpRow = parseInt(data.row || data.id, 10);
+      var pDeleted = deleteTrashPermanent(ss, tpRow);
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: pDeleted ? "휴지통에서 영구 삭제되었습니다." : "삭제할 항목을 찾을 수 없습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 휴지통 전체 영구 비우기 액션
+    if (data.action === "empty_trash") {
+      var emptied = emptyTrash(ss);
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "휴지통이 완전히 비워졌습니다. (" + emptied + "건 영구 삭제)"
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
@@ -172,15 +224,6 @@ function doPost(e) {
         status: "success",
         message: "UID [" + data.uid + "] 차단이 해제되었습니다.",
         blockedUids: getBlockedUids(ss)
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // 특정 UID의 모든 제보 일괄 삭제 액션
-    if (data.action === "delete_by_uid" && data.uid) {
-      deleteReportsByUid(ss, data.uid);
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success",
-        message: "UID [" + data.uid + "] 의 모든 제보가 삭제되었습니다."
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
@@ -322,26 +365,60 @@ function doGet(e) {
     // 2. [유저 제보 관련 처리]
     var reportSheet = ss.getSheetByName(SHEET_NAME_REPORTS);
 
-    // GET 방식 개별 제보 삭제
-    if (action === "delete") {
+    // GET 방식 개별 제보 삭제 (휴지통 이동)
+    if (action === "delete" || action === "move_to_trash") {
       var rowToDel = parseInt(e.parameter.row || e.parameter.id, 10);
-      if (reportSheet && rowToDel > 1 && rowToDel <= reportSheet.getLastRow()) {
-        reportSheet.deleteRow(rowToDel);
-      }
+      var moved = moveReportRowToTrash(ss, rowToDel);
       return ContentService.createTextOutput(JSON.stringify({
         status: "success",
-        message: "제보가 삭제되었습니다."
+        message: moved ? "제보가 휴지통으로 이동되었습니다." : "삭제할 행을 찾을 수 없습니다."
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // GET 방식 전체 제보 비우기
-    if (action === "clear_all") {
-      if (reportSheet && reportSheet.getLastRow() > 1) {
-        reportSheet.deleteRows(2, reportSheet.getLastRow() - 1);
-      }
+    // GET 방식 전체 제보 비우기 (휴지통 이동)
+    if (action === "clear_all" || action === "move_all_to_trash") {
+      var movedCount = moveAllReportsToTrash(ss);
       return ContentService.createTextOutput(JSON.stringify({
         status: "success",
-        message: "모든 제보가 삭제되었습니다."
+        message: movedCount + "건의 제보가 휴지통으로 이동되었습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // GET 방식 특정 UID 제보 일괄 휴지통 이동
+    if (action === "delete_by_uid" && e.parameter.uid) {
+      var uidMoved = moveReportsByUidToTrash(ss, e.parameter.uid);
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "UID [" + e.parameter.uid + "] 제보 " + uidMoved + "건이 휴지통으로 이동되었습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // GET 방식 휴지통 복원
+    if (action === "restore_trash") {
+      var tRow = parseInt(e.parameter.row || e.parameter.id, 10);
+      var restored = restoreTrashRow(ss, tRow);
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: restored ? "제보가 성공적으로 복구되었습니다." : "복구할 항목을 찾을 수 없습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // GET 방식 휴지통 개별 영구 삭제
+    if (action === "delete_trash_permanent") {
+      var tpRow = parseInt(e.parameter.row || e.parameter.id, 10);
+      var pDeleted = deleteTrashPermanent(ss, tpRow);
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: pDeleted ? "휴지통에서 영구 삭제되었습니다." : "삭제할 항목을 찾을 수 없습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // GET 방식 휴지통 전체 영구 비우기
+    if (action === "empty_trash") {
+      var emptied = emptyTrash(ss);
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "휴지통이 완전히 비워졌습니다. (" + emptied + "건 영구 삭제)"
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
@@ -368,96 +445,149 @@ function doGet(e) {
 
     var blockedList = getBlockedUids(ss);
 
-    if (!reportSheet || reportSheet.getLastRow() <= 1) {
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success",
-        reports: [],
-        blockedUids: blockedList
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    var lastRow = reportSheet.getLastRow();
-    var lastCol = reportSheet.getLastColumn();
-    var allReportVals = reportSheet.getRange(1, 1, lastRow, lastCol).getValues();
-    var reportHeaderRow = allReportVals[0];
-
-    var rColMap = {};
-    for (var rhi = 0; rhi < reportHeaderRow.length; rhi++) {
-      rColMap[String(reportHeaderRow[rhi]).trim()] = rhi;
-    }
-
-    var tsIdx = rColMap["접수일시"] !== undefined ? rColMap["접수일시"] : 0;
-    var rDimIdx = rColMap["DiM"] !== undefined ? rColMap["DiM"] : 1;
-    var rFromIdx = rColMap["출발 디지몬"] !== undefined ? rColMap["출발 디지몬"] : 2;
-    var rToIdx = rColMap["진화 디지몬"] !== undefined ? rColMap["진화 디지몬"] : 3;
-    var rTimeIdx = rColMap["진화 시간"] !== undefined ? rColMap["진화 시간"] : 4;
-    var rVitalIdx = rColMap["필요 바이탈"] !== undefined ? rColMap["필요 바이탈"] : 5;
-    var rPpIdx = rColMap["필요 PP"] !== undefined ? rColMap["필요 PP"] : 6;
-    var rBattleIdx = rColMap["배틀 횟수"] !== undefined ? rColMap["배틀 횟수"] : 7;
-    var rWinRateIdx = rColMap["필요 승률(%)"] !== undefined ? rColMap["필요 승률(%)"] : 8;
-    var rJogressIdx = rColMap["조그레스 파트너"] !== undefined ? rColMap["조그레스 파트너"] : 9;
-    var rItemIdx = rColMap["아이템/캡슐"] !== undefined ? rColMap["아이템/캡슐"] : 10;
-    var rNoteIdx = rColMap["비고/메모"] !== undefined ? rColMap["비고/메모"] : 11;
-    var rUidIdx = rColMap["제보자 UID"] !== undefined ? rColMap["제보자 UID"] : rColMap["UID"];
-    if (rUidIdx === undefined) {
-      for (var colKey in rColMap) {
-        if (colKey.indexOf("UID") !== -1) {
-          rUidIdx = rColMap[colKey];
-          break;
-        }
-      }
-    }
-    // 헤더에 명시되지 않았으나 13열 이상이 존재하거나 빈 경우 12(13번째 열)를 기본값으로 지정
-    if (rUidIdx === undefined) {
-      rUidIdx = 12;
-      try {
-        if (!reportSheet.getRange(1, 13).getValue()) {
-          reportSheet.getRange(1, 13).setValue("제보자 UID");
-          reportSheet.getRange(1, 13).setBackground("#4F46E5");
-          reportSheet.getRange(1, 13).setFontColor("#FFFFFF");
-          reportSheet.getRange(1, 13).setFontWeight("bold");
-          reportSheet.getRange(1, 13).setHorizontalAlignment("center");
-          reportSheet.setColumnWidth(13, 150);
-        }
-      } catch (hErr) {}
-    }
-
+    // 1) 활성 제보 목록 조회
     var reports = [];
-    for (var ri = 1; ri < allReportVals.length; ri++) {
-      var r = allReportVals[ri];
-      var fVal = rFromIdx !== undefined ? r[rFromIdx] : r[2];
-      var tVal = rToIdx !== undefined ? r[rToIdx] : r[3];
-      if (!fVal && !tVal) continue;
+    if (reportSheet && reportSheet.getLastRow() > 1) {
+      var lastRow = reportSheet.getLastRow();
+      var lastCol = reportSheet.getLastColumn();
+      var allReportVals = reportSheet.getRange(1, 1, lastRow, lastCol).getValues();
+      var reportHeaderRow = allReportVals[0];
 
-      var extractedUid = "";
-      if (rUidIdx !== undefined && r[rUidIdx] !== undefined && r[rUidIdx] !== null && String(r[rUidIdx]).trim()) {
-        extractedUid = String(r[rUidIdx]).trim();
-      } else if (r.length > 12 && r[12] !== undefined && r[12] !== null && String(r[12]).trim()) {
-        extractedUid = String(r[12]).trim();
+      var rColMap = {};
+      for (var rhi = 0; rhi < reportHeaderRow.length; rhi++) {
+        rColMap[String(reportHeaderRow[rhi]).trim()] = rhi;
       }
 
-      reports.push({
-        id: (ri + 1),
-        timestamp: tsIdx !== undefined ? r[tsIdx] : "",
-        dim: rDimIdx !== undefined ? r[rDimIdx] : "",
-        fromName: fVal || "",
-        toName: tVal || "",
-        time: rTimeIdx !== undefined ? r[rTimeIdx] : "",
-        vital: rVitalIdx !== undefined ? r[rVitalIdx] : "",
-        pp: rPpIdx !== undefined ? r[rPpIdx] : "",
-        battle: rBattleIdx !== undefined ? r[rBattleIdx] : "",
-        winRate: rWinRateIdx !== undefined ? r[rWinRateIdx] : "",
-        jogress: rJogressIdx !== undefined ? r[rJogressIdx] : "",
-        item: rItemIdx !== undefined ? r[rItemIdx] : "",
-        note: rNoteIdx !== undefined ? r[rNoteIdx] : "",
-        uid: extractedUid
-      });
+      var tsIdx = rColMap["접수일시"] !== undefined ? rColMap["접수일시"] : 0;
+      var rDimIdx = rColMap["DiM"] !== undefined ? rColMap["DiM"] : 1;
+      var rFromIdx = rColMap["출발 디지몬"] !== undefined ? rColMap["출발 디지몬"] : 2;
+      var rToIdx = rColMap["진화 디지몬"] !== undefined ? rColMap["진화 디지몬"] : 3;
+      var rTimeIdx = rColMap["진화 시간"] !== undefined ? rColMap["진화 시간"] : 4;
+      var rVitalIdx = rColMap["필요 바이탈"] !== undefined ? rColMap["필요 바이탈"] : 5;
+      var rPpIdx = rColMap["필요 PP"] !== undefined ? rColMap["필요 PP"] : 6;
+      var rBattleIdx = rColMap["배틀 횟수"] !== undefined ? rColMap["배틀 횟수"] : 7;
+      var rWinRateIdx = rColMap["필요 승률(%)"] !== undefined ? rColMap["필요 승률(%)"] : 8;
+      var rJogressIdx = rColMap["조그레스 파트너"] !== undefined ? rColMap["조그레스 파트너"] : 9;
+      var rItemIdx = rColMap["아이템/캡슐"] !== undefined ? rColMap["아이템/캡슐"] : 10;
+      var rNoteIdx = rColMap["비고/메모"] !== undefined ? rColMap["비고/메모"] : 11;
+      var rUidIdx = rColMap["제보자 UID"] !== undefined ? rColMap["제보자 UID"] : rColMap["UID"];
+      if (rUidIdx === undefined) {
+        for (var colKey in rColMap) {
+          if (colKey.indexOf("UID") !== -1) {
+            rUidIdx = rColMap[colKey];
+            break;
+          }
+        }
+      }
+      if (rUidIdx === undefined) {
+        rUidIdx = 12;
+        try {
+          if (!reportSheet.getRange(1, 13).getValue()) {
+            reportSheet.getRange(1, 13).setValue("제보자 UID");
+            reportSheet.getRange(1, 13).setBackground("#4F46E5");
+            reportSheet.getRange(1, 13).setFontColor("#FFFFFF");
+            reportSheet.getRange(1, 13).setFontWeight("bold");
+            reportSheet.getRange(1, 13).setHorizontalAlignment("center");
+            reportSheet.setColumnWidth(13, 150);
+          }
+        } catch (hErr) {}
+      }
+
+      for (var ri = 1; ri < allReportVals.length; ri++) {
+        var r = allReportVals[ri];
+        var fVal = rFromIdx !== undefined ? r[rFromIdx] : r[2];
+        var tVal = rToIdx !== undefined ? r[rToIdx] : r[3];
+        if (!fVal && !tVal) continue;
+
+        var extractedUid = "";
+        if (rUidIdx !== undefined && r[rUidIdx] !== undefined && r[rUidIdx] !== null && String(r[rUidIdx]).trim()) {
+          extractedUid = String(r[rUidIdx]).trim();
+        } else if (r.length > 12 && r[12] !== undefined && r[12] !== null && String(r[12]).trim()) {
+          extractedUid = String(r[12]).trim();
+        }
+
+        reports.push({
+          id: (ri + 1),
+          timestamp: tsIdx !== undefined ? r[tsIdx] : "",
+          dim: rDimIdx !== undefined ? r[rDimIdx] : "",
+          fromName: fVal || "",
+          toName: tVal || "",
+          time: rTimeIdx !== undefined ? r[rTimeIdx] : "",
+          vital: rVitalIdx !== undefined ? r[rVitalIdx] : "",
+          pp: rPpIdx !== undefined ? r[rPpIdx] : "",
+          battle: rBattleIdx !== undefined ? r[rBattleIdx] : "",
+          winRate: rWinRateIdx !== undefined ? r[rWinRateIdx] : "",
+          jogress: rJogressIdx !== undefined ? r[rJogressIdx] : "",
+          item: rItemIdx !== undefined ? r[rItemIdx] : "",
+          note: rNoteIdx !== undefined ? r[rNoteIdx] : "",
+          uid: extractedUid
+        });
+      }
+    }
+
+    // 2) 휴지통 목록 조회 (제보_휴지통 시트)
+    var trash = [];
+    var trashSheet = ss.getSheetByName(SHEET_NAME_TRASH);
+    if (trashSheet && trashSheet.getLastRow() > 1) {
+      var tLastRow = trashSheet.getLastRow();
+      var tLastCol = trashSheet.getLastColumn();
+      var allTrashVals = trashSheet.getRange(1, 1, tLastRow, tLastCol).getValues();
+      var tHeaderRow = allTrashVals[0];
+      var tColMap = {};
+      for (var thi = 0; thi < tHeaderRow.length; thi++) {
+        tColMap[String(tHeaderRow[thi]).trim()] = thi;
+      }
+      var tDelTsIdx = tColMap["삭제일시"] !== undefined ? tColMap["삭제일시"] : 0;
+      var tTsIdx = tColMap["접수일시"] !== undefined ? tColMap["접수일시"] : 1;
+      var tDimIdx = tColMap["DiM"] !== undefined ? tColMap["DiM"] : 2;
+      var tFromIdx = tColMap["출발 디지몬"] !== undefined ? tColMap["출발 디지몬"] : 3;
+      var tToIdx = tColMap["진화 디지몬"] !== undefined ? tColMap["진화 디지몬"] : 4;
+      var tTimeIdx = tColMap["진화 시간"] !== undefined ? tColMap["진화 시간"] : 5;
+      var tVitalIdx = tColMap["필요 바이탈"] !== undefined ? tColMap["필요 바이탈"] : 6;
+      var tPpIdx = tColMap["필요 PP"] !== undefined ? tColMap["필요 PP"] : 7;
+      var tBattleIdx = tColMap["배틀 횟수"] !== undefined ? tColMap["배틀 횟수"] : 8;
+      var tWinRateIdx = tColMap["필요 승률(%)"] !== undefined ? tColMap["필요 승률(%)"] : 9;
+      var tJogressIdx = tColMap["조그레스 파트너"] !== undefined ? tColMap["조그레스 파트너"] : 10;
+      var tItemIdx = tColMap["아이템/캡슐"] !== undefined ? tColMap["아이템/캡슐"] : 11;
+      var tNoteIdx = tColMap["비고/메모"] !== undefined ? tColMap["비고/메모"] : 12;
+      var tUidIdx = tColMap["제보자 UID"] !== undefined ? tColMap["제보자 UID"] : 13;
+
+      for (var ti = 1; ti < allTrashVals.length; ti++) {
+        var tr = allTrashVals[ti];
+        var tfVal = tFromIdx !== undefined ? tr[tFromIdx] : tr[3];
+        var ttVal = tToIdx !== undefined ? tr[tToIdx] : tr[4];
+        if (!tfVal && !ttVal) continue;
+
+        var tuidVal = "";
+        if (tUidIdx !== undefined && tr[tUidIdx]) tuidVal = String(tr[tUidIdx]).trim();
+        else if (tr.length > 13 && tr[13]) tuidVal = String(tr[13]).trim();
+
+        trash.push({
+          id: (ti + 1),
+          deletedAt: tDelTsIdx !== undefined ? tr[tDelTsIdx] : "",
+          timestamp: tTsIdx !== undefined ? tr[tTsIdx] : "",
+          dim: tDimIdx !== undefined ? tr[tDimIdx] : "",
+          fromName: tfVal || "",
+          toName: ttVal || "",
+          time: tTimeIdx !== undefined ? tr[tTimeIdx] : "",
+          vital: tVitalIdx !== undefined ? tr[tVitalIdx] : "",
+          pp: tPpIdx !== undefined ? tr[tPpIdx] : "",
+          battle: tBattleIdx !== undefined ? tr[tBattleIdx] : "",
+          winRate: tWinRateIdx !== undefined ? tr[tWinRateIdx] : "",
+          jogress: tJogressIdx !== undefined ? tr[tJogressIdx] : "",
+          item: tItemIdx !== undefined ? tr[tItemIdx] : "",
+          note: tNoteIdx !== undefined ? tr[tNoteIdx] : "",
+          uid: tuidVal
+        });
+      }
     }
 
     return ContentService.createTextOutput(JSON.stringify({
       status: "success",
       count: reports.length,
       reports: reports,
+      trashCount: trash.length,
+      trash: trash,
       blockedUids: blockedList
     })).setMimeType(ContentService.MimeType.JSON);
 
@@ -538,15 +668,93 @@ function unblockUid(ss, uid) {
 }
 
 /**
- * 특정 UID가 등록한 모든 제보 일괄 삭제
+ * 제보_휴지통 시트 반환 및 없으면 생성/초기화
  */
-function deleteReportsByUid(ss, uid) {
-  if (!uid) return;
-  var sheet = ss.getSheetByName(SHEET_NAME_REPORTS);
-  if (!sheet || sheet.getLastRow() <= 1) return;
-  var lastR = sheet.getLastRow();
-  var lastC = sheet.getLastColumn();
-  var allV = sheet.getRange(1, 1, lastR, lastC).getValues();
+function getTrashSheet(ss) {
+  var sheet = ss.getSheetByName(SHEET_NAME_TRASH);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME_TRASH);
+    sheet.appendRow(TRASH_HEADERS);
+    var hRange = sheet.getRange(1, 1, 1, TRASH_HEADERS.length);
+    hRange.setBackground("#475569");
+    hRange.setFontColor("#FFFFFF");
+    hRange.setFontWeight("bold");
+    hRange.setHorizontalAlignment("center");
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(1, 160); // 삭제일시
+    sheet.setColumnWidth(2, 160); // 접수일시
+    sheet.setColumnWidth(3, 140); // DiM
+    sheet.setColumnWidth(4, 130); // 출발
+    sheet.setColumnWidth(5, 130); // 진화
+    for (var c = 6; c <= 12; c++) {
+      sheet.setColumnWidth(c, 110);
+    }
+    sheet.setColumnWidth(13, 200); // 비고
+    sheet.setColumnWidth(14, 150); // UID
+  }
+  return sheet;
+}
+
+/**
+ * 유저_제보 시트의 특정 행을 제보_휴지통으로 이동
+ */
+function moveReportRowToTrash(ss, rowIdx) {
+  var reportSheet = ss.getSheetByName(SHEET_NAME_REPORTS);
+  if (!reportSheet || rowIdx <= 1 || rowIdx > reportSheet.getLastRow()) return false;
+  var trashSheet = getTrashSheet(ss);
+
+  var lastCol = reportSheet.getLastColumn();
+  var rowVals = reportSheet.getRange(rowIdx, 1, 1, lastCol).getValues()[0];
+
+  var tz = Session.getScriptTimeZone() || "Asia/Seoul";
+  var deletedAt = Utilities.formatDate(new Date(), tz, "yyyy-MM-dd HH:mm:ss");
+
+  var trashRow = [deletedAt].concat(rowVals);
+  trashSheet.appendRow(trashRow);
+
+  reportSheet.deleteRow(rowIdx);
+  return true;
+}
+
+/**
+ * 유저_제보 시트의 모든 제보 행을 제보_휴지통으로 이동
+ */
+function moveAllReportsToTrash(ss) {
+  var reportSheet = ss.getSheetByName(SHEET_NAME_REPORTS);
+  if (!reportSheet || reportSheet.getLastRow() <= 1) return 0;
+  var trashSheet = getTrashSheet(ss);
+
+  var lastRow = reportSheet.getLastRow();
+  var lastCol = reportSheet.getLastColumn();
+  var allVals = reportSheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+
+  var tz = Session.getScriptTimeZone() || "Asia/Seoul";
+  var deletedAt = Utilities.formatDate(new Date(), tz, "yyyy-MM-dd HH:mm:ss");
+
+  var trashRows = allVals.map(function(r) {
+    return [deletedAt].concat(r);
+  });
+
+  if (trashRows.length > 0) {
+    var tLast = trashSheet.getLastRow();
+    trashSheet.getRange(tLast + 1, 1, trashRows.length, trashRows[0].length).setValues(trashRows);
+    reportSheet.deleteRows(2, lastRow - 1);
+  }
+  return trashRows.length;
+}
+
+/**
+ * 특정 UID가 작성한 제보들을 제보_휴지통으로 이동
+ */
+function moveReportsByUidToTrash(ss, uid) {
+  if (!uid) return 0;
+  var reportSheet = ss.getSheetByName(SHEET_NAME_REPORTS);
+  if (!reportSheet || reportSheet.getLastRow() <= 1) return 0;
+  var trashSheet = getTrashSheet(ss);
+
+  var lastR = reportSheet.getLastRow();
+  var lastC = reportSheet.getLastColumn();
+  var allV = reportSheet.getRange(1, 1, lastR, lastC).getValues();
   var header = allV[0];
   var uCol = -1;
   for (var h = 0; h < header.length; h++) {
@@ -555,12 +763,65 @@ function deleteReportsByUid(ss, uid) {
       break;
     }
   }
-  if (uCol === -1) uCol = 12; // 13번째 열 (0-indexed 12)
+  if (uCol === -1) uCol = 12;
+
+  var tz = Session.getScriptTimeZone() || "Asia/Seoul";
+  var deletedAt = Utilities.formatDate(new Date(), tz, "yyyy-MM-dd HH:mm:ss");
+
+  var count = 0;
   for (var r = allV.length - 1; r >= 1; r--) {
     if (String(allV[r][uCol] || "").trim() === uid) {
-      sheet.deleteRow(r + 1);
+      var trashRow = [deletedAt].concat(allV[r]);
+      trashSheet.appendRow(trashRow);
+      reportSheet.deleteRow(r + 1);
+      count++;
     }
   }
+  return count;
+}
+
+/**
+ * 제보_휴지통에서 유저_제보로 행 복원
+ */
+function restoreTrashRow(ss, trashRowIdx) {
+  var trashSheet = getTrashSheet(ss);
+  if (!trashSheet || trashRowIdx <= 1 || trashRowIdx > trashSheet.getLastRow()) return false;
+  var reportSheet = ss.getSheetByName(SHEET_NAME_REPORTS);
+  if (!reportSheet) {
+    reportSheet = ss.insertSheet(SHEET_NAME_REPORTS);
+    initReportSheetHeaders(reportSheet);
+  }
+
+  var lastCol = trashSheet.getLastColumn();
+  var trashVals = trashSheet.getRange(trashRowIdx, 1, 1, lastCol).getValues()[0];
+
+  // trashVals[0]은 '삭제일시'이므로 제외하고 원본 제보 복원
+  var origReportRow = trashVals.slice(1);
+  reportSheet.appendRow(origReportRow);
+
+  trashSheet.deleteRow(trashRowIdx);
+  return true;
+}
+
+/**
+ * 제보_휴지통에서 특정 행 영구 삭제
+ */
+function deleteTrashPermanent(ss, trashRowIdx) {
+  var trashSheet = getTrashSheet(ss);
+  if (!trashSheet || trashRowIdx <= 1 || trashRowIdx > trashSheet.getLastRow()) return false;
+  trashSheet.deleteRow(trashRowIdx);
+  return true;
+}
+
+/**
+ * 제보_휴지통 전체 영구 비우기
+ */
+function emptyTrash(ss) {
+  var trashSheet = getTrashSheet(ss);
+  if (!trashSheet || trashSheet.getLastRow() <= 1) return 0;
+  var count = trashSheet.getLastRow() - 1;
+  trashSheet.deleteRows(2, count);
+  return count;
 }
 
 /**

@@ -1596,7 +1596,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.13</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.17</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -2457,6 +2457,25 @@
         </div>
       </div>
 
+      <!-- 탭 네비게이션: [📥 접수된 제보] vs [🗑️ 휴지통] -->
+      <div style="padding: 0 18px; background: #23272A; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+        <div style="display: flex; gap: 4px;">
+          <button type="button" id="tab-btn-active-reports" style="padding: 9px 16px; font-size: 0.82rem; font-weight: 700; background: none; border: none; border-bottom: 2px solid #38BDF8; color: #38BDF8; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <span>📥 접수된 제보</span>
+            <span id="tab-active-count-badge" style="background: rgba(56,189,248,0.2); color: #38BDF8; padding: 1px 6px; border-radius: 10px; font-size: 0.72rem;">0</span>
+          </button>
+          <button type="button" id="tab-btn-trash-reports" style="padding: 9px 16px; font-size: 0.82rem; font-weight: 600; background: none; border: none; border-bottom: 2px solid transparent; color: #94A3B8; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <span>🗑️ 휴지통</span>
+            <span id="tab-trash-count-badge" style="background: rgba(255,255,255,0.08); color: #94A3B8; padding: 1px 6px; border-radius: 10px; font-size: 0.72rem;">0</span>
+          </button>
+        </div>
+        <div id="trash-tab-toolbar" style="display: none; align-items: center; gap: 6px;">
+          <button type="button" id="btn-empty-trash" style="padding: 4px 11px; font-size: 0.76rem; background: rgba(239,68,68,0.18); border: 1px solid rgba(239,68,68,0.5); color: #FCA5A5; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="휴지통의 모든 제보를 영구 삭제합니다">
+            <span>🔥 휴지통 전체 비우기</span>
+          </button>
+        </div>
+      </div>
+
       <!-- 제보 카드 목록 영역 -->
       <div id="review-reports-list" style="padding: 16px 18px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 12px;">
         <div style="font-size: 0.85rem; color: var(--text-sub); text-align: center; padding: 30px;">
@@ -2477,7 +2496,7 @@
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.13 (09.26 15:38)";
+    const APP_VERSION = "v1.3.17 (09.26 18:01)";
 
     // 브라우저 및 Electron 앱 공용 비동기 입력 대화상자 (도감 검색 및 연동 미리보기 지원)
     function showCustomPrompt(title, desc, defaultValue = "", placeholder = "", datalistId = "") {
@@ -9922,7 +9941,9 @@
     const DEFAULT_GAS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbx1XUIl4kVde4m0G1RhLNiNAloJIR7BVpfvqnSV2Eah8scuEA79Bg3fKYTnqEOttjji/exec";
     let activeReportContext = null;
     let currentReportsCache = [];
+    let currentTrashCache = [];
     let currentBlockedUidsCache = [];
+    let currentReportsTab = "active"; // "active" (접수된 제보) or "trash" (휴지통)
 
     // 클라이언트 지속 UID 생성/조회 (분탕 유저 식별 및 차단용)
     function getClientUid() {
@@ -10097,6 +10118,8 @@
         urlInput.value = savedUrl;
       }
 
+      switchReportsTab(currentReportsTab || "active");
+
       if (savedUrl) {
         fetchReportsFromGas();
       }
@@ -10161,6 +10184,7 @@
 
         if (data.status === "success" && Array.isArray(data.reports)) {
           currentReportsCache = data.reports;
+          currentTrashCache = Array.isArray(data.trash) ? data.trash : [];
           currentBlockedUidsCache = Array.isArray(data.blockedUids) ? data.blockedUids : [];
           renderReportsListUI();
           renderBlockedUidsUI();
@@ -10177,6 +10201,45 @@
           </div>
         `;
       }
+    }
+
+    // 탭 전환 핸들러 ([📥 접수된 제보] vs [🗑️ 휴지통])
+    function switchReportsTab(tabName) {
+      currentReportsTab = tabName;
+      const activeTabBtn = document.getElementById("tab-btn-active-reports");
+      const trashTabBtn = document.getElementById("tab-btn-trash-reports");
+      const trashToolbar = document.getElementById("trash-tab-toolbar");
+      const clearAllBtn = document.getElementById("btn-clear-all-reports");
+
+      if (tabName === "trash") {
+        if (trashTabBtn) {
+          trashTabBtn.style.borderBottom = "2px solid #F87171";
+          trashTabBtn.style.color = "#F87171";
+          trashTabBtn.style.fontWeight = "700";
+        }
+        if (activeTabBtn) {
+          activeTabBtn.style.borderBottom = "2px solid transparent";
+          activeTabBtn.style.color = "#94A3B8";
+          activeTabBtn.style.fontWeight = "600";
+        }
+        if (trashToolbar) trashToolbar.style.display = "flex";
+        if (clearAllBtn) clearAllBtn.style.display = "none";
+      } else {
+        if (activeTabBtn) {
+          activeTabBtn.style.borderBottom = "2px solid #38BDF8";
+          activeTabBtn.style.color = "#38BDF8";
+          activeTabBtn.style.fontWeight = "700";
+        }
+        if (trashTabBtn) {
+          trashTabBtn.style.borderBottom = "2px solid transparent";
+          trashTabBtn.style.color = "#94A3B8";
+          trashTabBtn.style.fontWeight = "600";
+        }
+        if (trashToolbar) trashToolbar.style.display = "none";
+        if (clearAllBtn) clearAllBtn.style.display = "inline-flex";
+      }
+
+      renderReportsListUI();
     }
 
     // 차단된 UID 관리 패널 UI 렌더링
@@ -10231,10 +10294,14 @@
         }
       }
 
-      // 해당 UID가 남긴 다른 제보도 함께 삭제할지 확인
+      // 해당 UID가 남긴 다른 제보도 함께 휴지통으로 이동할지 확인
       const sameUidReports = currentReportsCache.filter(r => r.uid === uid);
       if (sameUidReports.length > 0) {
-        if (confirm(`차단된 [${uid}] 사용자가 작성한 기존 제보(${sameUidReports.length}건)도 모두 일괄 삭제하시겠습니까?`)) {
+        if (confirm(`차단된 [${uid}] 사용자가 작성한 기존 제보(${sameUidReports.length}건)도 모두 휴지통으로 이동하시겠습니까?`)) {
+          const nowStr = new Date().toLocaleString();
+          sameUidReports.forEach(r => {
+            currentTrashCache.push({ ...r, deletedAt: nowStr });
+          });
           currentReportsCache = currentReportsCache.filter(r => r.uid !== uid);
           renderReportsListUI();
           if (gasUrl) {
@@ -10246,10 +10313,10 @@
                 body: JSON.stringify({ action: "delete_by_uid", uid: uid })
               });
             } catch (e) {
-              console.error("UID 제보 일괄 삭제 요청 실패:", e);
+              console.error("UID 제보 일괄 휴지통 이동 요청 실패:", e);
             }
           }
-          showToast(`[${uid}] 차단 및 기존 제보(${sameUidReports.length}건)가 모두 삭제되었습니다.`);
+          showToast(`[${uid}] 차단 및 기존 제보(${sameUidReports.length}건)가 휴지통으로 이동되었습니다.`);
           return;
         }
       }
@@ -10282,45 +10349,79 @@
       }
     }
 
-    // 제보 목록 UI 렌더링 함수
+    // 제보 목록 UI 렌더링 함수 (활성 제보 & 휴지통 통합 지원)
     function renderReportsListUI() {
       const listEl = document.getElementById("review-reports-list");
       const countEl = document.getElementById("review-reports-count");
       const badgeEl = document.getElementById("report-badge-count");
+      const activeCountBadge = document.getElementById("tab-active-count-badge");
+      const trashCountBadge = document.getElementById("tab-trash-count-badge");
+
       if (!listEl) return;
 
-      const total = currentReportsCache.length;
-      if (countEl) countEl.textContent = `총 ${total}건의 제보`;
+      const activeTotal = currentReportsCache.length;
+      const trashTotal = currentTrashCache.length;
+      const isTrash = (currentReportsTab === "trash");
+      const currentList = isTrash ? currentTrashCache : currentReportsCache;
+
+      // 상단 탭 뱃지 갱신
+      if (activeCountBadge) activeCountBadge.textContent = activeTotal;
+      if (trashCountBadge) trashCountBadge.textContent = trashTotal;
+
+      // 에디터 상단 헤더 알림 뱃지 (활성 제보 기준)
       if (badgeEl) {
-        if (total > 0) {
-          badgeEl.textContent = total;
+        if (activeTotal > 0) {
+          badgeEl.textContent = activeTotal;
           badgeEl.style.display = "inline-block";
         } else {
           badgeEl.style.display = "none";
         }
       }
 
-      if (total === 0) {
-        listEl.innerHTML = `
-          <div style="text-align:center; padding:40px 20px; color:var(--text-sub); font-size:0.85rem;">
-            📬 접수된 유저 제보가 없습니다.<br>
-            유저들이 뷰어에서 제보를 전송하면 이곳에 실시간으로 표시됩니다.
-          </div>
-        `;
+      // 하단 카운트 텍스트
+      if (countEl) {
+        countEl.textContent = isTrash ? `총 ${trashTotal}건의 삭제된 제보 (휴지통)` : `총 ${activeTotal}건의 접수된 제보`;
+      }
+
+      // 비어있을 때 메시지
+      if (currentList.length === 0) {
+        if (isTrash) {
+          listEl.innerHTML = `
+            <div style="text-align:center; padding:40px 20px; color:var(--text-sub); font-size:0.85rem;">
+              🗑️ 휴지통이 비어 있습니다.<br>
+              삭제한 제보는 이곳에 모아두며, 언제든 복구하거나 트리에 즉시 적용할 수 있습니다.
+            </div>
+          `;
+        } else {
+          listEl.innerHTML = `
+            <div style="text-align:center; padding:40px 20px; color:var(--text-sub); font-size:0.85rem;">
+              📬 접수된 유저 제보가 없습니다.<br>
+              유저들이 뷰어에서 제보를 전송하면 이곳에 실시간으로 표시됩니다.
+            </div>
+          `;
+        }
         return;
       }
 
       // 최신 제보가 위로 오도록 역순 정렬
-      const sortedReports = [...currentReportsCache].reverse();
+      const sortedItems = [...currentList].reverse();
 
-      listEl.innerHTML = sortedReports.map((rep) => {
+      listEl.innerHTML = sortedItems.map((rep) => {
         const isBlocked = rep.uid && currentBlockedUidsCache.includes(rep.uid);
+        const cardBorder = isTrash ? 'rgba(248,113,113,0.35)' : (isBlocked ? 'rgba(220,38,38,0.4)' : 'var(--border-color)');
+        const cardBg = isTrash ? '#201E22' : '#23272A';
+
         return `
-          <div class="report-item-card" data-row-id="${rep.id}" style="background:#23272A; border:1px solid ${isBlocked ? 'rgba(220,38,38,0.4)' : 'var(--border-color)'}; border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+          <div class="report-item-card" data-row-id="${rep.id}" style="background:${cardBg}; border:1px solid ${cardBorder}; border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:6px;">
-              <div style="display:flex; align-items:center; gap:8px;">
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <span style="background:rgba(88,101,242,0.25); border:1px solid #5865F2; color:#C4B5FD; font-size:0.72rem; padding:2px 7px; border-radius:10px; font-weight:700;">${escapeHtml(rep.dim || '미지정')}</span>
-                <span style="font-size:0.75rem; color:var(--text-sub);">${escapeHtml(rep.timestamp || '')}</span>
+                ${isTrash && rep.deletedAt ? `
+                  <span style="background:rgba(239,68,68,0.18); border:1px solid rgba(239,68,68,0.45); color:#FCA5A5; font-size:0.72rem; padding:2px 7px; border-radius:4px; font-weight:700;">
+                    🗑️ 삭제: ${escapeHtml(rep.deletedAt)}
+                  </span>
+                ` : ''}
+                <span style="font-size:0.75rem; color:var(--text-sub);">접수: ${escapeHtml(rep.timestamp || '')}</span>
               </div>
               <div style="display:flex; align-items:center; gap:6px;">
                 ${rep.uid ? `
@@ -10333,8 +10434,8 @@
                     👤 UID 없음 (구버전 제보)
                   </span>
                 `}
-                <span style="font-size:0.75rem; color:#A78BFA; font-weight:600;">
-                  시트 #${rep.id || ''}
+                <span style="font-size:0.75rem; color:${isTrash ? '#F87171' : '#A78BFA'}; font-weight:600;">
+                  ${isTrash ? '휴지통 #' : '시트 #'}${rep.id || ''}
                 </span>
               </div>
             </div>
@@ -10346,7 +10447,7 @@
                 <strong style="color:#57F287; font-size:0.95rem;">${escapeHtml(rep.toName || '-')}</strong>
               </div>
               <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                <button type="button" class="btn-apply-report-to-tree btn-success" data-id="${rep.id}" style="padding:5px 12px; font-size:0.8rem; font-weight:700; border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:5px;">
+                <button type="button" class="btn-apply-report-to-tree btn-success" data-id="${rep.id}" data-is-trash="${isTrash ? '1' : '0'}" style="padding:5px 12px; font-size:0.8rem; font-weight:700; border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:5px;" title="휴지통에 있는 제보도 트리에 즉시 적용할 수 있습니다.">
                   <span>⚡ 트리에 즉시 적용</span>
                 </button>
                 ${rep.uid ? (isBlocked ? `
@@ -10360,9 +10461,19 @@
                 `) : `
                   <span style="font-size:0.72rem; color:#6B7280; padding:4px 6px;" title="이 제보는 UID가 기록되어 있지 않아 특정 사용자 차단이 불가합니다.">(UID 미기록)</span>
                 `}
-                <button type="button" class="btn-delete-report-item" data-id="${rep.id}" style="padding:5px 10px; font-size:0.8rem; font-weight:600; background:#374151; border:1px solid #4B5563; color:#F87171; border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:4px;" title="이 제보 삭제">
-                  <span>🗑️ 삭제</span>
-                </button>
+
+                ${isTrash ? `
+                  <button type="button" class="btn-restore-trash-item" data-id="${rep.id}" style="padding:5px 10px; font-size:0.8rem; font-weight:600; background:#1E293B; border:1px solid #38BDF8; color:#38BDF8; border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:4px;" title="활성 제보함으로 복구">
+                    <span>↩️ 복구</span>
+                  </button>
+                  <button type="button" class="btn-perm-delete-trash-item" data-id="${rep.id}" style="padding:5px 10px; font-size:0.8rem; font-weight:600; background:#374151; border:1px solid #EF4444; color:#F87171; border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:4px;" title="휴지통에서 영구 삭제">
+                    <span>🔥 영구 삭제</span>
+                  </button>
+                ` : `
+                  <button type="button" class="btn-delete-report-item" data-id="${rep.id}" style="padding:5px 10px; font-size:0.8rem; font-weight:600; background:#374151; border:1px solid #4B5563; color:#F87171; border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:4px;" title="이 제보를 휴지통으로 이동">
+                    <span>🗑️ 삭제</span>
+                  </button>
+                `}
               </div>
             </div>
 
@@ -10381,11 +10492,12 @@
         `;
       }).join("");
 
-      // 1클릭 적용 이벤트 바인딩
+      // 1클릭 적용 이벤트 바인딩 (활성 제보 & 휴지통 모두 지원)
       listEl.querySelectorAll(".btn-apply-report-to-tree").forEach(btn => {
         btn.addEventListener("click", () => {
           const repId = parseInt(btn.dataset.id, 10);
-          const report = currentReportsCache.find(r => r.id === repId);
+          const sourceList = (btn.dataset.isTrash === "1") ? currentTrashCache : currentReportsCache;
+          const report = sourceList.find(r => r.id === repId);
           if (report) {
             applyReportToTree(report, btn);
           }
@@ -10408,22 +10520,43 @@
         });
       });
 
-      // 개별 삭제 이벤트 바인딩
+      // 개별 삭제 이벤트 바인딩 (휴지통으로 이동)
       listEl.querySelectorAll(".btn-delete-report-item").forEach(btn => {
         btn.addEventListener("click", () => {
           const repId = parseInt(btn.dataset.id, 10);
           deleteSingleReport(repId, btn);
         });
       });
+
+      // 휴지통 복구 버튼 바인딩
+      listEl.querySelectorAll(".btn-restore-trash-item").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const repId = parseInt(btn.dataset.id, 10);
+          restoreTrashReport(repId, btn);
+        });
+      });
+
+      // 휴지통 개별 영구 삭제 버튼 바인딩
+      listEl.querySelectorAll(".btn-perm-delete-trash-item").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const repId = parseInt(btn.dataset.id, 10);
+          deleteTrashPermanent(repId, btn);
+        });
+      });
     }
 
-    // 개별 제보 삭제 (시트 및 로컬 동기화)
+    // 개별 제보 삭제 (휴지통으로 이동)
     async function deleteSingleReport(repId, btnEl) {
-      if (!confirm(`시트 #${repId} 제보 항목을 삭제하시겠습니까?`)) return;
+      if (!confirm(`시트 #${repId} 제보 항목을 삭제하시겠습니까?\n\n※ 삭제된 제보는 상단 [🗑️ 휴지통] 탭에 안전하게 보관되며 필요 시 언제든 복구할 수 있습니다.`)) return;
 
       const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
       
-      // 로컬 캐시에서 즉시 제거 및 UI 갱신
+      // 로컬 캐시에서 휴지통으로 이동 및 UI 즉시 갱신
+      const repItem = currentReportsCache.find(r => r.id === repId);
+      if (repItem) {
+        const nowStr = new Date().toLocaleString();
+        currentTrashCache.push({ ...repItem, deletedAt: nowStr });
+      }
       currentReportsCache = currentReportsCache.filter(r => r.id !== repId);
       renderReportsListUI();
 
@@ -10431,23 +10564,27 @@
         try {
           const delUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=delete&row=${repId}`;
           await fetch(delUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ action: "delete", row: repId }) });
-          showToast(`시트 #${repId} 제보가 삭제되었습니다.`);
+          showToast(`시트 #${repId} 제보가 휴지통으로 이동되었습니다.`);
         } catch (e) {
           console.error("제보 삭제 요청 실패:", e);
         }
       }
     }
 
-    // 전체 제보 비우기 (시트 및 로컬 동기화)
+    // 전체 제보 비우기 (모두 휴지통으로 이동)
     async function clearAllReports() {
       if (!currentReportsCache || currentReportsCache.length === 0) {
         alert("삭제할 제보가 없습니다.");
         return;
       }
-      if (!confirm(`현재 접수된 총 ${currentReportsCache.length}건의 제보를 모두 삭제하시겠습니까?\n구글 시트의 제보 데이터가 모두 비워집니다.`)) return;
+      if (!confirm(`현재 접수된 총 ${currentReportsCache.length}건의 제보를 모두 삭제(휴지통 이동)하시겠습니까?\n\n삭제된 제보들은 [🗑️ 휴지통] 탭에 보관됩니다.`)) return;
 
       const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
       
+      const nowStr = new Date().toLocaleString();
+      currentReportsCache.forEach(r => {
+        currentTrashCache.push({ ...r, deletedAt: nowStr });
+      });
       currentReportsCache = [];
       renderReportsListUI();
 
@@ -10455,9 +10592,92 @@
         try {
           const clearUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=clear_all`;
           await fetch(clearUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ action: "clear_all" }) });
-          showToast("모든 제보가 삭제되었습니다.");
+          showToast("모든 제보가 휴지통으로 이동되었습니다.");
         } catch (e) {
           console.error("전체 제보 삭제 요청 실패:", e);
+        }
+      }
+    }
+
+    // 휴지통에서 제보 복구
+    async function restoreTrashReport(trashId, btnEl) {
+      if (!confirm(`휴지통 #${trashId} 제보를 다시 [📥 접수된 제보] 목록으로 복구하시겠습니까?`)) return;
+
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
+
+      const item = currentTrashCache.find(r => r.id === trashId);
+      if (item) {
+        currentTrashCache = currentTrashCache.filter(r => r.id !== trashId);
+        currentReportsCache.push(item);
+      }
+      renderReportsListUI();
+
+      if (gasUrl) {
+        try {
+          const restoreUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=restore_trash&row=${trashId}`;
+          await fetch(restoreUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({ action: "restore_trash", row: trashId })
+          });
+          showToast(`휴지통 #${trashId} 제보가 성공적으로 복구되었습니다.`);
+        } catch (e) {
+          console.error("휴지통 복구 요청 실패:", e);
+        }
+      }
+    }
+
+    // 휴지통에서 개별 영구 삭제
+    async function deleteTrashPermanent(trashId, btnEl) {
+      if (!confirm(`휴지통 #${trashId} 제보를 영구 삭제하시겠습니까?\n\n⚠️ 이 작업은 구글 시트에서도 완전히 삭제되며 되돌릴 수 없습니다.`)) return;
+
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
+
+      currentTrashCache = currentTrashCache.filter(r => r.id !== trashId);
+      renderReportsListUI();
+
+      if (gasUrl) {
+        try {
+          const permUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=delete_trash_permanent&row=${trashId}`;
+          await fetch(permUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({ action: "delete_trash_permanent", row: trashId })
+          });
+          showToast(`휴지통 #${trashId} 제보가 영구 삭제되었습니다.`);
+        } catch (e) {
+          console.error("휴지통 영구 삭제 요청 실패:", e);
+        }
+      }
+    }
+
+    // 휴지통 전체 영구 비우기
+    async function emptyTrashAll() {
+      if (!currentTrashCache || currentTrashCache.length === 0) {
+        alert("휴지통이 이미 비어 있습니다.");
+        return;
+      }
+      if (!confirm(`휴지통의 모든 제보(총 ${currentTrashCache.length}건)를 완전히 비우시겠습니까?\n\n⚠️ 이 작업은 구글 시트의 [제보_휴지통]에서도 완전히 영구 삭제되며 되돌릴 수 없습니다.`)) return;
+
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
+
+      currentTrashCache = [];
+      renderReportsListUI();
+
+      if (gasUrl) {
+        try {
+          const emptyUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=empty_trash`;
+          await fetch(emptyUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({ action: "empty_trash" })
+          });
+          showToast("휴지통의 모든 제보가 영구 삭제되었습니다.");
+        } catch (e) {
+          console.error("휴지통 비우기 요청 실패:", e);
         }
       }
     }
@@ -10466,27 +10686,83 @@
     function applyReportToTree(report, btnEl) {
       if (!report) return;
 
-      // 1. 디지몬 이름 매칭
-      let fromDigi = Object.values(project.digimons).find(d => d.name === report.fromName);
-      let toDigi = Object.values(project.digimons).find(d => d.name === report.toName);
+      // DiM 문자열 정규화 (공백, 대소문자, 상태 이모지 🚧, ❌ 등 제거하여 비교)
+      const cleanDim = (s) => (s || "").replace(/[🚧❌⚠️\s]/g, "").toLowerCase();
+      const repDimClean = cleanDim(report.dim);
+      const toNameClean = (report.toName || "").trim().toLowerCase();
+      const fromNameClean = (report.fromName || "").trim().toLowerCase();
 
-      if (!fromDigi && report.fromName) {
-        fromDigi = Object.values(project.digimons).find(d => d.name.trim().toLowerCase() === report.fromName.trim().toLowerCase());
+      // 1. 진화 대상 디지몬(toDigi) 및 출발 디지몬(fromDigi) 정밀 매칭
+      let toDigi = null;
+      let fromDigi = null;
+
+      // 1순위: report.dim이 일치하는 디지몬 우선 탐색
+      if (repDimClean) {
+        toDigi = Object.values(project.digimons).find(d => {
+          if (!d.name || d.name.trim().toLowerCase() !== toNameClean) return false;
+          return cleanDim(d.dim) === repDimClean;
+        });
+        if (fromNameClean) {
+          fromDigi = Object.values(project.digimons).find(d => {
+            if (!d.name || d.name.trim().toLowerCase() !== fromNameClean) return false;
+            return cleanDim(d.dim) === repDimClean;
+          });
+        }
       }
-      if (!toDigi && report.toName) {
-        toDigi = Object.values(project.digimons).find(d => d.name.trim().toLowerCase() === report.toName.trim().toLowerCase());
+
+      // 2순위: 현재 에디터 화면에 열려있는 filterDim 안에서 탐색
+      if (!toDigi && filterDim) {
+        const curDimClean = cleanDim(filterDim);
+        toDigi = Object.values(project.digimons).find(d => {
+          if (!d.name || d.name.trim().toLowerCase() !== toNameClean) return false;
+          return cleanDim(d.dim) === curDimClean;
+        });
+        if (!fromDigi && fromNameClean) {
+          fromDigi = Object.values(project.digimons).find(d => {
+            if (!d.name || d.name.trim().toLowerCase() !== fromNameClean) return false;
+            return cleanDim(d.dim) === curDimClean;
+          });
+        }
+      }
+
+      // 3순위: 전체 디지몬 목록에서 매칭 (동일 DiM을 가진 쌍 우선)
+      if (!toDigi) {
+        const toCandidates = Object.values(project.digimons).filter(d => d.name && d.name.trim().toLowerCase() === toNameClean);
+        if (toCandidates.length === 1) {
+          toDigi = toCandidates[0];
+        } else if (toCandidates.length > 1) {
+          toDigi = toCandidates.find(d => cleanDim(d.dim).includes(repDimClean) || repDimClean.includes(cleanDim(d.dim))) || toCandidates[0];
+        }
+      }
+
+      if (!fromDigi && fromNameClean) {
+        const targetDimClean = toDigi ? cleanDim(toDigi.dim) : repDimClean;
+        const fromCandidates = Object.values(project.digimons).filter(d => d.name && d.name.trim().toLowerCase() === fromNameClean);
+        fromDigi = fromCandidates.find(d => cleanDim(d.dim) === targetDimClean) || fromCandidates[0];
       }
 
       if (!toDigi) {
-        alert(`트리에서 진화 대상 디지몬 [${report.toName}]을 찾을 수 없습니다.`);
+        alert(`트리에서 진화 대상 디지몬 [${report.toName}]을 찾을 수 없습니다.\n(DiM: ${report.dim || '미지정'})`);
         return;
       }
 
-      // 2. 진화선 매칭
+      // 2. 진화선(evo) 매칭 및 부재 시 자동 연결
       let targetEvo = null;
       if (fromDigi) {
         targetEvo = project.evolutions.find(ev => ev.from === fromDigi.id && ev.to === toDigi.id);
+        if (!targetEvo) {
+          // 둘 사이에 진화선이 아직 없다면 신규 진화선 생성
+          const stageDefault = getDefaultReqForStage(toDigi.stage);
+          targetEvo = {
+            from: fromDigi.id,
+            to: toDigi.id,
+            lineColor: fromDigi.lineColor || undefined,
+            ...stageDefault
+          };
+          project.evolutions.push(targetEvo);
+        }
       }
+
       if (!targetEvo) {
         const incoming = project.evolutions.filter(ev => ev.to === toDigi.id);
         if (incoming.length > 0) targetEvo = incoming[0];
@@ -10502,7 +10778,7 @@
         return isNaN(n) ? val : n;
       };
 
-      // 3. 조건 값 갱신
+      // 3. 조건 값 갱신 (진화선 및 디지몬 기본 조건 동시 반영)
       if (report.time && report.time !== "-") {
         if (targetEvo) targetEvo.time = report.time;
         toDigi.req.time = report.time;
@@ -10540,22 +10816,43 @@
       }
 
       // 조건 불명 해제
-      if (toDigi.unknownTime) {
-        toDigi.unknownTime = false;
+      toDigi.unknownTime = false;
+      toDigi.partialUnknown = false;
+
+      // 4. 화면 전환 & 포커스 (해당 디지몬이 속한 DiM으로 즉시 이동)
+      if (toDigi.dim && filterDim !== toDigi.dim) {
+        filterDim = toDigi.dim;
+        const filterSelect = document.getElementById("filter-dim");
+        if (filterSelect) filterSelect.value = filterDim;
+      }
+
+      selectedDigiId = toDigi.id;
+      if (fromDigi) {
+        activeIncomingFromId = fromDigi.id;
       }
 
       saveState();
       renderTree();
+      drawConnections();
       updateSidebar();
+
+      setTimeout(() => {
+        const nodeEl = document.getElementById(`node-${toDigi.id}`);
+        if (nodeEl) {
+          nodeEl.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+          nodeEl.classList.add("highlight-flash");
+          setTimeout(() => nodeEl.classList.remove("highlight-flash"), 1500);
+        }
+      }, 100);
 
       if (btnEl) {
         btnEl.innerHTML = "✅ 적용 완료";
-        btnEl.style.background = "#4B5563";
+        btnEl.style.background = "#10B981";
         btnEl.style.cursor = "default";
         btnEl.disabled = true;
       }
 
-      showToast(`[${report.fromName || '-'} ➔ ${report.toName}] 제보 조건이 트리에 즉시 적용되었습니다!`);
+      showToast(`[${fromDigi ? fromDigi.name : (report.fromName || '-')} ➔ ${toDigi.name}] 진화 조건이 [${toDigi.dim || filterDim}] 트리에 즉시 반영되었습니다!`);
     }
 
     // 에디터: 현재 모든 진화 조건을 구글 시트에 실시간 배포 (깃허브 배포 불필요)
@@ -10804,6 +11101,23 @@
 
       const clearAllBtn = document.getElementById("btn-clear-all-reports");
       if (clearAllBtn) clearAllBtn.addEventListener("click", clearAllReports);
+
+      // 탭 전환 이벤트 리스너 ([📥 접수된 제보] vs [🗑️ 휴지통])
+      const tabActiveBtn = document.getElementById("tab-btn-active-reports");
+      if (tabActiveBtn) {
+        tabActiveBtn.addEventListener("click", () => switchReportsTab("active"));
+      }
+
+      const tabTrashBtn = document.getElementById("tab-btn-trash-reports");
+      if (tabTrashBtn) {
+        tabTrashBtn.addEventListener("click", () => switchReportsTab("trash"));
+      }
+
+      // 휴지통 전체 비우기 버튼
+      const emptyTrashBtn = document.getElementById("btn-empty-trash");
+      if (emptyTrashBtn) {
+        emptyTrashBtn.addEventListener("click", emptyTrashAll);
+      }
 
       // 차단 패널 열고 닫기
       const toggleBlockedBtn = document.getElementById("btn-toggle-blocked-panel");
