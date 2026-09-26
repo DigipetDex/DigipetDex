@@ -19,6 +19,7 @@
 
 var SHEET_NAME_REPORTS = "유저_제보";
 var SHEET_NAME_CONDITIONS = "실시간_진화조건";
+var SHEET_NAME_BLOCKED = "차단_목록";
 
 var REPORT_HEADERS = [
   "접수일시",
@@ -32,7 +33,14 @@ var REPORT_HEADERS = [
   "필요 승률(%)",
   "조그레스 파트너",
   "아이템/캡슐",
-  "비고/메모"
+  "비고/메모",
+  "제보자 UID"
+];
+
+var BLOCKED_HEADERS = [
+  "차단 UID",
+  "차단일시",
+  "사유"
 ];
 
 var CONDITION_HEADERS = [
@@ -147,7 +155,47 @@ function doPost(e) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
+    // UID 차단 등록 액션
+    if (data.action === "block_uid" && data.uid) {
+      blockUid(ss, data.uid, data.reason || "관리자 차단");
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "UID [" + data.uid + "] 차단이 등록되었습니다.",
+        blockedUids: getBlockedUids(ss)
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // UID 차단 해제 액션
+    if (data.action === "unblock_uid" && data.uid) {
+      unblockUid(ss, data.uid);
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "UID [" + data.uid + "] 차단이 해제되었습니다.",
+        blockedUids: getBlockedUids(ss)
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 특정 UID의 모든 제보 일괄 삭제 액션
+    if (data.action === "delete_by_uid" && data.uid) {
+      deleteReportsByUid(ss, data.uid);
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "UID [" + data.uid + "] 의 모든 제보가 삭제되었습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     // 신규 제보 추가 (유저 뷰어에서 제보 전송 시)
+    var clientUid = String(data.uid || "").trim();
+    if (clientUid) {
+      var blockedList = getBlockedUids(ss);
+      if (blockedList.indexOf(clientUid) !== -1) {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: "blocked",
+          message: "제보가 제한된 사용자(차단된 UID)입니다."
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+
     var now = new Date();
     var tz = Session.getScriptTimeZone() || "Asia/Seoul";
     var formattedDate = Utilities.formatDate(now, tz, "yyyy-MM-dd HH:mm:ss");
@@ -164,7 +212,8 @@ function doPost(e) {
       data.winRate !== undefined && data.winRate !== null ? data.winRate : "",
       data.jogress || "",
       data.item || "",
-      data.note || ""
+      data.note || "",
+      clientUid
     ];
 
     reportSheet.appendRow(row);
@@ -286,51 +335,192 @@ function doGet(e) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
+    // GET 방식 UID 차단/해제
+    if (action === "block_uid") {
+      var uidToBlock = String(e.parameter.uid || "").trim();
+      if (uidToBlock) blockUid(ss, uidToBlock, e.parameter.reason || "관리자 차단");
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "UID [" + uidToBlock + "] 차단 완료",
+        blockedUids: getBlockedUids(ss)
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (action === "unblock_uid") {
+      var uidToUnblock = String(e.parameter.uid || "").trim();
+      if (uidToUnblock) unblockUid(ss, uidToUnblock);
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "UID [" + uidToUnblock + "] 차단 해제 완료",
+        blockedUids: getBlockedUids(ss)
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var blockedList = getBlockedUids(ss);
+
     if (!reportSheet || reportSheet.getLastRow() <= 1) {
       return ContentService.createTextOutput(JSON.stringify({
         status: "success",
-        reports: []
+        reports: [],
+        blockedUids: blockedList
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
     var lastRow = reportSheet.getLastRow();
-    var lastCol = REPORT_HEADERS.length;
-    var values = reportSheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+    var lastCol = reportSheet.getLastColumn();
+    var allReportVals = reportSheet.getRange(1, 1, lastRow, lastCol).getValues();
+    var reportHeaderRow = allReportVals[0];
+
+    var rColMap = {};
+    for (var rhi = 0; rhi < reportHeaderRow.length; rhi++) {
+      rColMap[String(reportHeaderRow[rhi]).trim()] = rhi;
+    }
+
+    var tsIdx = rColMap["접수일시"] !== undefined ? rColMap["접수일시"] : 0;
+    var rDimIdx = rColMap["DiM"] !== undefined ? rColMap["DiM"] : 1;
+    var rFromIdx = rColMap["출발 디지몬"] !== undefined ? rColMap["출발 디지몬"] : 2;
+    var rToIdx = rColMap["진화 디지몬"] !== undefined ? rColMap["진화 디지몬"] : 3;
+    var rTimeIdx = rColMap["진화 시간"] !== undefined ? rColMap["진화 시간"] : 4;
+    var rVitalIdx = rColMap["필요 바이탈"] !== undefined ? rColMap["필요 바이탈"] : 5;
+    var rPpIdx = rColMap["필요 PP"] !== undefined ? rColMap["필요 PP"] : 6;
+    var rBattleIdx = rColMap["배틀 횟수"] !== undefined ? rColMap["배틀 횟수"] : 7;
+    var rWinRateIdx = rColMap["필요 승률(%)"] !== undefined ? rColMap["필요 승률(%)"] : 8;
+    var rJogressIdx = rColMap["조그레스 파트너"] !== undefined ? rColMap["조그레스 파트너"] : 9;
+    var rItemIdx = rColMap["아이템/캡슐"] !== undefined ? rColMap["아이템/캡슐"] : 10;
+    var rNoteIdx = rColMap["비고/메모"] !== undefined ? rColMap["비고/메모"] : 11;
+    var rUidIdx = rColMap["제보자 UID"] !== undefined ? rColMap["제보자 UID"] : rColMap["UID"];
 
     var reports = [];
-    for (var i = 0; i < values.length; i++) {
-      var r = values[i];
-      if (!r[1] && !r[2] && !r[3]) continue;
+    for (var ri = 1; ri < allReportVals.length; ri++) {
+      var r = allReportVals[ri];
+      var fVal = rFromIdx !== undefined ? r[rFromIdx] : r[2];
+      var tVal = rToIdx !== undefined ? r[rToIdx] : r[3];
+      if (!fVal && !tVal) continue;
 
       reports.push({
-        id: (i + 2),
-        timestamp: r[0],
-        dim: r[1],
-        fromName: r[2],
-        toName: r[3],
-        time: r[4],
-        vital: r[5],
-        pp: r[6],
-        battle: r[7],
-        winRate: r[8],
-        jogress: r[9],
-        item: r[10],
-        note: r[11]
+        id: (ri + 1),
+        timestamp: tsIdx !== undefined ? r[tsIdx] : "",
+        dim: rDimIdx !== undefined ? r[rDimIdx] : "",
+        fromName: fVal || "",
+        toName: tVal || "",
+        time: rTimeIdx !== undefined ? r[rTimeIdx] : "",
+        vital: rVitalIdx !== undefined ? r[rVitalIdx] : "",
+        pp: rPpIdx !== undefined ? r[rPpIdx] : "",
+        battle: rBattleIdx !== undefined ? r[rBattleIdx] : "",
+        winRate: rWinRateIdx !== undefined ? r[rWinRateIdx] : "",
+        jogress: rJogressIdx !== undefined ? r[rJogressIdx] : "",
+        item: rItemIdx !== undefined ? r[rItemIdx] : "",
+        note: rNoteIdx !== undefined ? r[rNoteIdx] : "",
+        uid: (rUidIdx !== undefined && r[rUidIdx]) ? String(r[rUidIdx]).trim() : ""
       });
     }
 
     return ContentService.createTextOutput(JSON.stringify({
       status: "success",
       count: reports.length,
-      reports: reports
+      reports: reports,
+      blockedUids: blockedList
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({
       status: "error",
       message: error.toString(),
-      reports: []
+      reports: [],
+      blockedUids: []
     })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * 차단 시트 객체 반환 및 없으면 생성/초기화
+ */
+function getBlockedSheet(ss) {
+  var sheet = ss.getSheetByName(SHEET_NAME_BLOCKED);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME_BLOCKED);
+    sheet.appendRow(BLOCKED_HEADERS);
+    var hRange = sheet.getRange(1, 1, 1, BLOCKED_HEADERS.length);
+    hRange.setBackground("#DC2626");
+    hRange.setFontColor("#FFFFFF");
+    hRange.setFontWeight("bold");
+    hRange.setHorizontalAlignment("center");
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(1, 160); // 차단 UID
+    sheet.setColumnWidth(2, 160); // 차단일시
+    sheet.setColumnWidth(3, 240); // 사유
+  }
+  return sheet;
+}
+
+/**
+ * 현재 차단된 UID 목록 문자열 배열 반환
+ */
+function getBlockedUids(ss) {
+  var sheet = getBlockedSheet(ss);
+  if (sheet.getLastRow() <= 1) return [];
+  var vals = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
+  var list = [];
+  for (var i = 0; i < vals.length; i++) {
+    var u = String(vals[i][0] || "").trim();
+    if (u && list.indexOf(u) === -1) {
+      list.push(u);
+    }
+  }
+  return list;
+}
+
+/**
+ * UID 차단 등록
+ */
+function blockUid(ss, uid, reason) {
+  if (!uid) return;
+  var sheet = getBlockedSheet(ss);
+  var current = getBlockedUids(ss);
+  if (current.indexOf(uid) !== -1) return;
+  var tz = Session.getScriptTimeZone() || "Asia/Seoul";
+  var nowStr = Utilities.formatDate(new Date(), tz, "yyyy-MM-dd HH:mm:ss");
+  sheet.appendRow([uid, nowStr, reason || "관리자 차단"]);
+}
+
+/**
+ * UID 차단 해제
+ */
+function unblockUid(ss, uid) {
+  if (!uid) return;
+  var sheet = getBlockedSheet(ss);
+  if (sheet.getLastRow() <= 1) return;
+  var vals = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
+  for (var i = vals.length - 1; i >= 0; i--) {
+    if (String(vals[i][0] || "").trim() === uid) {
+      sheet.deleteRow(i + 2);
+    }
+  }
+}
+
+/**
+ * 특정 UID가 등록한 모든 제보 일괄 삭제
+ */
+function deleteReportsByUid(ss, uid) {
+  if (!uid) return;
+  var sheet = ss.getSheetByName(SHEET_NAME_REPORTS);
+  if (!sheet || sheet.getLastRow() <= 1) return;
+  var lastR = sheet.getLastRow();
+  var lastC = sheet.getLastColumn();
+  var allV = sheet.getRange(1, 1, lastR, lastC).getValues();
+  var header = allV[0];
+  var uCol = -1;
+  for (var h = 0; h < header.length; h++) {
+    if (String(header[h]).indexOf("UID") !== -1) {
+      uCol = h;
+      break;
+    }
+  }
+  if (uCol === -1) uCol = 12; // 13번째 열 (0-indexed 12)
+  for (var r = allV.length - 1; r >= 1; r--) {
+    if (String(allV[r][uCol] || "").trim() === uid) {
+      sheet.deleteRow(r + 1);
+    }
   }
 }
 
@@ -348,8 +538,9 @@ function initReportSheetHeaders(sheet) {
   for (var col = 1; col <= REPORT_HEADERS.length; col++) {
     sheet.setColumnWidth(col, 130);
   }
-  sheet.setColumnWidth(1, 150);
-  sheet.setColumnWidth(12, 220);
+  sheet.setColumnWidth(1, 150); // 접수일시
+  sheet.setColumnWidth(12, 220); // 비고
+  sheet.setColumnWidth(13, 150); // 제보자 UID
 }
 
 /**
