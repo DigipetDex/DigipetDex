@@ -216,6 +216,16 @@ function doPost(e) {
       clientUid
     ];
 
+    // 13번째 열(제보자 UID) 헤더 자동 보정
+    if (reportSheet.getLastColumn() < 13 || !reportSheet.getRange(1, 13).getValue()) {
+      reportSheet.getRange(1, 13).setValue("제보자 UID");
+      reportSheet.getRange(1, 13).setBackground("#4F46E5");
+      reportSheet.getRange(1, 13).setFontColor("#FFFFFF");
+      reportSheet.getRange(1, 13).setFontWeight("bold");
+      reportSheet.getRange(1, 13).setHorizontalAlignment("center");
+      reportSheet.setColumnWidth(13, 150);
+    }
+
     reportSheet.appendRow(row);
 
     return ContentService.createTextOutput(JSON.stringify({
@@ -389,6 +399,28 @@ function doGet(e) {
     var rItemIdx = rColMap["아이템/캡슐"] !== undefined ? rColMap["아이템/캡슐"] : 10;
     var rNoteIdx = rColMap["비고/메모"] !== undefined ? rColMap["비고/메모"] : 11;
     var rUidIdx = rColMap["제보자 UID"] !== undefined ? rColMap["제보자 UID"] : rColMap["UID"];
+    if (rUidIdx === undefined) {
+      for (var colKey in rColMap) {
+        if (colKey.indexOf("UID") !== -1) {
+          rUidIdx = rColMap[colKey];
+          break;
+        }
+      }
+    }
+    // 헤더에 명시되지 않았으나 13열 이상이 존재하거나 빈 경우 12(13번째 열)를 기본값으로 지정
+    if (rUidIdx === undefined) {
+      rUidIdx = 12;
+      try {
+        if (!reportSheet.getRange(1, 13).getValue()) {
+          reportSheet.getRange(1, 13).setValue("제보자 UID");
+          reportSheet.getRange(1, 13).setBackground("#4F46E5");
+          reportSheet.getRange(1, 13).setFontColor("#FFFFFF");
+          reportSheet.getRange(1, 13).setFontWeight("bold");
+          reportSheet.getRange(1, 13).setHorizontalAlignment("center");
+          reportSheet.setColumnWidth(13, 150);
+        }
+      } catch (hErr) {}
+    }
 
     var reports = [];
     for (var ri = 1; ri < allReportVals.length; ri++) {
@@ -396,6 +428,13 @@ function doGet(e) {
       var fVal = rFromIdx !== undefined ? r[rFromIdx] : r[2];
       var tVal = rToIdx !== undefined ? r[rToIdx] : r[3];
       if (!fVal && !tVal) continue;
+
+      var extractedUid = "";
+      if (rUidIdx !== undefined && r[rUidIdx] !== undefined && r[rUidIdx] !== null && String(r[rUidIdx]).trim()) {
+        extractedUid = String(r[rUidIdx]).trim();
+      } else if (r.length > 12 && r[12] !== undefined && r[12] !== null && String(r[12]).trim()) {
+        extractedUid = String(r[12]).trim();
+      }
 
       reports.push({
         id: (ri + 1),
@@ -411,7 +450,7 @@ function doGet(e) {
         jogress: rJogressIdx !== undefined ? r[rJogressIdx] : "",
         item: rItemIdx !== undefined ? r[rItemIdx] : "",
         note: rNoteIdx !== undefined ? r[rNoteIdx] : "",
-        uid: (rUidIdx !== undefined && r[rUidIdx]) ? String(r[rUidIdx]).trim() : ""
+        uid: extractedUid
       });
     }
 

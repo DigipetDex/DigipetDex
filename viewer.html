@@ -1596,7 +1596,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.11</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.13</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -1633,6 +1633,9 @@
       
       <!-- 훈련 계산기 및 뷰어 모드 토글 -->
       <span class="toolbar-sep" style="color:var(--border-color)">|</span>
+      <span class="editor-only" style="display:inline-flex; align-items:center; gap:5px; font-size:0.75rem; color:#94A3B8; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:3px 8px; border-radius:4px; font-family:monospace;" title="현재 브라우저의 클라이언트 식별 ID (UID)">
+        <span>👤 UID:</span><strong id="editor-header-my-uid" style="color:#38BDF8;">-</strong>
+      </span>
       <button class="editor-only" id="btn-open-reports" style="background:#0284C7; font-weight:700; display:inline-flex; align-items:center; gap:5px;" title="구글 시트에 수집된 유저 제보 목록을 확인하고 진화트리에 1초 만에 즉시 적용합니다.">
         <span>📬 제보 확인</span>
         <span id="report-badge-count" style="display:none; background:#EF4444; color:#fff; font-size:0.7rem; padding:1px 6px; border-radius:10px;">0</span>
@@ -2402,10 +2405,15 @@
   <div class="modal-overlay editor-only" id="review-reports-modal" style="display:none; z-index:1150;">
     <div class="modal-box" style="max-width: 720px; width: 94%; max-height: 92vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; background: #1E1F22; border: 1px solid #33363D; border-radius: 12px; box-shadow: 0 16px 45px rgba(0,0,0,0.85);">
       
-      <div style="padding: 12px 18px; background: #23272A; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 1.1rem;">📬</span>
-          <span style="font-size: 0.95rem; color: #FFF; font-weight: 700;">유저 진화 조건 제보함 (Google Sheets 연동)</span>
+      <div style="padding: 12px 18px; background: #23272A; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.1rem;">📬</span>
+            <span style="font-size: 0.95rem; color: #FFF; font-weight: 700;">유저 진화 조건 제보함 (Google Sheets 연동)</span>
+          </div>
+          <span style="font-size: 0.73rem; color: #38BDF8; background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.35); padding: 2px 8px; border-radius: 4px; font-family: monospace;" title="현재 이 브라우저의 클라이언트 고유 식별 번호">
+            내 클라이언트 UID: <strong id="editor-current-client-uid" style="color: #BAE6FD;">-</strong>
+          </span>
         </div>
         <button class="modal-close" id="review-reports-close" style="font-size: 1.15rem; color: #94A3B8; cursor: pointer; background: none; border: none; line-height: 1;">✕</button>
       </div>
@@ -2426,8 +2434,9 @@
             <span>🗑️ 전체 비우기</span>
           </button>
         </div>
-        <div style="font-size: 0.72rem; color: #94A3B8;">
-          구글 스프레드시트의 <code>[확장 프로그램 ➔ Apps Script]</code>에 <code>google_apps_script.js</code>를 웹 앱으로 배포한 뒤 URL을 등록하세요.
+        <div style="font-size: 0.72rem; color: #94A3B8; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
+          <span>구글 스프레드시트의 <code>[확장 프로그램 ➔ Apps Script]</code>에 <code>google_apps_script.js</code>를 웹 앱으로 배포한 뒤 URL을 등록하세요.</span>
+          <span style="color: #6EE7B7; font-size: 0.7rem;">※ 구글 시트 13번째 열(제보자 UID) 자동 연동</span>
         </div>
       </div>
 
@@ -2468,7 +2477,7 @@
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.11 (09.26 15:25)";
+    const APP_VERSION = "v1.3.13 (09.26 15:38)";
 
     // 브라우저 및 Electron 앱 공용 비동기 입력 대화상자 (도감 검색 및 연동 미리보기 지원)
     function showCustomPrompt(title, desc, defaultValue = "", placeholder = "", datalistId = "") {
@@ -10079,6 +10088,9 @@
       if (!modal) return;
       modal.style.display = "flex";
 
+      const myUidEl = document.getElementById("editor-current-client-uid");
+      if (myUidEl) myUidEl.textContent = getClientUid();
+
       const urlInput = document.getElementById("report-gas-url-input");
       const savedUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
       if (urlInput) {
@@ -10312,11 +10324,15 @@
               </div>
               <div style="display:flex; align-items:center; gap:6px;">
                 ${rep.uid ? `
-                  <span style="font-size:0.72rem; color:${isBlocked ? '#FCA5A5' : '#CBD5E1'}; background:${isBlocked ? 'rgba(220,38,38,0.25)' : 'rgba(255,255,255,0.06)'}; border:1px solid ${isBlocked ? 'rgba(220,38,38,0.5)' : 'rgba(255,255,255,0.12)'}; padding:1px 6px; border-radius:4px; font-family:monospace;" title="제보자 식별 ID (UID)">
-                    👤 ${escapeHtml(rep.uid)}
+                  <span style="font-size:0.75rem; font-weight:700; color:${isBlocked ? '#FCA5A5' : '#38BDF8'}; background:${isBlocked ? 'rgba(220,38,38,0.25)' : 'rgba(56,189,248,0.15)'}; border:1px solid ${isBlocked ? 'rgba(220,38,38,0.5)' : 'rgba(56,189,248,0.4)'}; padding:2px 8px; border-radius:4px; font-family:monospace;" title="제보자 식별 ID (UID)">
+                    👤 UID: ${escapeHtml(rep.uid)}
                   </span>
-                  ${isBlocked ? `<span style="font-size:0.68rem; background:#DC2626; color:#FFF; padding:1px 5px; border-radius:3px; font-weight:700;">차단됨</span>` : ''}
-                ` : ''}
+                  ${isBlocked ? `<span style="font-size:0.68rem; background:#DC2626; color:#FFF; padding:2px 6px; border-radius:3px; font-weight:700;">차단됨</span>` : ''}
+                ` : `
+                  <span style="font-size:0.72rem; color:#94A3B8; background:rgba(255,255,255,0.05); border:1px dashed rgba(255,255,255,0.2); padding:2px 7px; border-radius:4px; font-family:monospace;" title="UID 도입 이전에 접수되었거나 구글 앱 스크립트 최신 버전 배포 전에 작성된 제보입니다.">
+                    👤 UID 없음 (구버전 제보)
+                  </span>
+                `}
                 <span style="font-size:0.75rem; color:#A78BFA; font-weight:600;">
                   시트 #${rep.id || ''}
                 </span>
@@ -10341,7 +10357,9 @@
                   <button type="button" class="btn-block-report-uid" data-uid="${escapeHtml(rep.uid)}" style="padding:5px 9px; font-size:0.78rem; font-weight:600; background:rgba(220,38,38,0.2); border:1px solid rgba(220,38,38,0.5); color:#FCA5A5; border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:4px;" title="이 제보자 UID 차단">
                     <span>🚫 UID 차단</span>
                   </button>
-                `) : ''}
+                `) : `
+                  <span style="font-size:0.72rem; color:#6B7280; padding:4px 6px;" title="이 제보는 UID가 기록되어 있지 않아 특정 사용자 차단이 불가합니다.">(UID 미기록)</span>
+                `}
                 <button type="button" class="btn-delete-report-item" data-id="${rep.id}" style="padding:5px 10px; font-size:0.8rem; font-weight:600; background:#374151; border:1px solid #4B5563; color:#F87171; border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:4px;" title="이 제보 삭제">
                   <span>🗑️ 삭제</span>
                 </button>
@@ -10835,6 +10853,8 @@
       initOfficialDatalist();
       initTrainingCalc();
       initReportsSystem();
+      const headerMyUid = document.getElementById("editor-header-my-uid");
+      if (headerMyUid) headerMyUid.textContent = getClientUid();
       updateLineStyleButton();
       if (!filterDim || (project.dims && !project.dims.includes(filterDim))) {
         filterDim = (project.dims && project.dims.includes("아구몬 EX")) ? "아구몬 EX" : ((project.dims && project.dims[0]) || "아구몬 EX");
