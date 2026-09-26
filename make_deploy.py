@@ -57,6 +57,17 @@ def bump_version(base_dir):
             rf'\g<1>{version_tag}\g<2>',
             content
         )
+        # 브라우저 강력 캐싱 방지: project_data.js와 digimon_db.js에 배포 버전 쿼리스트링 자동 부착
+        content = re.sub(
+            r'src="project_data\.js(\?[^"]*)?"',
+            f'src="project_data.js?v={version_tag}"',
+            content
+        )
+        content = re.sub(
+            r'src="digimon_db\.js(\?[^"]*)?"',
+            f'src="digimon_db.js?v={version_tag}"',
+            content
+        )
 
         with open(editor_path, "w", encoding="utf-8") as f:
             f.write(content)

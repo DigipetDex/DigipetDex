@@ -1322,7 +1322,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "req": {
         "time": "24시간",
         "vital": 600,
-        "pp": 85,
+        "pp": 5,
         "battle": 18,
         "winRate": "",
         "dungeon": "-",
@@ -11224,7 +11224,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790180933835",
       "time": "24시간",
       "vital": 600,
-      "pp": 85,
+      "pp": 5,
       "battle": 18,
       "winRate": "",
       "dungeon": "-",
