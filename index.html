@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="digimon_db.js?v=v1.3.21"></script>
-  <script src="project_data.js?v=v1.3.21"></script>
+  <script src="digimon_db.js?v=v1.3.23"></script>
+  <script src="project_data.js?v=v1.3.23"></script>
   <script src="xlsx.full.min.js"></script>
   <style>
     :root {
@@ -1596,7 +1596,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.21</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.23</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -2496,7 +2496,7 @@
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.21 (09.27 01:46)";
+    const APP_VERSION = "v1.3.23 (09.27 14:32)";
 
     // 브라우저 및 Electron 앱 공용 비동기 입력 대화상자 (도감 검색 및 연동 미리보기 지원)
     function showCustomPrompt(title, desc, defaultValue = "", placeholder = "", datalistId = "") {
@@ -6641,6 +6641,85 @@
       };
     }
 
+    // 특정 진화선(evo)의 조건이 실제로 밝혀졌는지(입력되었는지) 판별
+    function isEvoRevealed(evo, stage = null) {
+      if (!evo) return false;
+      if (["디지타마", "유년기 I", "유년기 II"].includes(stage)) {
+        return Boolean(evo.time && evo.time !== "-");
+      }
+      const hasVital = evo.vital !== "" && evo.vital !== undefined && evo.vital !== null && evo.vital !== "-";
+      const hasPp = evo.pp !== "" && evo.pp !== undefined && evo.pp !== null && evo.pp !== "-";
+      const hasBattle = evo.battle !== "" && evo.battle !== undefined && evo.battle !== null && evo.battle !== "-";
+      const hasWinRate = evo.winRate !== "" && evo.winRate !== undefined && evo.winRate !== null && evo.winRate !== "-";
+      const hasJogress = evo.jogress && evo.jogress !== "-" && evo.jogress !== "없음";
+      const hasItem = evo.item && evo.item !== "-" && evo.item !== "없음";
+      return Boolean(hasVital || hasPp || hasBattle || hasWinRate || hasJogress || hasItem);
+    }
+
+    // 디지몬의 모든 들어오는 진화 루트(A>D, B>D, C>D) 상태를 종합 판정하여 공개/일부불명/조건불명 자동 산출
+    function updateDigimonConditionStatus(digi) {
+      if (!digi) return;
+      if (digi.stage === "디지타마") {
+        digi.unknownTime = false;
+        digi.partialUnknown = false;
+        return;
+      }
+
+      const incoming = project.evolutions ? project.evolutions.filter(e => e.to === digi.id) : [];
+      if (incoming.length <= 1) {
+        if (incoming.length === 1) {
+          const evo = incoming[0];
+          if (isEvoRevealed(evo, digi.stage)) {
+            digi.unknownTime = false;
+            digi.partialUnknown = false;
+          } else if (digi.unknownTime) {
+            digi.partialUnknown = false;
+          }
+        } else {
+          const hasReq = isEvoRevealed(digi.req, digi.stage);
+          if (hasReq) {
+            digi.unknownTime = false;
+            digi.partialUnknown = false;
+          }
+        }
+        return;
+      }
+
+      const totalCount = incoming.length;
+      const revealedCount = incoming.filter(e => isEvoRevealed(e, digi.stage)).length;
+
+      if (revealedCount === 0) {
+        // 밝혀진 루트가 0개 -> 조건 불명
+        digi.unknownTime = true;
+        digi.partialUnknown = false;
+      } else if (revealedCount < totalCount) {
+        // 1개 이상이지만 전체 루트보다 적음 -> 일부 불명! (A>D, B>D, C>D 중 하나라도 비어있으면 일부 불명)
+        digi.unknownTime = false;
+        digi.partialUnknown = true;
+      } else {
+        // 모든 루트가 밝혀짐 -> 전체 공개
+        digi.unknownTime = false;
+        digi.partialUnknown = false;
+      }
+    }
+
+    // 전체 디지몬의 조건 공개 상태를 일괄 재계산하여 정합성 보정
+    function recalculateAllDigimonConditionStatuses() {
+      if (!project || !project.digimons) return;
+      let fixedCount = 0;
+      Object.values(project.digimons).forEach(d => {
+        const oldUnknown = Boolean(d.unknownTime);
+        const oldPartial = Boolean(d.partialUnknown);
+        updateDigimonConditionStatus(d);
+        if (oldUnknown !== Boolean(d.unknownTime) || oldPartial !== Boolean(d.partialUnknown)) {
+          fixedCount++;
+        }
+      });
+      if (fixedCount > 0) {
+        console.log(`[조건 상태 자동 보정] ${fixedCount}개 디지몬의 공개/일부불명 상태 갱신 완료`);
+      }
+    }
+
     // DiM 고유 식별자 문자열 변환 (DOM ID용)
     function cleanDimId(dimStr) {
       return (dimStr || "default").replace(/[^a-zA-Z0-9_-]/g, "_");
@@ -7829,12 +7908,14 @@
         const tab = document.createElement("button");
         tab.type = "button";
         const isActive = (evo.from === activeIncomingFromId);
+        const isRevealed = isEvoRevealed(evo, digi.stage);
         tab.className = `route-tab-chip ${isActive ? "active" : ""}`;
         tab.innerHTML = `
           ${fromD.img ? `<img src="${encodeURI(fromD.img)}" alt="${escapeHtml(fromD.name)}" onerror="this.style.display='none'">` : ``}
           <span style="font-weight:600;">${escapeHtml(fromD.name)}</span>
           <span style="color:#8E9297; font-size:0.7rem;">➔</span>
           <span style="color:#FFF; font-weight:700;">${escapeHtml(digi.name)}</span>
+          ${isRevealed ? `<span style="font-size:0.68rem; color:#57F287; margin-left:3px; font-weight:bold;" title="조건 확인됨">✓</span>` : `<span style="font-size:0.68rem; color:#FCA5A5; margin-left:3px; font-weight:bold;" title="조건 불명">❓</span>`}
         `;
 
         tab.addEventListener("click", () => {
@@ -8062,7 +8143,10 @@
       });
 
       saveState();
-      showToast(`현재 루트의 달성 조건이 모든 진화선(${incoming.length}개)에 복사되었습니다!`, "success");
+      updateDigimonConditionStatus(digi);
+      renderTree();
+      updateSidebar();
+      showToast(`현재 루트의 달성 조건이 모든 진화선(${incoming.length}개)에 복사되었습니다! (전체 공개 완료)`, "success");
     }
 
     function updateIncomingBranchesHighlight() {
@@ -8443,10 +8527,33 @@
             <span style="font-size:1.2rem; line-height:1;">🌓</span>
             <div>
               <div style="color:#FFF; font-weight:700;">일부 진화 루트 조건 불명</div>
-              <div style="font-size:0.72rem; color:#94A3B8; font-weight:400; margin-top:2px;">일부 루트의 조건만 확인된 디지몬입니다. 미확인 루트 제보바람.</div>
+              <div style="font-size:0.72rem; color:#94A3B8; font-weight:400; margin-top:2px;">일부 루트의 조건만 확인된 디지몬입니다. 상단 탭에서 각 루트별 조건을 확인할 수 있습니다.</div>
             </div>
           </div>
         `;
+
+        const isCurRouteRevealed = isEvoRevealed(activeEvo, digi.stage);
+        if (!isCurRouteRevealed) {
+          const fromDigi = activeEvo ? project.digimons[activeEvo.from] : null;
+          const fromName = fromDigi ? fromDigi.name : "이전 단계";
+          condCard.innerHTML = partialNoticeHtml + `
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:16px; background:#23272A; border:1px dashed #F87171; border-radius:8px; text-align:center;">
+              <div style="display:flex; align-items:center; gap:6px; color:#FCA5A5; font-size:0.85rem; font-weight:700;">
+                <span>❓</span>
+                <span>[${escapeHtml(fromName)} ➔ ${escapeHtml(digi.name)}] 조건 불명</span>
+              </div>
+              <div style="font-size:0.75rem; color:#94A3B8;">이 진화 루트의 조건은 아직 밝혀지지 않았습니다.</div>
+              <button type="button" class="btn-open-report-from-viewer" style="padding:6px 14px; background:#0284C7; color:#FFF; border:none; border-radius:6px; font-weight:700; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(2,132,199,0.35);">
+                <span>📢</span><span>이 루트 조건 제보하기</span>
+              </button>
+            </div>
+          `;
+          const btn = condCard.querySelector(".btn-open-report-from-viewer");
+          if (btn) {
+            btn.addEventListener("click", () => openReportModalForDigi(digi));
+          }
+          return;
+        }
       }
 
       condCard.innerHTML = partialNoticeHtml + `
@@ -8559,8 +8666,10 @@
         }
       }
 
+      updateDigimonConditionStatus(digi);
       saveState();
       syncSameNameDigimons(digi);
+      renderRouteTabs(digi);
     }
 
     document.querySelectorAll(".req-input").forEach(input => {
@@ -10815,9 +10924,9 @@
         toDigi.req.note = report.note;
       }
 
-      // 조건 불명 해제
-      toDigi.unknownTime = false;
-      toDigi.partialUnknown = false;
+      // 다중 루트 상태 종합 판정 (A>D, B>D, C>D 등 모든 루트가 밝혀져야 전체 공개, 하나라도 비어있으면 일부 불명)
+      updateDigimonConditionStatus(toDigi);
+      syncSameNameDigimons(toDigi);
 
       // 4. 화면 전환 & 포커스 (해당 디지몬이 속한 DiM으로 즉시 이동)
       if (toDigi.dim && filterDim !== toDigi.dim) {
@@ -10852,7 +10961,8 @@
         btnEl.disabled = true;
       }
 
-      showToast(`[${fromDigi ? fromDigi.name : (report.fromName || '-')} ➔ ${toDigi.name}] 진화 조건이 [${toDigi.dim || filterDim}] 트리에 즉시 반영되었습니다!`);
+      const statusSuffix = toDigi.partialUnknown ? " (다른 미확인 루트가 있어 '일부 불명 🌓' 상태 유지)" : (toDigi.unknownTime ? " (조건 불명 상태)" : " (모든 루트 확인 완료 🟢)");
+      showToast(`[${fromDigi ? fromDigi.name : (report.fromName || '-')} ➔ ${toDigi.name}] 진화 조건이 [${toDigi.dim || filterDim}] 트리에 즉시 반영되었습니다!${statusSuffix}`);
     }
 
     // 에디터: 현재 모든 진화 조건을 구글 시트에 실시간 배포 (깃허브 배포 불필요)
@@ -11164,6 +11274,7 @@
       }
       applyViewerModeUI();
       autoSyncAllSameNameDigimons();
+      recalculateAllDigimonConditionStatuses();
       initOfficialDatalist();
       initTrainingCalc();
       initReportsSystem();
