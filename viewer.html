@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="digimon_db.js?v=v1.3.63"></script>
-  <script src="project_data.js?v=v1.3.63"></script>
+  <script src="digimon_db.js?v=v1.3.68"></script>
+  <script src="project_data.js?v=v1.3.68"></script>
   <script src="xlsx.full.min.js"></script>
   <style>
     :root {
@@ -2409,7 +2409,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.63</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.68</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -3574,7 +3574,7 @@
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.63 (09.30 18:23)";
+    const APP_VERSION = "v1.3.68 (09.30 23:31)";
 
     // 브라우저 및 Electron 앱 공용 비동기 입력 대화상자 (도감 검색 및 연동 미리보기 지원)
     function showCustomPrompt(title, desc, defaultValue = "", placeholder = "", datalistId = "", disableDigiCheck = false) {
@@ -7750,14 +7750,14 @@
 
       const dReq = digi?.req || {};
       return {
-        time: (evo.time !== undefined && evo.time !== null && evo.time !== "") ? evo.time : (dReq.time || stageDefault?.time || "-"),
-        vital: (evo.vital !== undefined && evo.vital !== null && evo.vital !== "") ? evo.vital : (dReq.vital ?? ""),
-        pp: (evo.pp !== undefined && evo.pp !== null && evo.pp !== "") ? evo.pp : (dReq.pp ?? ""),
-        battle: (evo.battle !== undefined && evo.battle !== null && evo.battle !== "") ? evo.battle : (dReq.battle ?? ""),
-        winRate: (evo.winRate !== undefined && evo.winRate !== null && evo.winRate !== "") ? evo.winRate : (dReq.winRate ?? ""),
-        dungeon: (evo.dungeon !== undefined && evo.dungeon !== null && evo.dungeon !== "") ? evo.dungeon : (dReq.dungeon || stageDefault?.dungeon || "-"),
-        jogress: (evo.jogress !== undefined && evo.jogress !== null && evo.jogress !== "") ? evo.jogress : (dReq.jogress || stageDefault?.jogress || "-"),
-        item: (evo.item !== undefined && evo.item !== null && evo.item !== "") ? evo.item : (dReq.item || stageDefault?.item || "-"),
+        time: (evo.time !== undefined && evo.time !== null) ? evo.time : (dReq.time || stageDefault?.time || "-"),
+        vital: (evo.vital !== undefined && evo.vital !== null) ? evo.vital : (dReq.vital ?? ""),
+        pp: (evo.pp !== undefined && evo.pp !== null) ? evo.pp : (dReq.pp ?? ""),
+        battle: (evo.battle !== undefined && evo.battle !== null) ? evo.battle : (dReq.battle ?? ""),
+        winRate: (evo.winRate !== undefined && evo.winRate !== null) ? evo.winRate : (dReq.winRate ?? ""),
+        dungeon: (evo.dungeon !== undefined && evo.dungeon !== null) ? evo.dungeon : (dReq.dungeon || stageDefault?.dungeon || "-"),
+        jogress: (evo.jogress !== undefined && evo.jogress !== null) ? evo.jogress : (dReq.jogress || stageDefault?.jogress || "-"),
+        item: (evo.item !== undefined && evo.item !== null) ? evo.item : (dReq.item || stageDefault?.item || "-"),
         note: (evo.note !== undefined && evo.note !== null) ? evo.note : (dReq.note || "")
       };
     }
@@ -9841,10 +9841,14 @@
         activeEvo[field] = parsedVal;
       }
 
-      // 2. 들어오는 진화선이 1개 이하인 경우에만 digi.req와 동기화 (2개 이상인 경우 각 루트 완전 독립)
+      // 2. 디지몬 기본 조건(digi.req)도 함께 갱신하여 이전 기본값이 남아 되돌아가는 현상 방지
+      if (digi.req) {
+        digi.req[field] = parsedVal;
+      }
+
+      // 3. 들어오는 진화선이 1개 이하인 경우 진화선 전체 동기화
       const incoming = project.evolutions.filter(ev => ev.to === selectedDigiId);
       if (incoming.length <= 1) {
-        digi.req[field] = parsedVal;
         incoming.forEach(ev => {
           ev[field] = parsedVal;
         });
@@ -11968,8 +11972,11 @@
                 <button type="button" class="btn-wiki-delete-action editor-only" data-rev-id="${escapeHtml(item.revisionId)}" style="padding: 4px 8px; font-size: 0.73rem; background: #2B2D31; color: #FCA5A5; border: 1px solid rgba(239,68,68,0.4); border-radius: 4px; cursor: pointer; font-weight: 600;" title="이 변경 내역 항목을 삭제합니다 (에디터 전용)">
                   <span>내역 삭제</span>
                 </button>
-                <button type="button" class="btn-wiki-revert-action" data-rev-id="${escapeHtml(item.revisionId)}" style="padding: 4px 10px; font-size: 0.75rem; background: #DC2626; color: #FFF; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(220,38,38,0.35);" title="이 편집이 발생하기 전 상태로 디지몬 정보를 되돌립니다.">
-                  <span>이 변경 되돌리기</span>
+                <button type="button" class="btn-wiki-restore-version" data-rev-id="${escapeHtml(item.revisionId)}" style="padding: 4px 10px; font-size: 0.75rem; background: #2563EB; color: #FFF; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(37,99,235,0.35);" title="이 리비전(버전)에 입력되었던 데이터 내용으로 도감을 복원합니다.">
+                  <span>↺ 이 버전으로 복구</span>
+                </button>
+                <button type="button" class="btn-wiki-revert-action" data-rev-id="${escapeHtml(item.revisionId)}" style="padding: 4px 9px; font-size: 0.73rem; background: #2B2D31; color: #FCA5A5; border: 1px solid rgba(220,38,38,0.4); border-radius: 4px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 3px;" title="이 편집이 발생하기 전 상태로 취소합니다.">
+                  <span>이 편집 취소</span>
                 </button>
               </div>
             </div>
@@ -11980,12 +11987,21 @@
 
       listEl.innerHTML = html;
 
-      // 되돌리기 버튼 이벤트 연결
+      // 이 버전으로 복구 버튼 이벤트 연결 (해당 리비전의 입력 데이터로 복원)
+      const restoreBtns = listEl.querySelectorAll(".btn-wiki-restore-version");
+      restoreBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const revId = btn.dataset.revId;
+          revertWikiRevision(revId, "restore");
+        });
+      });
+
+      // 이 편집 취소 버튼 이벤트 연결 (해당 리비전 직전 상태로 되돌리기)
       const revertBtns = listEl.querySelectorAll(".btn-wiki-revert-action");
       revertBtns.forEach(btn => {
         btn.addEventListener("click", () => {
           const revId = btn.dataset.revId;
-          revertWikiRevision(revId);
+          revertWikiRevision(revId, "undo");
         });
       });
 
@@ -12071,30 +12087,34 @@
       }
     }
 
-    // 특정 리비전 이전 상태로 되돌리기 (Rollback)
-    async function revertWikiRevision(revId) {
+    // 특정 리비전 복구 또는 편집 취소
+    async function revertWikiRevision(revId, mode = "restore") {
       const item = currentWikiHistoryCache.find(h => String(h.revisionId) === String(revId));
       if (!item) {
-        alert("되돌릴 리비전 정보를 찾을 수 없습니다.");
+        alert("리비전 정보를 찾을 수 없습니다.");
         return;
       }
 
-      let prevObj = null;
-      try {
-        if (item.prevData) {
-          prevObj = typeof item.prevData === "string" ? JSON.parse(item.prevData) : item.prevData;
+      let dataToApply = null;
+      if (mode === "restore") {
+        // [이 버전으로 복구]: 해당 리비전이 생성/입력한 newData 적용
+        try {
+          dataToApply = typeof item.newData === "string" ? JSON.parse(item.newData) : item.newData;
+        } catch (e) { dataToApply = null; }
+        if (!dataToApply && item.prevData) {
+          try { dataToApply = typeof item.prevData === "string" ? JSON.parse(item.prevData) : item.prevData; } catch (e) {}
         }
-      } catch (e) {
-        prevObj = null;
+      } else {
+        // [이 편집 취소]: 해당 리비전 이전의 prevData 적용
+        try {
+          dataToApply = typeof item.prevData === "string" ? JSON.parse(item.prevData) : item.prevData;
+        } catch (e) { dataToApply = null; }
       }
 
-      if (!prevObj || Object.keys(prevObj).length === 0) {
-        alert("이 리비전은 이전 상태 복원 데이터가 보존되어 있지 않아 자동으로 되돌릴 수 없습니다.");
+      if (!dataToApply || Object.keys(dataToApply).length === 0) {
+        alert("복원할 데이터가 보존되어 있지 않습니다.");
         return;
       }
-
-      const confirmMsg = `[${item.toName}] 디지몬의 정보를 이 편집(${formatHistoryTimestamp(item.timestamp)}, 편집자: ${item.uid}) 이전 상태로 되돌리시겠습니까?\n\n복구될 변경 내용:\n${item.diffSummary}`;
-      if (!confirm(confirmMsg)) return;
 
       const targetDigi = findDigimonByNameOrId(item.toName);
       if (!targetDigi) {
@@ -12102,54 +12122,122 @@
         return;
       }
 
-      // 1. [로컬 즉시 복원]
-      if (prevObj.baseHp !== undefined && prevObj.baseHp !== "") targetDigi.baseHp = parseInt(prevObj.baseHp, 10) || 0;
-      if (prevObj.baseAp !== undefined && prevObj.baseAp !== "") targetDigi.baseAp = parseInt(prevObj.baseAp, 10) || 0;
-      if (prevObj.baseSpd !== undefined && prevObj.baseSpd !== "") targetDigi.baseSpd = parseInt(prevObj.baseSpd, 10) || 0;
-      autoSyncAllSameNameDigimons();
-
-      const activeEvo = getActiveIncomingEvo(targetDigi.id, activeIncomingFromId);
-      if (activeEvo) {
-        if (prevObj.time !== undefined) activeEvo.time = prevObj.time;
-        if (prevObj.vital !== undefined && prevObj.vital !== "") activeEvo.vital = Number(prevObj.vital);
-        if (prevObj.pp !== undefined && prevObj.pp !== "") activeEvo.pp = Number(prevObj.pp);
-        if (prevObj.battle !== undefined) activeEvo.battle = prevObj.battle;
-        if (prevObj.winRate !== undefined) activeEvo.winRate = prevObj.winRate;
-        if (prevObj.jogress !== undefined) activeEvo.jogress = prevObj.jogress;
-        if (prevObj.item !== undefined) activeEvo.item = prevObj.item;
-        if (prevObj.note !== undefined) activeEvo.note = prevObj.note;
-      } else if (targetDigi.req) {
-        if (prevObj.time !== undefined) targetDigi.req.time = prevObj.time;
-        if (prevObj.vital !== undefined && prevObj.vital !== "") targetDigi.req.vital = Number(prevObj.vital);
-        if (prevObj.pp !== undefined && prevObj.pp !== "") targetDigi.req.pp = Number(prevObj.pp);
-        if (prevObj.battle !== undefined) targetDigi.req.battle = prevObj.battle;
-        if (prevObj.winRate !== undefined) targetDigi.req.winRate = prevObj.winRate;
-        if (prevObj.jogress !== undefined) targetDigi.req.jogress = prevObj.jogress;
-        if (prevObj.item !== undefined) targetDigi.req.item = prevObj.item;
-        if (prevObj.note !== undefined) targetDigi.req.note = prevObj.note;
+      const formattedTs = formatHistoryTimestamp(item.timestamp);
+      let confirmMsg = "";
+      if (mode === "restore") {
+        const hpStr = dataToApply.baseHp !== undefined && dataToApply.baseHp !== "" ? dataToApply.baseHp : "-";
+        const apStr = dataToApply.baseAp !== undefined && dataToApply.baseAp !== "" ? dataToApply.baseAp : "-";
+        const spdStr = dataToApply.baseSpd !== undefined && dataToApply.baseSpd !== "" ? dataToApply.baseSpd : "-";
+        confirmMsg = `[${item.toName}] 디지몬을 리비전 #${item.revisionId} (${formattedTs}, 작성자: ${item.uid}) 당시의 입력 내용으로 복구하시겠습니까?\n\n복구될 주요 내용:\n` +
+          `체력(HP): ${hpStr}, 전투력(AP): ${apStr}, 속도(SPD): ${spdStr}\n` +
+          `진화시간: ${dataToApply.time || '-'}, 바이탈: ${dataToApply.vital || '-'}, PP: ${dataToApply.pp || '-'}, 배틀: ${dataToApply.battle || '-'}, 승률: ${dataToApply.winRate || '-'}`;
+      } else {
+        confirmMsg = `[${item.toName}] 디지몬의 리비전 #${item.revisionId} (${formattedTs}) 편집을 취소하고, 편집 직전 상태로 되돌리시겠습니까?\n\n취소될 변경 내용:\n${item.diffSummary}`;
       }
+
+      if (!confirm(confirmMsg)) return;
+
+      // 1. [로컬 즉시 복원]
+      const targetNameLower = (item.toName || "").trim().toLowerCase();
+      const normalizeStat = (v) => {
+        if (v === undefined || v === null) return "";
+        const s = String(v).trim();
+        return (s === "" || s === "-" || s === "null" || s === "undefined" || isNaN(Number(s))) ? "" : Number(s);
+      };
+
+      const restoredHp = dataToApply.baseHp !== undefined ? normalizeStat(dataToApply.baseHp) : (targetDigi.baseHp !== undefined ? targetDigi.baseHp : "");
+      const restoredAp = dataToApply.baseAp !== undefined ? normalizeStat(dataToApply.baseAp) : (targetDigi.baseAp !== undefined ? targetDigi.baseAp : "");
+      const restoredSpd = dataToApply.baseSpd !== undefined ? normalizeStat(dataToApply.baseSpd) : (targetDigi.baseSpd !== undefined ? targetDigi.baseSpd : "");
+
+      // 동명 디지몬 전체 스탯 복원 및 동기화 (autoSyncAllSameNameDigimons의 donor 덮어쓰기 방지)
+      const targetDigis = Object.values(project.digimons).filter(d => d.name && d.name.trim().toLowerCase() === targetNameLower);
+      targetDigis.forEach(d => {
+        d.baseHp = restoredHp;
+        d.baseAp = restoredAp;
+        d.baseSpd = restoredSpd;
+      });
+
+      const normalizeVal = (v) => {
+        if (v === undefined || v === null) return "";
+        const s = String(v).trim();
+        return (s === "-" || s === "null" || s === "undefined") ? "" : s;
+      };
+
+      // 매칭되는 진화선 찾기
+      const targetDigiIds = new Set(targetDigis.map(d => d.id));
+      let matchedEvos = [];
+      if (item.fromName) {
+        const fromLower = item.fromName.trim().toLowerCase();
+        matchedEvos = project.evolutions.filter(ev => {
+          if (!targetDigiIds.has(ev.to)) return false;
+          const fD = project.digimons[ev.from];
+          return fD && fD.name && fD.name.trim().toLowerCase() === fromLower;
+        });
+      }
+      if (matchedEvos.length === 0) {
+        matchedEvos = project.evolutions.filter(ev => targetDigiIds.has(ev.to));
+      }
+
+      const restoredTime = dataToApply.time !== undefined ? dataToApply.time : (targetDigi.req?.time || "");
+      const restoredVital = dataToApply.vital !== undefined ? normalizeVal(dataToApply.vital) : (targetDigi.req?.vital !== undefined ? targetDigi.req.vital : "");
+      const restoredPp = dataToApply.pp !== undefined ? normalizeVal(dataToApply.pp) : (targetDigi.req?.pp !== undefined ? targetDigi.req.pp : "");
+      const restoredBattle = dataToApply.battle !== undefined ? normalizeVal(dataToApply.battle) : (targetDigi.req?.battle || "");
+      const restoredWinRate = dataToApply.winRate !== undefined ? normalizeVal(dataToApply.winRate) : (targetDigi.req?.winRate || "");
+      const restoredJogress = dataToApply.jogress !== undefined ? normalizeVal(dataToApply.jogress) : (targetDigi.req?.jogress || "");
+      const restoredItem = dataToApply.item !== undefined ? normalizeVal(dataToApply.item) : (targetDigi.req?.item || "");
+      const restoredNote = dataToApply.note !== undefined ? dataToApply.note : (targetDigi.req?.note || "");
+
+      matchedEvos.forEach(ev => {
+        ev.time = restoredTime;
+        ev.vital = restoredVital !== "" ? Number(restoredVital) : "";
+        ev.pp = restoredPp !== "" ? Number(restoredPp) : "";
+        ev.battle = restoredBattle;
+        ev.winRate = restoredWinRate;
+        ev.jogress = restoredJogress;
+        ev.item = restoredItem;
+        ev.note = restoredNote;
+      });
+
+      targetDigis.forEach(d => {
+        if (!d.req) d.req = getDefaultReqForStage(d.stage);
+        d.req.time = restoredTime;
+        d.req.vital = restoredVital !== "" ? Number(restoredVital) : "";
+        d.req.pp = restoredPp !== "" ? Number(restoredPp) : "";
+        d.req.battle = restoredBattle;
+        d.req.winRate = restoredWinRate;
+        d.req.jogress = restoredJogress;
+        d.req.item = restoredItem;
+        d.req.note = restoredNote;
+      });
+
+      // 복원된 디지몬의 DiM으로 전환 및 디지몬 자동 선택하여 사이드바에 즉각 반영
+      if (item.dim && project.dims && project.dims.includes(item.dim) && filterDim !== item.dim) {
+        filterDim = item.dim;
+        const filterSelect = document.getElementById("filter-dim");
+        if (filterSelect) filterSelect.value = filterDim;
+      }
+      selectedDigiId = targetDigi.id;
 
       saveState();
       renderTree();
       drawConnections();
-      if (selectedDigiId) updateSidebar();
+      updateSidebar();
 
-      showToast(`[<strong>${escapeHtml(item.toName)}</strong>] 디지몬이 성공적으로 이전 상태로 되돌려졌습니다!`);
+      showToast(`[<strong>${escapeHtml(item.toName)}</strong>] 디지몬이 성공적으로 복구되었습니다!`);
 
       // 1-C. 롤백 이력 즉시 낙관적 로컬 반영 (0ms 화면 갱신)
       const revertLocalId = "R" + (currentWikiHistoryCache.length + 1) + " (방금)";
-      const formattedTs = formatHistoryTimestamp(item.timestamp);
       const revertHistItem = {
         revisionId: revertLocalId,
         timestamp: new Date().toLocaleString(),
         dim: item.dim,
         fromName: item.fromName,
         toName: item.toName,
-        diffSummary: `[되돌림] 리비전 #${item.revisionId} 복구`,
+        diffSummary: `[되돌림] 리비전 #${item.revisionId} ${mode === "restore" ? "버전 복구" : "편집 취소"}`,
         prevData: item.newData,
-        newData: prevObj,
+        newData: dataToApply,
         uid: getClientFullIdentifier(),
-        comment: `리비전 #${item.revisionId} (${formattedTs}) 변경 전 상태로 복구`
+        comment: `리비전 #${item.revisionId} (${formattedTs}) ${mode === "restore" ? "버전 내용으로 복구" : "편집 직전 상태로 복구"}`
       };
       currentWikiHistoryCache.unshift(revertHistItem);
       renderWikiHistoryListUI();
@@ -12164,11 +12252,11 @@
           dim: item.dim,
           fromName: item.fromName,
           toName: item.toName,
-          targetData: prevObj,
+          targetData: dataToApply,
           uid: getClientFullIdentifier(),
           rawUid: getClientUid(),
           maskedIp: cachedMaskedIp || "",
-          comment: `리비전 #${item.revisionId} (${formattedTs}) 변경 전 상태로 복구`
+          comment: `리비전 #${item.revisionId} (${formattedTs}) ${mode === "restore" ? "버전 내용으로 복구" : "편집 직전 상태로 복구"}`
         };
 
         try {
@@ -12179,6 +12267,7 @@
             body: JSON.stringify(payload)
           });
           fetchWikiHistoryFromGas();
+          fetchAndApplyLiveConditions();
         } catch (e) {
           console.warn("구글 시트 롤백 전송 실패:", e);
         }
@@ -13098,12 +13187,12 @@
 
               matchedEvos.forEach(ev => {
                 if (c.time !== undefined && c.time !== "") ev.time = c.time;
-                if (c.vital !== undefined && c.vital !== "") ev.vital = c.vital;
-                if (c.pp !== undefined && c.pp !== "") ev.pp = c.pp;
-                if (c.battle !== undefined && c.battle !== "") ev.battle = c.battle;
-                if (c.winRate !== undefined && c.winRate !== "") ev.winRate = c.winRate;
-                if (c.jogress !== undefined) ev.jogress = c.jogress;
-                if (c.item !== undefined) ev.item = c.item;
+                if (c.vital !== undefined) ev.vital = (c.vital === "" || c.vital === "-") ? "" : Number(c.vital);
+                if (c.pp !== undefined) ev.pp = (c.pp === "" || c.pp === "-") ? "" : Number(c.pp);
+                if (c.battle !== undefined) ev.battle = c.battle === "-" ? "" : c.battle;
+                if (c.winRate !== undefined) ev.winRate = c.winRate === "-" ? "" : c.winRate;
+                if (c.jogress !== undefined) ev.jogress = c.jogress === "-" ? "" : c.jogress;
+                if (c.item !== undefined) ev.item = c.item === "-" ? "" : c.item;
                 if (c.note !== undefined) ev.note = c.note;
                 updatedCount++;
               });
@@ -13147,13 +13236,13 @@
                 // 기본 요구조건(req) 갱신
                 if (!d.req) d.req = getDefaultReqForStage(d.stage);
                 if (c.time !== undefined && c.time !== "" && c.time !== "-") d.req.time = c.time;
-                if (c.vital !== undefined && c.vital !== "") d.req.vital = c.vital;
-                if (c.pp !== undefined && c.pp !== "") d.req.pp = c.pp;
-                if (c.battle !== undefined && c.battle !== "") d.req.battle = c.battle;
-                if (c.winRate !== undefined && c.winRate !== "") d.req.winRate = c.winRate;
-                if (c.jogress !== undefined && c.jogress !== "") d.req.jogress = c.jogress;
-                if (c.item !== undefined && c.item !== "") d.req.item = c.item;
-                if (c.note !== undefined && c.note !== "") d.req.note = c.note;
+                if (c.vital !== undefined) d.req.vital = (c.vital === "" || c.vital === "-") ? "" : Number(c.vital);
+                if (c.pp !== undefined) d.req.pp = (c.pp === "" || c.pp === "-") ? "" : Number(c.pp);
+                if (c.battle !== undefined) d.req.battle = c.battle === "-" ? "" : c.battle;
+                if (c.winRate !== undefined) d.req.winRate = c.winRate === "-" ? "" : c.winRate;
+                if (c.jogress !== undefined) d.req.jogress = c.jogress === "-" ? "" : c.jogress;
+                if (c.item !== undefined) d.req.item = c.item === "-" ? "" : c.item;
+                if (c.note !== undefined) d.req.note = c.note;
 
                 // 기본 스탯(baseHp, baseAp, baseSpd) 갱신
                 if (c.baseHp !== undefined && c.baseHp !== "") {
