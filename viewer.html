@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="digimon_db.js?v=v1.3.31"></script>
-  <script src="project_data.js?v=v1.3.31"></script>
+  <script src="digimon_db.js?v=v1.3.63"></script>
+  <script src="project_data.js?v=v1.3.63"></script>
   <script src="xlsx.full.min.js"></script>
   <style>
     :root {
+      color-scheme: dark;
       --bg-dark: #1E2124;
       --bg-panel: #2B2D31;
       --bg-card: #313338;
@@ -26,7 +27,45 @@
       --attr-free: #F1C40F;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+    }
+
+    /* 전역 모던 다크 스크롤바 디자인 (화이트 박스/버튼 완전 제거) */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.22);
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      background-clip: padding-box;
+      transition: background-color 0.2s ease;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(255, 255, 255, 0.42);
+      background-clip: padding-box;
+    }
+    ::-webkit-scrollbar-thumb:active {
+      background-color: rgba(255, 255, 255, 0.65);
+      background-clip: padding-box;
+    }
+    ::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-button {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
     body {
       background-color: var(--bg-dark);
       color: var(--text-main);
@@ -1124,6 +1163,47 @@
       border: 1px solid rgba(255,255,255,0.1);
     }
 
+    /* 뷰어 모드 기본 스탯 카드 (체력 / 전투력 / 속도) */
+    .viewer-base-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+      width: 100%;
+      background: #18191C;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 8px 6px;
+      box-sizing: border-box;
+    }
+
+    .viewer-stat-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2px 4px;
+    }
+
+    .viewer-stat-label {
+      font-size: 0.68rem;
+      color: #94A3B8;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .viewer-stat-val {
+      font-size: 0.95rem;
+      font-weight: 800;
+      font-family: 'Consolas', 'Menlo', monospace;
+      line-height: 1.2;
+    }
+
+    .text-hp { color: #34D399; }
+    .text-ap { color: #F87171; }
+    .text-spd { color: #38BDF8; }
+
     /* 뷰어 모드 진화 조건 스펙 그리드 */
     .viewer-spec-table {
       width: 100%;
@@ -1504,13 +1584,17 @@
         font-size: 0.78rem !important;
         padding: 4px 6px !important;
       }
-      #btn-add-dim, #btn-rename-dim, #btn-delete-dim, #btn-dim-up, #btn-dim-down {
+      #btn-add-dim, #btn-rename-dim, #btn-delete-dim, #btn-dim-up, #btn-dim-down,
+      #btn-open-wiki-history, #btn-open-evolution-planner, #btn-open-training-calc {
         display: none !important;
       }
 
       /* 데스크톱 툴바 숨김 및 모바일 버튼 노출 */
       #main-toolbar {
         display: none !important;
+      }
+      #btn-mobile-wiki-history {
+        display: inline-flex !important;
       }
       #btn-mobile-fit {
         display: inline-flex !important;
@@ -1587,8 +1671,737 @@
         max-width: 90vw;
         font-size: 0.8rem;
         padding: 8px 14px;
-      }
     }
+  }
+
+  /* =========================================================================
+     진화 경로 검색 / 플래너 스타일 (뷰어 다크 테마 디스코드 스타일 #1E1F22, #2B2D31)
+     ========================================================================= */
+  .planner-modal-box {
+    width: 1040px;
+    max-width: 95vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+    background: #2B2D31;
+    border: 1px solid #3F4147;
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    color: #F2F3F5;
+    font-family: inherit;
+  }
+
+  .planner-modal-header {
+    padding: 16px 22px;
+    background: #23272A;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .planner-modal-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .planner-modal-subtitle {
+    font-size: 0.76rem;
+    color: #949BA4;
+    font-weight: 400;
+  }
+
+  .planner-modal-close {
+    font-size: 1.35rem;
+    color: #949BA4;
+    cursor: pointer;
+    background: none;
+    border: none;
+    line-height: 1;
+    padding: 4px;
+    transition: color 0.15s ease;
+  }
+  .planner-modal-close:hover {
+    color: #FFFFFF;
+  }
+
+  /* 메인 진화 흐름 카드 */
+  .planner-flow-card {
+    background: #1E1F22;
+    border: 1px solid #3F4147;
+    border-radius: 16px;
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .planner-flow-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    width: 100%;
+  }
+
+  .planner-slot-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 140px;
+  }
+
+  .planner-slot-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #B5BAC1;
+    text-align: center;
+  }
+
+  .planner-slot-box {
+    width: 96px;
+    height: 96px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    background: #2B2D31;
+  }
+
+  .planner-slot-box.empty {
+    border: 1.8px dashed #4E5058;
+    background: #23272A;
+  }
+
+  .planner-slot-box.empty:hover {
+    border-color: #5865F2;
+    background: rgba(88, 101, 242, 0.12);
+    transform: translateY(-2px);
+  }
+
+  .planner-slot-box.filled {
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    background: #2B2D31;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    padding: 6px;
+  }
+
+  .planner-slot-box.filled:hover {
+    border-color: #5865F2;
+    transform: translateY(-2px);
+  }
+
+  .planner-slot-empty-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #949BA4;
+  }
+
+  .planner-slot-img {
+    width: 58px;
+    height: 58px;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+
+  .planner-slot-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 110px;
+    margin-top: 3px;
+  }
+
+  .planner-slot-sub {
+    font-size: 0.68rem;
+    color: #949BA4;
+    text-align: center;
+  }
+
+  .planner-btn-select {
+    padding: 6px 16px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: #383A40;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #F2F3F5;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+
+  .planner-btn-select:hover {
+    background: #5865F2;
+    border-color: #5865F2;
+    color: #FFFFFF;
+  }
+
+  .planner-flow-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #5865F2;
+    font-size: 1.5rem;
+  }
+
+  /* 다음 진화 가능한 디지몬 선택 서랍 */
+  .planner-branches-container {
+    width: 100%;
+    background: #1E1F22;
+    border: 1px solid #3F4147;
+    border-radius: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .planner-branches-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .planner-branches-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+
+  .planner-branches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .planner-cand-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px 8px;
+    background: #2B2D31;
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    position: relative;
+  }
+
+  .planner-cand-card:hover {
+    border-color: #5865F2;
+    background: rgba(88, 101, 242, 0.16);
+    transform: translateY(-2px);
+  }
+
+  .planner-cand-card.active-target {
+    border: 2px solid #5865F2;
+    background: rgba(88, 101, 242, 0.22);
+    box-shadow: 0 0 14px rgba(88, 101, 242, 0.35);
+  }
+
+  .planner-cand-img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    margin-bottom: 6px;
+  }
+
+  .planner-cand-name {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .planner-cand-info {
+    font-size: 0.68rem;
+    color: #949BA4;
+    margin-top: 2px;
+  }
+
+  /* 진화 조건 상세 스펙 카드 */
+  .planner-req-container {
+    width: 100%;
+    background: #1E1F22;
+    border: 1px solid #3F4147;
+    border-radius: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .planner-req-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .planner-req-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+
+  .planner-spec-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+
+  @media (max-width: 600px) {
+    .planner-spec-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .planner-spec-card {
+    background: #2B2D31;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  }
+
+  .planner-spec-label {
+    font-size: 0.72rem;
+    color: #949BA4;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .planner-spec-val {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    font-family: 'Consolas', 'Menlo', monospace;
+  }
+
+    /* 2줄 줄바꿈 진화 경로 체인 컨테이너 */
+  .planner-chain-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 6px;
+    width: 100%;
+    padding: 8px 2px;
+    box-sizing: border-box;
+  }
+
+  /* 체인 개별 슬롯 래퍼 */
+  .planner-chain-slot-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 94px;
+    width: 94px;
+    flex-shrink: 0;
+  }
+
+  .planner-chain-slot-stage {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #949BA4;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 2px 7px;
+    border-radius: 10px;
+    white-space: nowrap;
+    line-height: 1.2;
+  }
+
+  .planner-chain-slot {
+    width: 100%;
+    height: 98px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    background: #2B2D31;
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    padding: 5px 3px;
+  }
+
+  .planner-chain-slot:hover {
+    border-color: #5865F2;
+    background: rgba(88, 101, 242, 0.12);
+    transform: translateY(-2px);
+  }
+
+  .planner-chain-slot.active {
+    border-color: #5865F2;
+    background: rgba(88, 101, 242, 0.22);
+    box-shadow: 0 0 14px rgba(88, 101, 242, 0.4);
+  }
+
+  .planner-chain-slot.empty {
+    border: 1.8px dashed #4E5058;
+    background: #23272A;
+  }
+
+  .planner-chain-slot.empty:hover {
+    border-color: #5865F2;
+    background: rgba(88, 101, 242, 0.12);
+  }
+
+  /* 화살표 & 인라인 조건 표시 커넥터 (크고 선명하게 확대) */
+  .planner-chain-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 140px;
+    max-width: 200px;
+    flex: 1 0 auto;
+    flex-shrink: 0;
+    padding: 2px 4px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+  }
+
+  .planner-cond-bubble {
+    background: #18191C;
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9px;
+    padding: 5px 8px;
+    width: auto;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+  .planner-cond-bubble:hover {
+    border-color: #5865F2;
+    background: rgba(88, 101, 242, 0.15);
+    transform: scale(1.02);
+  }
+
+  .planner-cond-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  .cond-tag {
+    font-size: 0.74rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+    letter-spacing: -0.2px;
+  }
+  .cond-tag.time { color: #FBBF24; text-shadow: 0 0 8px rgba(251, 191, 36, 0.25); }
+  .cond-tag.vital { color: #34D399; text-shadow: 0 0 8px rgba(52, 211, 153, 0.25); }
+  .cond-tag.pp { color: #38BDF8; text-shadow: 0 0 8px rgba(56, 189, 248, 0.25); }
+  .cond-tag.battle { color: #F87171; text-shadow: 0 0 8px rgba(248, 113, 113, 0.25); }
+  .cond-tag.jogress { color: #C084FC; text-shadow: 0 0 8px rgba(192, 132, 252, 0.25); }
+  .cond-tag.item { color: #FCD34D; }
+  .cond-tag.dungeon { color: #FB923C; text-shadow: 0 0 8px rgba(251, 146, 60, 0.25); }
+
+  .cond-icon {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+
+  .planner-cond-unknown {
+    font-size: 0.74rem;
+    color: #FCD34D;
+    font-weight: 700;
+  }
+  .planner-cond-none {
+    font-size: 0.72rem;
+    color: #949BA4;
+    font-weight: 600;
+  }
+  .planner-cond-sub {
+    font-size: 0.68rem;
+    color: #CBD5E1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 135px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .planner-connector-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5865F2;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  select option {
+    background-color: #2B2D31 !important;
+    color: #F2F3F5 !important;
+  }
+
+/* 디지몬 선택 피커 모달 */
+  .planner-picker-box {
+    width: 720px;
+    max-width: 95vw;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+    background: #2B2D31;
+    border: 1px solid #3F4147;
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    color: #F2F3F5;
+    font-family: inherit;
+  }
+
+  .planner-search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .planner-search-icon {
+    position: absolute;
+    left: 14px;
+    color: #949BA4;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .planner-search-input {
+    width: 100%;
+    background: #1E1F22;
+    border: 1px solid #4E5058;
+    border-radius: 10px;
+    padding: 11px 40px 11px 42px;
+    color: #FFFFFF;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .planner-search-input:focus {
+    border-color: #5865F2;
+    box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.25);
+  }
+
+  .planner-search-input::placeholder {
+    color: #80848E;
+  }
+
+  .planner-search-clear {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #949BA4;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .planner-search-clear:hover {
+    color: #FFFFFF;
+  }
+
+  .planner-filter-area {
+    background: #23272A;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .planner-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .planner-filter-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #949BA4;
+    min-width: 32px;
+  }
+
+  .planner-chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .planner-chip {
+    background: #2B2D31;
+    border: 1px solid #4E5058;
+    color: #B5BAC1;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  }
+
+  .planner-chip:hover {
+    border-color: #5865F2;
+    color: #FFFFFF;
+    background: #35373C;
+  }
+
+  .planner-chip.active {
+    background: #5865F2;
+    border-color: #5865F2;
+    color: #FFFFFF;
+    font-weight: 700;
+  }
+
+  .planner-digi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 14px 8px;
+    overflow-y: auto;
+    flex: 1;
+    padding: 8px 4px;
+    box-sizing: border-box;
+  }
+
+  .planner-digi-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 8px 4px;
+    background: #2B2D31;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    user-select: none;
+    position: relative;
+  }
+
+  .planner-digi-card:hover {
+    border-color: #5865F2;
+    background: rgba(88, 101, 242, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .planner-digi-img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    margin-bottom: 6px;
+  }
+
+  .planner-digi-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .planner-digi-desc {
+    font-size: 0.7rem;
+    color: #949BA4;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .planner-dim-badge {
+    font-size: 0.62rem;
+    color: #38BDF8;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.28);
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-top: 3px;
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+  }
+  .planner-dim-badge.multi {
+    color: #A78BFA;
+    background: rgba(167, 139, 250, 0.12);
+    border-color: rgba(167, 139, 250, 0.28);
+  }
   </style>
 </head>
 <body>
@@ -1596,10 +2409,19 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.31</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.63</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
+        <button id="btn-open-wiki-history" style="background:#4F46E5; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:0.75rem; border:1px solid #6366F1;" title="위키 변경 역사 및 최근 편집 내역을 확인하고 이전 상태로 되돌립니다.">
+          <span>위키 변경역사</span>
+        </button>
+        <button id="btn-open-evolution-planner" onclick="openEvolutionPlannerModal()" style="background:#5865F2; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:0.75rem; border:1px solid #818CF8;" title="진화 경로 검색 / 플래너">
+          <span>진화 플래너</span>
+        </button>
+        <button id="btn-open-training-calc" style="background:#8B5CF6; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:0.75rem; border:1px solid #A78BFA;" title="30회 훈련 손익 계산기">
+          <span>훈련 계산기</span>
+        </button>
         <button id="btn-add-dim" class="editor-only" style="padding:4px 8px; font-size:0.75rem;" title="새 DiM 카테고리 추가">추가</button>
         <button id="btn-rename-dim" class="editor-only" style="padding:4px 8px; font-size:0.75rem;" title="현재 DiM 이름 변경">변경</button>
         <button id="btn-delete-dim" class="btn-danger-sm editor-only" style="padding:4px 8px; font-size:0.75rem;" title="현재 선택된 DiM 삭제">삭제</button>
@@ -1610,6 +2432,12 @@
 
     <!-- 모바일 헤더 액션 버튼 (모바일 전용) -->
     <div class="mobile-only" style="display:none; align-items:center; gap:5px;">
+      <button id="btn-mobile-wiki-history" style="padding:5px 8px; font-size:0.75rem; font-weight:700; background:rgba(79,70,229,0.25); border:1px solid #4F46E5; color:#A5B4FC; border-radius:6px; align-items:center; cursor:pointer;" title="위키 변경 역사">
+        <span>역사</span>
+      </button>
+      <button id="btn-mobile-evolution-planner" onclick="openEvolutionPlannerModal()" style="padding:5px 8px; font-size:0.75rem; font-weight:700; background:rgba(88,101,242,0.25); border:1px solid #5865F2; color:#7DD3FC; border-radius:6px; align-items:center; cursor:pointer;" title="진화 경로 검색 / 플래너">
+        <span>플래너</span>
+      </button>
       <button id="btn-mobile-training-calc" style="padding:5px 8px; font-size:0.75rem; font-weight:700; background:rgba(139,92,246,0.25); border:1px solid #8B5CF6; color:#C4B5FD; border-radius:6px; align-items:center; cursor:pointer;" title="30회 훈련 손익 계산기">
         <span>훈련</span>
       </button>
@@ -1631,9 +2459,9 @@
       <button class="editor-only" id="btn-load-project">백업 불러오기</button>
       <button class="editor-only" id="btn-reset-storage" style="color:#ff7675; border-color:rgba(255,118,117,0.3);" title="기본 샘플 데이터로 복원">초기화</button>
       
-      <!-- 훈련 계산기 및 뷰어 모드 토글 -->
+      <!-- 뷰어 모드 토글 및 추가 도구 -->
       <span class="toolbar-sep" style="color:var(--border-color)">|</span>
-      <span class="editor-only" style="display:inline-flex; align-items:center; gap:5px; font-size:0.75rem; color:#94A3B8; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:3px 8px; border-radius:4px; font-family:monospace;" title="현재 브라우저의 클라이언트 식별 ID (UID)">
+      <span id="header-my-uid-container" style="display:inline-flex; align-items:center; gap:5px; font-size:0.75rem; color:#94A3B8; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:3px 8px; border-radius:4px; font-family:monospace;" title="현재 브라우저의 클라이언트 식별 ID (UID)">
         <span>👤 UID:</span><strong id="editor-header-my-uid" style="color:#38BDF8;">-</strong>
       </span>
       <button class="editor-only" id="btn-open-reports" style="background:#0284C7; font-weight:700; display:inline-flex; align-items:center; gap:5px;" title="구글 시트에 수집된 유저 제보 목록을 확인하고 진화트리에 1초 만에 즉시 적용합니다.">
@@ -1643,7 +2471,6 @@
       <button class="editor-only" id="btn-sync-live-conditions" style="background:#0284C7; font-weight:700; display:inline-flex; align-items:center; gap:5px;" title="현재 에디터의 모든 진화 조건을 구글 시트에 실시간 배포합니다. 뷰어에 깃 배포 없이 즉시 반영됩니다!">
         <span>📡 조건 실시간 배포</span>
       </button>
-      <button id="btn-open-training-calc" style="background:#8B5CF6; font-weight:700; display:inline-flex; align-items:center; gap:5px;" title="30회 훈련 손익 계산기">훈련 계산기</button>
       <button id="btn-toggle-mode" style="background: rgb(88, 101, 242); font-weight: 700; display: inline-flex;" title="편집 요소를 숨기고 완성된 진화 트리 뷰어 모드로 확인합니다.">뷰어 모드로 보기</button>
       <button id="btn-sync-viewer" class="editor-only" style="background:#23A55A; font-weight:700;" title="현재 작업한 최신 데이터를 project_data.js로 직접 저장합니다.">💾 파일 직접 저장</button>
       <button id="btn-desktop-deploy" class="editor-only" style="background:#00ADB5; font-weight:700;" title="GitHub Pages(https://digipetdex.github.io/DigipetDex/)로 즉시 원클릭 배포합니다.">🚀 서버 즉시 배포</button>
@@ -1732,6 +2559,24 @@
               <option value="virus">바이러스 (Virus)</option>
               <option value="free">프리 (Free)</option>
             </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top:6px;">
+          <label style="font-size:0.8rem; color:#E2E8F0; font-weight:700; margin-bottom:5px; display:block;">디지몬 기본 스탯</label>
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px;">
+            <div style="background:#23272A; padding:6px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+              <label for="edit-base-hp" style="font-size:0.72rem; color:#34D399; font-weight:700; margin-bottom:3px; display:block;">체력</label>
+              <input type="number" id="edit-base-hp" class="form-control" placeholder="0" min="0" step="1" style="font-size:0.82rem; padding:4px 6px; text-align:center; font-family:'Consolas','Menlo',monospace; font-weight:700;">
+            </div>
+            <div style="background:#23272A; padding:6px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+              <label for="edit-base-ap" style="font-size:0.72rem; color:#F87171; font-weight:700; margin-bottom:3px; display:block;">전투력</label>
+              <input type="number" id="edit-base-ap" class="form-control" placeholder="0" min="0" step="1" style="font-size:0.82rem; padding:4px 6px; text-align:center; font-family:'Consolas','Menlo',monospace; font-weight:700;">
+            </div>
+            <div style="background:#23272A; padding:6px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+              <label for="edit-base-spd" style="font-size:0.72rem; color:#38BDF8; font-weight:700; margin-bottom:3px; display:block;">속도</label>
+              <input type="number" id="edit-base-spd" class="form-control" placeholder="0" min="0" step="1" style="font-size:0.82rem; padding:4px 6px; text-align:center; font-family:'Consolas','Menlo',monospace; font-weight:700;">
+            </div>
           </div>
         </div>
 
@@ -2072,7 +2917,7 @@
   </div>
 
   <!-- 커스텀 텍스트 입력 모달 (Electron/브라우저 공용) -->
-  <div class="modal-overlay" id="custom-prompt-modal">
+  <div class="modal-overlay" id="custom-prompt-modal" style="z-index: 2500;">
     <div class="modal-box" style="width: 420px;">
       <div class="modal-header">
         <h2 id="custom-prompt-title">디지몬 이름 입력</h2>
@@ -2270,14 +3115,14 @@
     </div>
   </div>
 
-  <!-- 1. 유저 진화 조건 제보 모달 (뷰어 전용) -->
+  <!-- 1. 위키 편집 모달 (유저 누구나 수정 및 즉시 반영 가능) -->
   <div class="modal-overlay" id="report-condition-modal" style="display:none; z-index:1150;">
-    <div class="modal-box" style="max-width: 520px; width: 94%; max-height: 94vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; background: #1E1F22; border: 1px solid #33363D; border-radius: 12px; box-shadow: 0 16px 45px rgba(0,0,0,0.85);">
+    <div class="modal-box" style="max-width: 540px; width: 94%; max-height: 94vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; background: #1E1F22; border: 1px solid #33363D; border-radius: 12px; box-shadow: 0 16px 45px rgba(0,0,0,0.85);">
       
       <div style="padding: 12px 18px; background: #23272A; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 1.1rem;">📢</span>
-          <span style="font-size: 0.95rem; color: #FFF; font-weight: 700;">진화 조건 제보 / 수정 요청</span>
+        <div>
+          <span style="font-size: 0.95rem; color: #FFF; font-weight: 700;">위키 편집 - 디지몬 정보 및 조건 수정</span>
+          <div style="font-size: 0.72rem; color: #94A3B8;">저장 시 실시간 도감에 즉시 반영되며, 편집 내역과 UID(IP)가 위키 역사에 보존됩니다.</div>
         </div>
         <button class="modal-close" id="report-condition-close" style="font-size: 1.15rem; color: #94A3B8; cursor: pointer; background: none; border: none; line-height: 1;">✕</button>
       </div>
@@ -2340,7 +3185,7 @@
           <div>
             <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
               <img src="PP.webp" alt="PP" style="width: 13px; height: 13px; object-fit: contain; image-rendering: pixelated;">
-              <span>필요 PP (트로피)</span>
+              <span>필요 PP</span>
             </label>
             <input type="number" id="report-input-pp" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
           </div>
@@ -2363,39 +3208,113 @@
           </div>
         </div>
 
+        <!-- 디지몬 기본 스탯 제보 -->
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 12px;">
+          <div style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+            <span>디지몬 기본 스탯 (선택)</span>
+            <span style="font-size: 0.7rem; color: #94A3B8; font-weight: normal;">*진화 디지몬 기준</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+            <div>
+              <label for="report-input-hp" style="font-size: 0.72rem; color: #34D399; font-weight: 700; margin-bottom: 3px; display: block;">체력</label>
+              <input type="number" id="report-input-hp" class="form-control" placeholder="0" min="0" step="1" style="font-size: 0.82rem; padding: 6px 8px; text-align: center; font-family: 'Consolas', 'Menlo', monospace; font-weight: 700;">
+            </div>
+            <div>
+              <label for="report-input-ap" style="font-size: 0.72rem; color: #F87171; font-weight: 700; margin-bottom: 3px; display: block;">전투력</label>
+              <input type="number" id="report-input-ap" class="form-control" placeholder="0" min="0" step="1" style="font-size: 0.82rem; padding: 6px 8px; text-align: center; font-family: 'Consolas', 'Menlo', monospace; font-weight: 700;">
+            </div>
+            <div>
+              <label for="report-input-spd" style="font-size: 0.72rem; color: #38BDF8; font-weight: 700; margin-bottom: 3px; display: block;">속도</label>
+              <input type="number" id="report-input-spd" class="form-control" placeholder="0" min="0" step="1" style="font-size: 0.82rem; padding: 6px 8px; text-align: center; font-family: 'Consolas', 'Menlo', monospace; font-weight: 700;">
+            </div>
+          </div>
+        </div>
+
         <div>
           <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; display: block;">
-            🤝 조그레스 파트너 (선택)
+            조그레스 파트너 (선택)
           </label>
           <input type="text" id="report-input-jogress" list="official-digimon-datalist" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
         </div>
 
         <div>
           <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; display: block;">
-            📦 필요 아이템 / 캡슐 (선택)
+            필요 아이템 / 캡슐 (선택)
           </label>
           <input type="text" id="report-input-item" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
         </div>
 
         <div>
           <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; display: block;">
-            📝 비고 / 메모 (선택)
+            비고 / 메모 (선택)
           </label>
           <input type="text" id="report-input-note" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
         </div>
 
+        <div>
+          <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; display: block;">
+            편집 사유 / 요약 (선택)
+          </label>
+          <input type="text" id="report-input-comment" class="form-control" placeholder="" style="font-size: 0.85rem; padding: 7px 10px;">
+        </div>
+
         <div style="background: rgba(88,101,242,0.08); border: 1px solid rgba(88,101,242,0.25); border-radius: 6px; padding: 8px 12px; font-size: 0.74rem; color: #A5B4FC; line-height: 1.45; display: flex; justify-content: space-between; align-items: center;">
-          <span>💡 제보해주신 정보는 검토 후 진화 트리에 반영됩니다.</span>
-          <span id="report-modal-client-uid" style="font-size: 0.68rem; color: #94A3B8; font-family: monospace; background: rgba(0,0,0,0.25); padding: 2px 6px; border-radius: 4px;" title="내 제보자 식별 ID"></span>
+          <span>저장 시 즉시 도감에 반영되며, [위키 역사]에서 언제든 이전 상태로 되돌릴 수 있습니다.</span>
+          <span id="report-modal-client-uid" style="font-size: 0.68rem; color: #94A3B8; font-family: monospace; background: rgba(0,0,0,0.25); padding: 2px 6px; border-radius: 4px;" title="내 편집자 식별 ID"></span>
         </div>
 
       </div>
 
-      <div style="padding: 10px 18px; background: #23272A; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: flex-end; gap: 8px;">
-        <button type="button" id="btn-report-cancel" style="padding: 7px 16px; font-size: 0.82rem; background: #3B4252; border: 1px solid #4C566A; color: #ECEFF4; border-radius: 6px; cursor: pointer;">취소</button>
-        <button type="button" id="btn-report-submit" class="btn-primary" style="padding: 7px 20px; font-size: 0.85rem; font-weight: 700; background: #0284C7; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-          <span>제보 전송 🚀</span>
+      <div style="padding: 10px 18px; background: #23272A; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+        <button type="button" id="btn-report-view-history" style="padding: 7px 12px; font-size: 0.8rem; background: #374151; border: 1px solid #4B5563; color: #E5E7EB; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 5px;" title="이 디지몬의 변경 역사 확인">
+          <span>이전 변경 내역</span>
         </button>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" id="btn-report-cancel" style="padding: 7px 16px; font-size: 0.82rem; background: #3B4252; border: 1px solid #4C566A; color: #ECEFF4; border-radius: 6px; cursor: pointer;">취소</button>
+          <button type="button" id="btn-report-submit" class="btn-primary" style="padding: 7px 20px; font-size: 0.85rem; font-weight: 700; background: linear-gradient(135deg, #0284C7 0%, #4F46E5 100%); border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(79,70,229,0.35);">
+            <span>저장</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 1-B. 위키 변경 역사 (Revision History) 모달 -->
+  <div class="modal-overlay" id="wiki-history-modal" style="display:none; z-index:1200;">
+    <div class="modal-box" style="max-width: 840px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; background: #1E1F22; border: 1px solid #33363D; border-radius: 12px; box-shadow: 0 16px 45px rgba(0,0,0,0.85);">
+      
+      <!-- 헤더 -->
+      <div style="padding: 14px 18px; background: #23272A; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div>
+            <span style="font-size: 1rem; color: #FFF; font-weight: 700;">위키 변경 역사 (Revision History)</span>
+            <span id="wiki-history-target-badge" style="margin-left: 8px; font-size: 0.75rem; background: rgba(79,70,229,0.25); color: #C7D2FE; border: 1px solid rgba(79,70,229,0.4); padding: 2px 8px; border-radius: 4px;">전체 최근 변경 내역</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" id="btn-wiki-history-filter-clear" style="display: none; padding: 5px 10px; font-size: 0.78rem; background: #374151; color: #E5E7EB; border: 1px solid #4B5563; border-radius: 5px; cursor: pointer;">전체 내역 보기</button>
+          <button type="button" id="btn-wiki-history-clear-all" class="editor-only" style="padding: 5px 12px; font-size: 0.78rem; background: rgba(220,38,38,0.2); border: 1px solid rgba(220,38,38,0.5); color: #FCA5A5; border-radius: 5px; cursor: pointer; font-weight: 600;" title="테스트용 등으로 기록된 위키 변경 내역 전체를 비웁니다 (에디터 전용)">역사 전체 비우기</button>
+          <button type="button" id="btn-wiki-history-refresh" style="padding: 5px 12px; font-size: 0.78rem; background: #4F46E5; color: #FFF; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">새로고침</button>
+          <button type="button" id="btn-wiki-history-close" style="background: none; border: none; color: #94A3B8; font-size: 1.3rem; cursor: pointer; line-height: 1;">✕</button>
+        </div>
+      </div>
+
+      <!-- 안내 바 -->
+      <div style="padding: 10px 18px; background: rgba(79,70,229,0.08); border-bottom: 1px solid rgba(79,70,229,0.2); font-size: 0.75rem; color: #C7D2FE; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
+        <span>모든 유저의 편집 내역이 보존되며, 오류나 훼손 발생 시 언제든 이전 상태로 [되돌리기]할 수 있습니다.</span>
+        <span style="font-family: monospace; color: #94A3B8; font-size: 0.7rem;">기록: UID 및 마스킹 IP</span>
+      </div>
+
+      <!-- 내역 목록 컨테이너 -->
+      <div id="wiki-history-list" style="flex: 1; overflow-y: auto; padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; min-height: 250px;">
+        <div style="text-align: center; padding: 40px; color: var(--text-sub); font-size: 0.85rem;">위키 변경 역사를 불러오는 중...</div>
+      </div>
+
+      <!-- 하단 푸터 -->
+      <div style="padding: 10px 18px; background: #23272A; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
+        <span id="wiki-history-count-text" style="font-size: 0.75rem; color: #94A3B8;">총 0건의 기록</span>
+        <button type="button" id="btn-wiki-history-close-bottom" style="padding: 6px 16px; font-size: 0.82rem; background: #3B4252; border: 1px solid #4C566A; color: #ECEFF4; border-radius: 6px; cursor: pointer;">닫기</button>
       </div>
 
     </div>
@@ -2493,13 +3412,172 @@
     </div>
   </div>
 
+  <!-- =========================================================================
+       진화 경로 검색 / 플래너 모달 (Image 1 스타일)
+       ========================================================================= -->
+  <div class="modal-overlay" id="evolution-planner-modal" style="display:none; z-index:1200;">
+    <div class="modal-box planner-modal-box">
+      <!-- 헤더 -->
+      <div class="planner-modal-header">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div>
+            <div class="planner-modal-title">진화 경로 검색</div>
+            <div class="planner-modal-subtitle">디지몬을 선택하여 진화 루트와 필요 조건을 확인합니다.</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px; margin-left:8px;">
+            <span style="font-size:0.75rem; color:#64748B; font-weight:600;">DiM:</span>
+            <select id="planner-filter-dim" class="form-control" style="padding:4px 10px; font-size:0.78rem; width:130px; background:#1E1F22; border:1px solid #4E5058; color:#FFFFFF; border-radius:8px;">
+              <option value="ALL">전체 DiM</option>
+            </select>
+          </div>
+        </div>
+        <button class="planner-modal-close" id="evolution-planner-close">✕</button>
+      </div>
+
+      <!-- 본문 -->
+      <div style="padding:20px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:16px;">
+        
+        <!-- 진화 흐름 카드 (다단계 진화 체인) -->
+        <div class="planner-flow-card">
+          <div style="width:100%; display:flex; justify-content:space-between; align-items:center; padding:0 2px; flex-wrap:wrap; gap:6px;">
+            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+              <button type="button" id="planner-btn-save-chain" class="planner-btn-select" style="padding:4px 10px; font-size:0.75rem; background:rgba(34,197,94,0.15); border:1px solid #22C55E; color:#4ADE80; font-weight:700;">경로 저장</button>
+              <button type="button" id="planner-btn-saved-list" class="planner-btn-select" style="padding:4px 10px; font-size:0.75rem; background:rgba(168,85,247,0.15); border:1px solid #A855F7; color:#C084FC; font-weight:700;">저장 목록 <span id="planner-saved-count-badge" style="background:#A855F7; color:#fff; border-radius:10px; padding:1px 6px; font-size:0.68rem; margin-left:3px;">0</span></button>
+              <button type="button" id="planner-btn-copy-img" class="planner-btn-select" style="padding:4px 10px; font-size:0.75rem; background:rgba(56,189,248,0.15); border:1px solid #38BDF8; color:#7DD3FC; font-weight:700;">이미지 복사</button>
+              <button type="button" id="planner-btn-download-img" class="planner-btn-select" style="padding:4px 8px; font-size:0.75rem; background:rgba(255,255,255,0.06); border:1px solid #4E5058; color:#94A3B8;" title="이미지 파일(PNG)로 다운로드">PNG</button>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <button type="button" id="planner-btn-view-in-tree" class="planner-btn-select" style="padding:4px 10px; font-size:0.75rem; background:rgba(88,101,242,0.2); border:1px solid #5865F2; color:#7DD3FC;">트리에서 보기 ↗</button>
+              <button type="button" id="planner-btn-reset-chain" class="planner-btn-select" style="padding:4px 10px; font-size:0.75rem;">초기화</button>
+            </div>
+          </div>
+          <!-- 가로 스크롤 체인 컨테이너 -->
+          <div class="planner-chain-container" id="planner-chain-container"></div>
+        </div>
+
+        <!-- 다음 진화 가능한 디지몬 선택 서랍 (현재 디지몬 선택 시 표시) -->
+        <div class="planner-branches-container" id="planner-branches-container" style="display:none;">
+          <div class="planner-branches-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div>
+              <span class="planner-branches-title" id="planner-branches-title">진화 가능한 디지몬</span>
+              <div id="planner-branches-subtitle" style="font-size:0.72rem; color:#949BA4; margin-top:2px;">카드를 클릭하면 경로에 추가됩니다.</div>
+            </div>
+            <div class="planner-dir-tabs" id="planner-dir-tabs">
+              <button type="button" class="planner-dir-btn" id="planner-tab-dir-incoming">◀ 이전 진화체 (하위)</button>
+              <button type="button" class="planner-dir-btn active" id="planner-tab-dir-outgoing">다음 진화체 (상위) ▶</button>
+            </div>
+          </div>
+          <div class="planner-branches-grid" id="planner-branches-grid"></div>
+        </div>
+
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       디지몬 선택 피커 모달 (Image 2 스타일)
+       ========================================================================= -->
+  <div class="modal-overlay" id="planner-picker-modal" style="display:none; z-index:1300;">
+    <div class="modal-box planner-picker-box">
+      <!-- 헤더 -->
+      <div class="planner-modal-header">
+        <span class="planner-modal-title" id="planner-picker-modal-title">디지몬 선택</span>
+        <button class="planner-modal-close" id="planner-picker-close">✕</button>
+      </div>
+
+      <!-- 본문 -->
+      <div style="padding:16px 20px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px;">
+        
+        <!-- 검색창 -->
+        <div class="planner-search-wrap">
+          <div class="planner-search-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <input type="text" id="planner-search-input" class="planner-search-input" placeholder="디지몬 이름 검색 (예: 아구몬)" autocomplete="off">
+          <button type="button" id="planner-search-clear" class="planner-search-clear" style="display:none;">✕</button>
+        </div>
+
+        <!-- 필터 영역 (세대 / 속성 / DiM) -->
+        <div class="planner-filter-area">
+          <!-- 세대 필터 -->
+          <div class="planner-filter-row">
+            <span class="planner-filter-label">세대</span>
+            <div class="planner-chips-wrap" id="planner-stage-chips">
+              <button type="button" class="planner-chip active" data-stage="ALL">전체</button>
+              <button type="button" class="planner-chip" data-stage="유년기 I">유년기 I</button>
+              <button type="button" class="planner-chip" data-stage="유년기 II">유년기 II</button>
+              <button type="button" class="planner-chip" data-stage="성장기">성장기</button>
+              <button type="button" class="planner-chip" data-stage="성숙기">성숙기</button>
+              <button type="button" class="planner-chip" data-stage="완전체">완전체</button>
+              <button type="button" class="planner-chip" data-stage="궁극체">궁극체</button>
+              <button type="button" class="planner-chip" data-stage="초궁극체">초궁극체</button>
+            </div>
+          </div>
+
+          <!-- 속성 필터 -->
+          <div class="planner-filter-row">
+            <span class="planner-filter-label">속성</span>
+            <div class="planner-chips-wrap" id="planner-attr-chips">
+              <button type="button" class="planner-chip active" data-attr="ALL">전체</button>
+              <button type="button" class="planner-chip" data-attr="none">종족 불명</button>
+              <button type="button" class="planner-chip" data-attr="vaccine">백신</button>
+              <button type="button" class="planner-chip" data-attr="virus">바이러스</button>
+              <button type="button" class="planner-chip" data-attr="data">데이터</button>
+              <button type="button" class="planner-chip" data-attr="free">프리</button>
+            </div>
+          </div>
+
+          <!-- DiM 필터 -->
+          <div class="planner-filter-row" style="align-items:center;">
+            <span class="planner-filter-label">DiM</span>
+            <select id="planner-picker-dim-select" class="form-control" style="padding:4px 10px; font-size:0.78rem; width:180px; background:#1E1F22; border:1px solid #4E5058; color:#FFFFFF; border-radius:8px;">
+              <option value="ALL">전체 DiM</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 결과 개수 카운터 -->
+        <div style="font-size:0.85rem; font-weight:700; color:#475569; padding:2px 2px;">
+          <span id="planner-picker-count" style="color:#38BDF8;">0종</span>
+        </div>
+
+        <!-- 디지몬 카드 그리드 -->
+        <div class="planner-digi-grid" id="planner-picker-grid"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       저장된 진화 경로 목록 모달
+       ========================================================================= -->
+  <div class="modal-overlay" id="planner-saved-modal" style="display:none; z-index:1350;">
+    <div class="modal-box" style="width:720px; max-width:95vw; max-height:85vh; display:flex; flex-direction:column; background:#2B2D31; border:1px solid #3F4147; border-radius:18px; box-shadow:0 20px 50px rgba(0,0,0,0.6); overflow:hidden;">
+      <!-- 헤더 -->
+      <div class="planner-modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="planner-modal-title">저장된 진화 경로</span>
+          <span id="planner-saved-total-count" style="font-size:0.75rem; color:#A855F7; font-weight:700; background:rgba(168,85,247,0.15); border:1px solid rgba(168,85,247,0.3); padding:2px 8px; border-radius:12px;">0개</span>
+        </div>
+        <button class="planner-modal-close" id="planner-saved-modal-close">✕</button>
+      </div>
+
+      <!-- 본문 목록 -->
+      <div id="planner-saved-list-container" style="padding:16px 20px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px;">
+      </div>
+    </div>
+  </div>
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.31 (09.29 17:58)";
+    const APP_VERSION = "v1.3.63 (09.30 18:23)";
 
     // 브라우저 및 Electron 앱 공용 비동기 입력 대화상자 (도감 검색 및 연동 미리보기 지원)
-    function showCustomPrompt(title, desc, defaultValue = "", placeholder = "", datalistId = "") {
+    function showCustomPrompt(title, desc, defaultValue = "", placeholder = "", datalistId = "", disableDigiCheck = false) {
       return new Promise((resolve) => {
         const modal = document.getElementById("custom-prompt-modal");
         const titleEl = document.getElementById("custom-prompt-title");
@@ -2515,6 +3593,7 @@
           return resolve(val);
         }
 
+        modal.style.zIndex = "2500";
         titleEl.textContent = title;
         descEl.textContent = desc;
         inputEl.value = defaultValue;
@@ -2527,6 +3606,10 @@
 
         function updateLiveInfo() {
           if (!infoEl) return;
+          if (disableDigiCheck) {
+            infoEl.innerHTML = "";
+            return;
+          }
           const val = inputEl.value.trim();
           if (!val) {
             infoEl.innerHTML = "";
@@ -2552,7 +3635,12 @@
           infoEl.innerHTML = `<span style="color:#94A3B8;">✨ 새 고유 디지몬으로 생성됩니다.</span>`;
         }
 
-        updateLiveInfo();
+        if (disableDigiCheck && infoEl) {
+          infoEl.innerHTML = "";
+        } else {
+          updateLiveInfo();
+        }
+
         modal.classList.add("active");
 
         setTimeout(() => {
@@ -2565,6 +3653,7 @@
           btnConfirm.removeEventListener("click", onConfirm);
           btnCancel.removeEventListener("click", onCancel);
           btnClose.removeEventListener("click", onCancel);
+          modal.removeEventListener("click", onBackdrop);
           inputEl.removeEventListener("keydown", onKeyDown);
           inputEl.removeEventListener("input", updateLiveInfo);
           if (infoEl) infoEl.innerHTML = "";
@@ -2581,6 +3670,10 @@
           resolve(null);
         }
 
+        function onBackdrop(e) {
+          if (e.target === modal) onCancel();
+        }
+
         function onKeyDown(e) {
           if (e.key === "Enter") {
             e.preventDefault();
@@ -2591,11 +3684,14 @@
           }
         }
 
+        modal.addEventListener("click", onBackdrop);
         btnConfirm.addEventListener("click", onConfirm);
         btnCancel.addEventListener("click", onCancel);
         btnClose.addEventListener("click", onCancel);
         inputEl.addEventListener("keydown", onKeyDown);
-        inputEl.addEventListener("input", updateLiveInfo);
+        if (!disableDigiCheck) {
+          inputEl.addEventListener("input", updateLiveInfo);
+        }
       });
     }
 
@@ -6403,6 +7499,9 @@
           if (sourceDigi.img) d.img = sourceDigi.img;
           if (sourceDigi.attr) d.attr = sourceDigi.attr;
           if (sourceDigi.stage) d.stage = sourceDigi.stage;
+          if (sourceDigi.baseHp !== undefined) d.baseHp = sourceDigi.baseHp;
+          if (sourceDigi.baseAp !== undefined) d.baseAp = sourceDigi.baseAp;
+          if (sourceDigi.baseSpd !== undefined) d.baseSpd = sourceDigi.baseSpd;
         }
       });
     }
@@ -6424,6 +7523,9 @@
         const donorWithImg = list.find(d => d.img && !d.img.includes("sprites/Agumon.gif")) || list.find(d => d.img);
         const donorWithAttr = list.find(d => d.attr && d.attr !== "none");
         const donorWithStage = list.find(d => d.stage && d.stage !== "불명");
+        const donorWithHp = list.find(d => d.baseHp !== undefined && d.baseHp !== "" && d.baseHp !== null);
+        const donorWithAp = list.find(d => d.baseAp !== undefined && d.baseAp !== "" && d.baseAp !== null);
+        const donorWithSpd = list.find(d => d.baseSpd !== undefined && d.baseSpd !== "" && d.baseSpd !== null);
 
         list.forEach(d => {
           if (donorWithImg && donorWithImg.img && (!d.img || d.img.includes("sprites/Agumon.gif"))) {
@@ -6436,6 +7538,18 @@
           }
           if (donorWithStage && donorWithStage.stage && (!d.stage || d.stage === "불명")) {
             d.stage = donorWithStage.stage;
+            updated = true;
+          }
+          if (donorWithHp && (d.baseHp === undefined || d.baseHp === "" || d.baseHp === null)) {
+            d.baseHp = donorWithHp.baseHp;
+            updated = true;
+          }
+          if (donorWithAp && (d.baseAp === undefined || d.baseAp === "" || d.baseAp === null)) {
+            d.baseAp = donorWithAp.baseAp;
+            updated = true;
+          }
+          if (donorWithSpd && (d.baseSpd === undefined || d.baseSpd === "" || d.baseSpd === null)) {
+            d.baseSpd = donorWithSpd.baseSpd;
             updated = true;
           }
         });
@@ -6496,6 +7610,9 @@
         if (existing.img) digi.img = existing.img;
         if (existing.attr) digi.attr = existing.attr;
         if (existing.stage) digi.stage = existing.stage;
+        if (existing.baseHp !== undefined) digi.baseHp = existing.baseHp;
+        if (existing.baseAp !== undefined) digi.baseAp = existing.baseAp;
+        if (existing.baseSpd !== undefined) digi.baseSpd = existing.baseSpd;
         syncSameNameDigimons(digi);
         saveState();
         renderTree();
@@ -6538,7 +7655,7 @@
     }
 
     // 디지몬 바로가기 (포커스 & 하이라이트 애니메이션)
-    function navigateToDigimon(targetId) {
+    function navigateToDigimon(targetId, customToast = null) {
       const digi = project.digimons[targetId];
       if (!digi) return;
 
@@ -6564,7 +7681,10 @@
         }
       }, 80);
 
-      showToast(`조그레스 상대 [<strong>${digi.name}</strong>](으)로 이동했습니다!`);
+      if (customToast !== false) {
+        const msg = customToast || `[<strong>${digi.name}</strong>](으)로 이동했습니다!`;
+        showToast(msg);
+      }
     }
 
     const stageOrder = ["디지타마", "유년기 I", "유년기 II", "성장기", "성숙기", "완전체", "궁극체", "초궁극체", "초궁극체II", "아머체"];
@@ -6628,32 +7748,40 @@
         return (digi && digi.req) ? { ...digi.req } : { ...stageDefault };
       }
 
+      const dReq = digi?.req || {};
       return {
-        time: (evo.time !== undefined && evo.time !== null && evo.time !== "") ? evo.time : (stageDefault?.time || "-"),
-        vital: (evo.vital !== undefined && evo.vital !== null) ? evo.vital : "",
-        pp: (evo.pp !== undefined && evo.pp !== null) ? evo.pp : "",
-        battle: (evo.battle !== undefined && evo.battle !== null) ? evo.battle : "",
-        winRate: (evo.winRate !== undefined && evo.winRate !== null) ? evo.winRate : "",
-        dungeon: (evo.dungeon !== undefined && evo.dungeon !== null) ? evo.dungeon : (stageDefault?.dungeon || "-"),
-        jogress: (evo.jogress !== undefined && evo.jogress !== null) ? evo.jogress : (stageDefault?.jogress || "-"),
-        item: (evo.item !== undefined && evo.item !== null) ? evo.item : (stageDefault?.item || "-"),
-        note: (evo.note !== undefined && evo.note !== null) ? evo.note : ""
+        time: (evo.time !== undefined && evo.time !== null && evo.time !== "") ? evo.time : (dReq.time || stageDefault?.time || "-"),
+        vital: (evo.vital !== undefined && evo.vital !== null && evo.vital !== "") ? evo.vital : (dReq.vital ?? ""),
+        pp: (evo.pp !== undefined && evo.pp !== null && evo.pp !== "") ? evo.pp : (dReq.pp ?? ""),
+        battle: (evo.battle !== undefined && evo.battle !== null && evo.battle !== "") ? evo.battle : (dReq.battle ?? ""),
+        winRate: (evo.winRate !== undefined && evo.winRate !== null && evo.winRate !== "") ? evo.winRate : (dReq.winRate ?? ""),
+        dungeon: (evo.dungeon !== undefined && evo.dungeon !== null && evo.dungeon !== "") ? evo.dungeon : (dReq.dungeon || stageDefault?.dungeon || "-"),
+        jogress: (evo.jogress !== undefined && evo.jogress !== null && evo.jogress !== "") ? evo.jogress : (dReq.jogress || stageDefault?.jogress || "-"),
+        item: (evo.item !== undefined && evo.item !== null && evo.item !== "") ? evo.item : (dReq.item || stageDefault?.item || "-"),
+        note: (evo.note !== undefined && evo.note !== null) ? evo.note : (dReq.note || "")
       };
     }
 
     // 특정 진화선(evo)의 조건이 실제로 밝혀졌는지(입력되었는지) 판별
     function isEvoRevealed(evo, stage = null) {
       if (!evo) return false;
-      if (["디지타마", "유년기 I", "유년기 II"].includes(stage)) {
-        return Boolean(evo.time && evo.time !== "-");
+      const fromDigi = (evo.from && typeof project !== "undefined" && project.digimons) ? project.digimons[evo.from] : null;
+      const fromStage = fromDigi ? fromDigi.stage : null;
+      const hasTime = Boolean(evo.time && evo.time !== "-");
+
+      // 유년기 단계 또는 유년기에서 성장기로의 진화는 진화 시간(time)이 주 조건입니다.
+      if (["디지타마", "유년기 I", "유년기 II"].includes(fromStage) || ["디지타마", "유년기 I", "유년기 II"].includes(stage) || stage === "성장기") {
+        return hasTime;
       }
+
       const hasVital = evo.vital !== "" && evo.vital !== undefined && evo.vital !== null && evo.vital !== "-";
       const hasPp = evo.pp !== "" && evo.pp !== undefined && evo.pp !== null && evo.pp !== "-";
       const hasBattle = evo.battle !== "" && evo.battle !== undefined && evo.battle !== null && evo.battle !== "-";
       const hasWinRate = evo.winRate !== "" && evo.winRate !== undefined && evo.winRate !== null && evo.winRate !== "-";
       const hasJogress = evo.jogress && evo.jogress !== "-" && evo.jogress !== "없음";
       const hasItem = evo.item && evo.item !== "-" && evo.item !== "없음";
-      return Boolean(hasVital || hasPp || hasBattle || hasWinRate || hasJogress || hasItem);
+      const hasDungeon = evo.dungeon && evo.dungeon !== "-" && evo.dungeon !== "없음";
+      return Boolean(hasVital || hasPp || hasBattle || hasWinRate || hasJogress || hasItem || hasDungeon);
     }
 
     // 디지몬의 모든 들어오는 진화 루트(A>D, B>D, C>D) 상태를 종합 판정하여 공개/일부불명/조건불명 자동 산출
@@ -6781,6 +7909,9 @@
       }
       // 드롭다운 선택값과 filterDim 완벽 일치 보장
       select.value = filterDim;
+      if (typeof refreshPlannerDimSelects === 'function') {
+        refreshPlannerDimSelects();
+      }
     }
 
     document.getElementById("filter-dim").addEventListener("change", (e) => {
@@ -7478,7 +8609,10 @@
       container.querySelectorAll(".jogress-sidebar-chip").forEach(chip => {
         chip.addEventListener("click", () => {
           const id = chip.dataset.id;
-          if (id) navigateToDigimon(id);
+          if (id) {
+            const p = project.digimons[id];
+            navigateToDigimon(id, `조그레스 상대 [<strong>${p ? p.name : id}</strong>](으)로 이동했습니다!`);
+          }
         });
       });
     }
@@ -7621,7 +8755,7 @@
                 badgeEl.style.cursor = "pointer";
                 badgeEl.addEventListener("click", (e) => {
                   e.stopPropagation();
-                  navigateToDigimon(partner.id);
+                  navigateToDigimon(partner.id, `조그레스 상대 [<strong>${partner.name}</strong>](으)로 이동했습니다!`);
                 });
               }
               jogressLayer.appendChild(badgeEl);
@@ -7670,7 +8804,7 @@
                 `;
                 boxEl.addEventListener("click", (e) => {
                   e.stopPropagation();
-                  navigateToDigimon(partner.id);
+                  navigateToDigimon(partner.id, `조그레스 상대 [<strong>${partner.name}</strong>](으)로 이동했습니다!`);
                 });
               } else {
                 boxEl.title = `미등록 개체: ${jogressVal}\n(도감에 동일한 이름이 등록되면 이미지가 표시됩니다)`;
@@ -8183,6 +9317,12 @@
         if (nameInput) nameInput.value = "";
         const imgInput = document.getElementById("edit-img");
         if (imgInput) imgInput.value = "";
+        const inpHp = document.getElementById("edit-base-hp");
+        if (inpHp) inpHp.value = "";
+        const inpAp = document.getElementById("edit-base-ap");
+        if (inpAp) inpAp.value = "";
+        const inpSpd = document.getElementById("edit-base-spd");
+        if (inpSpd) inpSpd.value = "";
         const previewImg = document.getElementById("dropzone-preview");
         if (previewImg) previewImg.style.display = "none";
         const dropzonePrompt = document.getElementById("dropzone-prompt");
@@ -8200,6 +9340,12 @@
       document.getElementById("edit-stage").value = digi.stage;
       document.getElementById("edit-attr").value = digi.attr;
       document.getElementById("edit-img").value = digi.img;
+      const inpHp = document.getElementById("edit-base-hp");
+      if (inpHp) inpHp.value = (digi.baseHp !== undefined && digi.baseHp !== null) ? digi.baseHp : "";
+      const inpAp = document.getElementById("edit-base-ap");
+      if (inpAp) inpAp.value = (digi.baseAp !== undefined && digi.baseAp !== null) ? digi.baseAp : "";
+      const inpSpd = document.getElementById("edit-base-spd");
+      if (inpSpd) inpSpd.value = (digi.baseSpd !== undefined && digi.baseSpd !== null) ? digi.baseSpd : "";
       // 진화 조건 공개 상태 라디오 버튼 갱신
       const curStatus = digi.partialUnknown ? "partial" : (digi.unknownTime ? "unknown" : "known");
       document.querySelectorAll("#condition-status-selector .status-btn-opt").forEach(btn => {
@@ -8443,6 +9589,10 @@
         ? `<a href="https://digimon.net/reference_ko/detail.php?directory_name=${official.dir}" target="_blank" rel="noopener" style="color:#5865F2; font-size:0.75rem; text-decoration:underline; font-weight:600;">공식 도감 보기 ↗</a>`
         : "";
 
+      const hpDisplay = (digi.baseHp !== undefined && digi.baseHp !== "" && digi.baseHp !== null) ? digi.baseHp : "-";
+      const apDisplay = (digi.baseAp !== undefined && digi.baseAp !== "" && digi.baseAp !== null) ? digi.baseAp : "-";
+      const spdDisplay = (digi.baseSpd !== undefined && digi.baseSpd !== "" && digi.baseSpd !== null) ? digi.baseSpd : "-";
+
       profileCard.innerHTML = `
         <div class="viewer-hero-card">
           <div class="viewer-hero-img-wrap attr-${digi.attr}">
@@ -8454,7 +9604,24 @@
             <span class="viewer-pill" style="background:${attrColors[digi.attr] || '#888'};">${escapeHtml(attrKo)}</span>
             ${digi.dim ? `<span class="viewer-pill" style="background:rgba(88,101,242,0.5);">${escapeHtml(digi.dim)}</span>` : ''}
           </div>
-          ${officialLink ? `<div style="margin-top:2px;">${officialLink}</div>` : ''}
+          <div class="viewer-base-stats-grid">
+            <div class="viewer-stat-card">
+              <span class="viewer-stat-label">체력</span>
+              <span class="viewer-stat-val text-hp">${escapeHtml(String(hpDisplay))}</span>
+            </div>
+            <div class="viewer-stat-card">
+              <span class="viewer-stat-label">전투력</span>
+              <span class="viewer-stat-val text-ap">${escapeHtml(String(apDisplay))}</span>
+            </div>
+            <div class="viewer-stat-card">
+              <span class="viewer-stat-label">속도</span>
+              <span class="viewer-stat-val text-spd">${escapeHtml(String(spdDisplay))}</span>
+            </div>
+          </div>
+          ${officialLink ? `<div style="margin-top:4px;">${officialLink}</div>` : ''}
+          <button type="button" onclick="openEvolutionPlannerModal('${digi.id}')" style="width:100%; margin-top:8px; padding:6px 0; font-size:0.75rem; font-weight:700; background:rgba(88,101,242,0.2); border:1px solid #5865F2; color:#C4B5FD; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px;" title="이 디지몬을 기준으로 진화 경로 검색 열기">
+            <span>진화 경로 검색</span>
+          </button>
         </div>
       `;
 
@@ -8507,14 +9674,23 @@
               <span>❓</span>
               <span>진화조건 불명 (제보바람)</span>
             </div>
-            <button type="button" class="btn-open-report-from-viewer" style="padding:6px 14px; background:#0284C7; color:#FFF; border:none; border-radius:6px; font-weight:700; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(2,132,199,0.35);">
-              <span>📢</span><span>이 디지몬 조건 제보하기</span>
-            </button>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+              <button type="button" class="btn-open-report-from-viewer" style="padding:6px 14px; background:#0284C7; color:#FFF; border:none; border-radius:6px; font-weight:700; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(2,132,199,0.35);">
+                <span>위키 편집</span>
+              </button>
+              <button type="button" class="btn-open-history-from-viewer" style="padding:6px 12px; background:#334155; color:#F1F5F9; border:1px solid #475569; border-radius:6px; font-weight:700; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; gap:5px;" title="이 디지몬의 변경 역사 확인">
+                <span>역사</span>
+              </button>
+            </div>
           </div>
         `;
         const btn = condCard.querySelector(".btn-open-report-from-viewer");
         if (btn) {
           btn.addEventListener("click", () => openReportModalForDigi(digi));
+        }
+        const histBtn = condCard.querySelector(".btn-open-history-from-viewer");
+        if (histBtn) {
+          histBtn.addEventListener("click", () => openWikiHistoryModal(digi.name, digi.dim));
         }
         return;
       }
@@ -8543,14 +9719,23 @@
                 <span>[${escapeHtml(fromName)} ➔ ${escapeHtml(digi.name)}] 조건 불명</span>
               </div>
               <div style="font-size:0.75rem; color:#94A3B8;">이 진화 루트의 조건은 아직 밝혀지지 않았습니다.</div>
-              <button type="button" class="btn-open-report-from-viewer" style="padding:6px 14px; background:#0284C7; color:#FFF; border:none; border-radius:6px; font-weight:700; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(2,132,199,0.35);">
-                <span>📢</span><span>이 루트 조건 제보하기</span>
-              </button>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+                <button type="button" class="btn-open-report-from-viewer" style="padding:6px 14px; background:#0284C7; color:#FFF; border:none; border-radius:6px; font-weight:700; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(2,132,199,0.35);">
+                  <span>위키 편집</span>
+                </button>
+                <button type="button" class="btn-open-history-from-viewer" style="padding:6px 12px; background:#334155; color:#F1F5F9; border:1px solid #475569; border-radius:6px; font-weight:700; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; gap:5px;" title="이 디지몬의 변경 역사 확인">
+                  <span>역사</span>
+                </button>
+              </div>
             </div>
           `;
           const btn = condCard.querySelector(".btn-open-report-from-viewer");
           if (btn) {
             btn.addEventListener("click", () => openReportModalForDigi(digi));
+          }
+          const histBtn = condCard.querySelector(".btn-open-history-from-viewer");
+          if (histBtn) {
+            histBtn.addEventListener("click", () => openWikiHistoryModal(digi.name, digi.dim));
           }
           return;
         }
@@ -8611,9 +9796,12 @@
             <div class="viewer-spec-val" style="font-size:0.8rem; font-weight:normal; color:#DDD;">${escapeHtml(req.note)}</div>
           </div>` : ''}
         </div>
-        <div style="margin-top:12px;">
-          <button type="button" class="btn-open-report-from-viewer" style="width:100%; padding:9px 12px; background:linear-gradient(135deg, #0284C7 0%, #0369A1 100%); color:#FFF; border:none; border-radius:6px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 8px rgba(2,132,199,0.35);">
-            <span>📢</span><span>진화 조건 제보 / 수정 요청</span>
+        <div style="margin-top:12px; display:flex; gap:8px;">
+          <button type="button" class="btn-open-report-from-viewer" style="flex:1; padding:9px 12px; background:linear-gradient(135deg, #0284C7 0%, #4F46E5 100%); color:#FFF; border:none; border-radius:6px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 8px rgba(79,70,229,0.35);">
+            <span>위키 편집 / 조건 수정</span>
+          </button>
+          <button type="button" class="btn-open-history-from-viewer" style="padding:9px 14px; background:#334155; color:#F1F5F9; border:1px solid #475569; border-radius:6px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;" title="이 디지몬의 변경 역사 확인">
+            <span>역사</span>
           </button>
         </div>
       `;
@@ -8621,6 +9809,10 @@
       const reportBtn = condCard.querySelector(".btn-open-report-from-viewer");
       if (reportBtn) {
         reportBtn.addEventListener("click", () => openReportModalForDigi(digi));
+      }
+      const historyBtn = condCard.querySelector(".btn-open-history-from-viewer");
+      if (historyBtn) {
+        historyBtn.addEventListener("click", () => openWikiHistoryModal(digi.name, digi.dim));
       }
     }
 
@@ -8777,6 +9969,36 @@
       }
     });
 
+    document.getElementById("edit-base-hp").addEventListener("input", (e) => {
+      const digi = project.digimons[selectedDigiId];
+      if (digi) {
+        const val = e.target.value.trim();
+        digi.baseHp = val === "" ? "" : Number(val);
+        syncSameNameDigimons(digi);
+        saveState();
+      }
+    });
+
+    document.getElementById("edit-base-ap").addEventListener("input", (e) => {
+      const digi = project.digimons[selectedDigiId];
+      if (digi) {
+        const val = e.target.value.trim();
+        digi.baseAp = val === "" ? "" : Number(val);
+        syncSameNameDigimons(digi);
+        saveState();
+      }
+    });
+
+    document.getElementById("edit-base-spd").addEventListener("input", (e) => {
+      const digi = project.digimons[selectedDigiId];
+      if (digi) {
+        const val = e.target.value.trim();
+        digi.baseSpd = val === "" ? "" : Number(val);
+        syncSameNameDigimons(digi);
+        saveState();
+      }
+    });
+
     document.querySelectorAll("#condition-status-selector .status-btn-opt").forEach(btn => {
       btn.addEventListener("click", () => {
         const digi = project.digimons[selectedDigiId];
@@ -8874,6 +10096,9 @@
       const initialStage = existing?.stage || ((official && official.stage && official.stage !== "불명") ? official.stage : "성숙기");
       const initialAttr = existing?.attr || ((official && official.attr && official.attr !== "none") ? official.attr : "vaccine");
       const initialImg = existing?.img || "sprites/Agumon.gif";
+      const initialHp = existing?.baseHp ?? "";
+      const initialAp = existing?.baseAp ?? "";
+      const initialSpd = existing?.baseSpd ?? "";
       const id = "digi_" + Date.now();
 
       const isEgg = initialStage === "디지타마";
@@ -8883,6 +10108,9 @@
         stage: initialStage,
         attr: initialAttr,
         img: initialImg,
+        baseHp: initialHp,
+        baseAp: initialAp,
+        baseSpd: initialSpd,
         dim: currentDim,
         order: 999,
         independentReq: true,
@@ -10066,6 +11294,92 @@
       return uid;
     }
 
+    let cachedMaskedIp = null;
+
+    function maskIpAddress(ip) {
+      if (!ip || typeof ip !== "string") return "";
+      ip = ip.trim();
+      if (ip.includes(".")) {
+        const parts = ip.split(".");
+        if (parts.length >= 2) {
+          return `${parts[0]}.${parts[1]}.*.*`;
+        }
+      }
+      if (ip.includes(":")) {
+        const parts = ip.split(":");
+        if (parts.length >= 2) {
+          return `${parts[0]}:${parts[1]}:*:*`;
+        }
+      }
+      return ip;
+    }
+
+    async function getClientMaskedIp() {
+      if (cachedMaskedIp !== null) return cachedMaskedIp;
+
+      try {
+        const stored = sessionStorage.getItem("digipet_masked_ip");
+        if (stored) {
+          cachedMaskedIp = stored;
+          return cachedMaskedIp;
+        }
+      } catch (e) {}
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const res = await fetch("https://api.ipify.org?format=json", { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.ip) {
+            cachedMaskedIp = maskIpAddress(data.ip);
+            try {
+              sessionStorage.setItem("digipet_masked_ip", cachedMaskedIp);
+            } catch (e) {}
+            return cachedMaskedIp;
+          }
+        }
+      } catch (err) {
+        try {
+          const controller2 = new AbortController();
+          const timeoutId2 = setTimeout(() => controller2.abort(), 2000);
+          const res2 = await fetch("https://api64.ipify.org?format=json", { signal: controller2.signal });
+          clearTimeout(timeoutId2);
+          if (res2.ok) {
+            const data2 = await res2.json();
+            if (data2 && data2.ip) {
+              cachedMaskedIp = maskIpAddress(data2.ip);
+              try {
+                sessionStorage.setItem("digipet_masked_ip", cachedMaskedIp);
+              } catch (e) {}
+              return cachedMaskedIp;
+            }
+          }
+        } catch (e2) {}
+      }
+
+      cachedMaskedIp = "";
+      return "";
+    }
+
+    function getClientFullIdentifier() {
+      const uid = getClientUid();
+      const ip = cachedMaskedIp;
+      return ip ? `${uid} (${ip})` : uid;
+    }
+
+    async function updateClientUidDisplays() {
+      const fullId = getClientFullIdentifier();
+      const headerMyUid = document.getElementById("editor-header-my-uid");
+      if (headerMyUid) headerMyUid.textContent = fullId;
+      const editorCurrentUid = document.getElementById("editor-current-client-uid");
+      if (editorCurrentUid) editorCurrentUid.textContent = fullId;
+      const reportModalUid = document.getElementById("report-modal-client-uid");
+      if (reportModalUid) reportModalUid.textContent = `UID: ${fullId}`;
+    }
+
     // 뷰어: 특정 디지몬의 진화 조건 제보 모달 열기
     function openReportModalForDigi(digi) {
       if (!digi) return;
@@ -10110,12 +11424,15 @@
       }
       if (dimBadgeEl) dimBadgeEl.textContent = currentDim;
 
-      // 기존 조건 값 사전 채우기 (사용자가 수정하기 편리하도록)
+      // 기존 조건 및 기본 스탯 값 사전 채우기 (사용자가 수정하기 편리하도록)
       const inputTime = document.getElementById("report-input-time");
       const inputVital = document.getElementById("report-input-vital");
       const inputPp = document.getElementById("report-input-pp");
       const inputBattle = document.getElementById("report-input-battle");
       const inputWinrate = document.getElementById("report-input-winrate");
+      const inputHp = document.getElementById("report-input-hp");
+      const inputAp = document.getElementById("report-input-ap");
+      const inputSpd = document.getElementById("report-input-spd");
       const inputJogress = document.getElementById("report-input-jogress");
       const inputItem = document.getElementById("report-input-item");
       const inputNote = document.getElementById("report-input-note");
@@ -10126,13 +11443,16 @@
       if (inputPp) inputPp.value = (req.pp !== "" && req.pp !== undefined && req.pp !== null) ? req.pp : "";
       if (inputBattle) inputBattle.value = (req.battle && req.battle !== "-") ? req.battle : "";
       if (inputWinrate) inputWinrate.value = (req.winRate && req.winRate !== "-") ? String(req.winRate).replace('%', '') : "";
+      if (inputHp) inputHp.value = (digi.baseHp !== undefined && digi.baseHp !== null && digi.baseHp !== "") ? digi.baseHp : "";
+      if (inputAp) inputAp.value = (digi.baseAp !== undefined && digi.baseAp !== null && digi.baseAp !== "") ? digi.baseAp : "";
+      if (inputSpd) inputSpd.value = (digi.baseSpd !== undefined && digi.baseSpd !== null && digi.baseSpd !== "") ? digi.baseSpd : "";
       if (inputJogress) inputJogress.value = (req.jogress && req.jogress !== "-" && req.jogress !== "없음") ? req.jogress : "";
       if (inputItem) inputItem.value = (req.item && req.item !== "-") ? req.item : "";
       if (inputNote) inputNote.value = req.note || "";
 
-      const clientUid = getClientUid();
       const uidEl = document.getElementById("report-modal-client-uid");
-      if (uidEl) uidEl.textContent = `UID: ${clientUid}`;
+      if (uidEl) uidEl.textContent = `UID: ${getClientFullIdentifier()}`;
+      getClientMaskedIp().then(() => updateClientUidDisplays());
 
       modal.style.display = "flex";
     }
@@ -10143,71 +11463,724 @@
       activeReportContext = null;
     }
 
-    // 유저 제보 전송 핸들러
+    let currentWikiHistoryCache = [];
+    let currentWikiHistoryFilter = { to: "", dim: "" };
+
+    // Diff 비교 시 빈칸 및 '-'를 동일한 미설정 값으로 정규화하는 헬퍼
+    function normalizeDiffVal(v) {
+      if (v === undefined || v === null) return "";
+      const s = String(v).trim();
+      if (s === "-" || s === "null" || s === "undefined") return "";
+      return s;
+    }
+
+    // 위키 편집 저장 & 즉시 반영 핸들러
     async function submitReport() {
       if (!activeReportContext) return;
       const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
-
-      if (!gasUrl) {
-        alert("구글 스프레드시트 연동 URL이 아직 설정되지 않았습니다.\n에디터 상단 [📬 제보 확인] 메뉴에서 웹 앱 URL을 먼저 등록해 주세요.");
-        return;
-      }
 
       const inputTime = document.getElementById("report-input-time")?.value.trim() || "";
       const inputVital = document.getElementById("report-input-vital")?.value.trim() || "";
       const inputPp = document.getElementById("report-input-pp")?.value.trim() || "";
       const inputBattle = document.getElementById("report-input-battle")?.value.trim() || "";
       const inputWinrate = document.getElementById("report-input-winrate")?.value.trim() || "";
+      const inputHp = document.getElementById("report-input-hp")?.value.trim() || "";
+      const inputAp = document.getElementById("report-input-ap")?.value.trim() || "";
+      const inputSpd = document.getElementById("report-input-spd")?.value.trim() || "";
       const inputJogress = document.getElementById("report-input-jogress")?.value.trim() || "";
       const inputItem = document.getElementById("report-input-item")?.value.trim() || "";
       const inputNote = document.getElementById("report-input-note")?.value.trim() || "";
+      const inputComment = document.getElementById("report-input-comment")?.value.trim() || "";
 
-      if (!inputTime && !inputVital && !inputPp && !inputBattle && !inputWinrate && !inputJogress && !inputItem && !inputNote) {
-        alert("최소 하나 이상의 진화 조건 또는 비고 내용을 입력해 주세요.");
+      if (!inputTime && !inputVital && !inputPp && !inputBattle && !inputWinrate && !inputJogress && !inputItem && !inputNote && !inputHp && !inputAp && !inputSpd) {
+        alert("최소 하나 이상의 진화 조건, 기본 스탯, 또는 비고 내용을 입력해 주세요.");
         return;
       }
 
-      const payload = {
-        uid: getClientUid(),
+      const toDigi = activeReportContext.toDigi;
+      const fromDigi = activeReportContext.fromDigi;
+      const activeEvo = getActiveIncomingEvo(toDigi.id, activeIncomingFromId);
+      const req = getEvoRequirements(activeEvo, toDigi);
+
+      // 1. 이전 상태 스냅샷 저장 (위키 롤백 및 diff 생성용)
+      const prevSnapshot = {
         dim: activeReportContext.dim,
-        fromName: activeReportContext.fromName,
-        toName: activeReportContext.toName,
-        time: inputTime,
-        vital: inputVital,
-        pp: inputPp,
-        battle: inputBattle,
-        winRate: inputWinrate,
-        jogress: inputJogress,
-        item: inputItem,
-        note: inputNote
+        from: activeReportContext.fromName,
+        to: activeReportContext.toName,
+        time: req.time || "",
+        vital: req.vital !== undefined && req.vital !== null ? req.vital : "",
+        pp: req.pp !== undefined && req.pp !== null ? req.pp : "",
+        battle: req.battle !== undefined && req.battle !== null ? req.battle : "",
+        winRate: req.winRate !== undefined && req.winRate !== null ? req.winRate : "",
+        baseHp: toDigi.baseHp !== undefined && toDigi.baseHp !== null ? toDigi.baseHp : "",
+        baseAp: toDigi.baseAp !== undefined && toDigi.baseAp !== null ? toDigi.baseAp : "",
+        baseSpd: toDigi.baseSpd !== undefined && toDigi.baseSpd !== null ? toDigi.baseSpd : "",
+        jogress: req.jogress || "",
+        item: req.item || "",
+        note: req.note || ""
       };
 
-      const btnSubmit = document.getElementById("btn-report-submit");
-      const origHtml = btnSubmit ? btnSubmit.innerHTML : "";
-      if (btnSubmit) {
-        btnSubmit.disabled = true;
-        btnSubmit.innerHTML = "<span>전송 중... ⏳</span>";
+      // 2. [즉시 반영] 로컬 인메모리 도감 및 에디터에 변경사항 실시간 적용
+      if (inputHp !== "") {
+        const hpVal = parseInt(inputHp, 10);
+        if (!isNaN(hpVal)) toDigi.baseHp = hpVal;
+      }
+      if (inputAp !== "") {
+        const apVal = parseInt(inputAp, 10);
+        if (!isNaN(apVal)) toDigi.baseAp = apVal;
+      }
+      if (inputSpd !== "") {
+        const spdVal = parseInt(inputSpd, 10);
+        if (!isNaN(spdVal)) toDigi.baseSpd = spdVal;
+      }
+      autoSyncAllSameNameDigimons();
+
+      if (activeEvo) {
+        if (inputTime !== "") activeEvo.time = inputTime;
+        if (inputVital !== "") activeEvo.vital = Number(inputVital);
+        if (inputPp !== "") activeEvo.pp = Number(inputPp);
+        if (inputBattle !== "") activeEvo.battle = inputBattle;
+        if (inputWinrate !== "") activeEvo.winRate = inputWinrate;
+        if (inputJogress !== "") activeEvo.jogress = inputJogress;
+        if (inputItem !== "") activeEvo.item = inputItem;
+        if (inputNote !== "") activeEvo.note = inputNote;
+      } else {
+        if (!toDigi.req) toDigi.req = getDefaultReqForStage(toDigi.stage);
+        if (inputTime !== "") toDigi.req.time = inputTime;
+        if (inputVital !== "") toDigi.req.vital = Number(inputVital);
+        if (inputPp !== "") toDigi.req.pp = Number(inputPp);
+        if (inputBattle !== "") toDigi.req.battle = inputBattle;
+        if (inputWinrate !== "") toDigi.req.winRate = inputWinrate;
+        if (inputJogress !== "") toDigi.req.jogress = inputJogress;
+        if (inputItem !== "") toDigi.req.item = inputItem;
+        if (inputNote !== "") toDigi.req.note = inputNote;
+      }
+
+      if (inputVital !== "" || inputTime !== "") {
+        toDigi.unknownTime = false;
+      }
+
+      saveState();
+      renderTree();
+      drawConnections();
+      if (selectedDigiId) updateSidebar();
+
+      // 1-B. 컨텍스트 보존 및 변경 diff 요약 계산
+      const targetCtx = {
+        dim: activeReportContext.dim,
+        fromName: activeReportContext.fromName,
+        toName: activeReportContext.toName
+      };
+
+      const diffParts = [];
+      const fieldNameMap = {
+        time: "진화시간",
+        vital: "바이탈",
+        pp: "PP",
+        battle: "배틀",
+        winRate: "승률",
+        baseHp: "체력",
+        baseAp: "전투력",
+        baseSpd: "속도",
+        jogress: "조그레스",
+        item: "아이템",
+        note: "비고"
+      };
+
+      const newSnapshot = {
+        dim: targetCtx.dim,
+        from: targetCtx.fromName,
+        to: targetCtx.toName,
+        time: inputTime !== "" ? inputTime : prevSnapshot.time,
+        vital: inputVital !== "" ? Number(inputVital) : prevSnapshot.vital,
+        pp: inputPp !== "" ? Number(inputPp) : prevSnapshot.pp,
+        battle: inputBattle !== "" ? inputBattle : prevSnapshot.battle,
+        winRate: inputWinrate !== "" ? inputWinrate : prevSnapshot.winRate,
+        baseHp: inputHp !== "" ? Number(inputHp) : prevSnapshot.baseHp,
+        baseAp: inputAp !== "" ? Number(inputAp) : prevSnapshot.baseAp,
+        baseSpd: inputSpd !== "" ? Number(inputSpd) : prevSnapshot.baseSpd,
+        jogress: inputJogress !== "" ? inputJogress : prevSnapshot.jogress,
+        item: inputItem !== "" ? inputItem : prevSnapshot.item,
+        note: inputNote !== "" ? inputNote : prevSnapshot.note
+      };
+
+      for (const k in fieldNameMap) {
+        const pV = normalizeDiffVal(prevSnapshot[k]);
+        const nV = normalizeDiffVal(newSnapshot[k]);
+        if (pV !== nV) {
+          diffParts.push(`${fieldNameMap[k]}: ${pV || "-"} → ${nV || "-"}`);
+        }
+      }
+      const localDiffSummary = diffParts.length > 0 ? diffParts.join(", ") : "조건/스탯 갱신";
+
+      // 2. 즉시 낙관적(Optimistic) 로컬 히스토리 기록 (0ms 즉시 역사 반영)
+      const localRevId = "R" + (currentWikiHistoryCache.length + 1) + " (방금)";
+      const nowStr = new Date().toLocaleString();
+      const clientFullId = getClientFullIdentifier();
+
+      const optimisticHistoryItem = {
+        revisionId: localRevId,
+        timestamp: nowStr,
+        dim: targetCtx.dim,
+        fromName: targetCtx.fromName,
+        toName: targetCtx.toName,
+        diffSummary: localDiffSummary,
+        prevData: prevSnapshot,
+        newData: newSnapshot,
+        uid: clientFullId,
+        comment: inputComment
+      };
+
+      currentWikiHistoryCache.unshift(optimisticHistoryItem);
+
+      closeReportModal();
+      showToast(`[<strong>${escapeHtml(targetCtx.toName)}</strong>] 정보가 도감에 즉시 반영되었습니다!`);
+
+      // 3. [구글 시트 연동] 비동기로 위키 변경 역사 및 실시간 조건 시트에 저장
+      if (gasUrl) {
+        getClientMaskedIp().then(() => {
+          const payload = {
+            action: "wiki_edit",
+            uid: getClientFullIdentifier(),
+            rawUid: getClientUid(),
+            maskedIp: cachedMaskedIp || "",
+            dim: targetCtx.dim,
+            fromName: targetCtx.fromName,
+            toName: targetCtx.toName,
+            time: newSnapshot.time,
+            vital: newSnapshot.vital,
+            pp: newSnapshot.pp,
+            battle: newSnapshot.battle,
+            winRate: newSnapshot.winRate,
+            baseHp: newSnapshot.baseHp,
+            baseAp: newSnapshot.baseAp,
+            baseSpd: newSnapshot.baseSpd,
+            jogress: newSnapshot.jogress,
+            item: newSnapshot.item,
+            note: newSnapshot.note,
+            comment: inputComment,
+            diffSummary: localDiffSummary,
+            prevData: prevSnapshot
+          };
+
+          fetch(gasUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify(payload)
+          }).then(() => {
+            // 백그라운드에서 최신 역사 동기화
+            setTimeout(() => fetchWikiHistoryFromGas(true), 3000);
+          }).catch(err => {
+            console.warn("위키 구글 시트 저장 실패:", err);
+          });
+        });
+      }
+    }
+
+    // 위키 변경 역사 모달 열기 & 닫기
+    function openWikiHistoryModal(targetDigiName = "", targetDim = "") {
+      const modal = document.getElementById("wiki-history-modal");
+      if (!modal) return;
+
+      currentWikiHistoryFilter = {
+        to: targetDigiName || "",
+        dim: targetDim || ""
+      };
+
+      const badgeEl = document.getElementById("wiki-history-target-badge");
+      const clearBtn = document.getElementById("btn-wiki-history-filter-clear");
+
+      if (targetDigiName) {
+        if (badgeEl) badgeEl.textContent = `[${targetDigiName}] 변경 내역`;
+        if (clearBtn) clearBtn.style.display = "inline-block";
+      } else {
+        if (badgeEl) badgeEl.textContent = "전체 최근 변경 내역";
+        if (clearBtn) clearBtn.style.display = "none";
+      }
+
+      modal.style.display = "flex";
+
+      // 속도 대폭 개선: 기존 캐시가 있다면 로딩 대기 없이 즉시 화면에 렌더링!
+      if (currentWikiHistoryCache && currentWikiHistoryCache.length > 0) {
+        renderWikiHistoryListUI();
+      }
+
+      fetchWikiHistoryFromGas();
+    }
+
+    function closeWikiHistoryModal() {
+      const modal = document.getElementById("wiki-history-modal");
+      if (modal) modal.style.display = "none";
+    }
+
+    // 구글 시트에서 위키 변경 역사 가져오기
+    async function fetchWikiHistoryFromGas(isSilent = false) {
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
+      const listEl = document.getElementById("wiki-history-list");
+      const countEl = document.getElementById("wiki-history-count-text");
+
+      if (!listEl) return;
+
+      if (!gasUrl) {
+        if (!isSilent) {
+          listEl.innerHTML = `
+            <div style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:20px; color:#F87171; font-size:0.85rem; text-align:center;">
+              구글 웹 앱 URL이 설정되지 않아 온라인 변경 역사를 조회할 수 없습니다.
+            </div>
+          `;
+        }
+        return;
+      }
+
+      // 캐시가 비어있고 silent 모드가 아닐 때만 로딩 문구 표시
+      if (!isSilent && (!currentWikiHistoryCache || currentWikiHistoryCache.length === 0)) {
+        listEl.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-sub); font-size:0.85rem;">위키 변경 역사를 불러오는 중...</div>`;
       }
 
       try {
-        await fetch(gasUrl, {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "text/plain"
-          },
-          body: JSON.stringify(payload)
-        });
+        let url = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=get_wiki_history&t=${Date.now()}`;
+        if (currentWikiHistoryFilter.to) {
+          url += `&to=${encodeURIComponent(currentWikiHistoryFilter.to)}`;
+        }
+        if (currentWikiHistoryFilter.dim) {
+          url += `&dim=${encodeURIComponent(currentWikiHistoryFilter.dim)}`;
+        }
 
-        closeReportModal();
-        showToast("🎉 제보가 구글 시트에 안전하게 접수되었습니다!<br>소중한 정보 공유에 감사드립니다.");
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.status === "success" && Array.isArray(data.history)) {
+          // 서버에서 온 데이터의 diffSummary 정제 (기존 구글 시트에 기록된 '- → -' 등의 잔여 허위 변경 완전 제거)
+          data.history.forEach(h => {
+            h.diffSummary = sanitizeDiffSummary(h.diffSummary, h.prevData, h.newData);
+          });
+
+          // 차단 목록 최신화 (위키 역사 응답에서 함께 반환됨)
+          if (Array.isArray(data.blockedUids)) {
+            currentBlockedUidsCache = data.blockedUids;
+            renderBlockedUidsUI();
+          }
+
+          // 낙관적 로컬 리비전 중 서버 데이터와 중복되지 않은 것만 유지하고 서버 데이터와 병합
+          const serverRevs = new Set(data.history.map(h => String(h.revisionId || "").trim()));
+          const serverRevNums = new Set(data.history.map(h => String(h.revisionId || "").replace(/[^0-9]/g, "")).filter(Boolean));
+
+          const pendingLocal = currentWikiHistoryCache.filter(h => {
+            const revStr = String(h.revisionId || "");
+            if (!revStr.includes("방금")) return false;
+            const baseId = revStr.replace(/\s*\(방금\)/, "").trim();
+            const num = baseId.replace(/[^0-9]/g, "");
+
+            if (serverRevs.has(baseId) || (num && serverRevNums.has(num))) return false;
+
+            const alreadySaved = data.history.some(sh => 
+              sh.toName === h.toName && 
+              sh.dim === h.dim && 
+              (sh.diffSummary === h.diffSummary || (h.uid && sh.uid && (sh.uid.includes(h.uid) || h.uid.includes(sh.uid))))
+            );
+            return !alreadySaved;
+          });
+
+          currentWikiHistoryCache = [...pendingLocal, ...data.history];
+          renderWikiHistoryListUI();
+        } else {
+          throw new Error(data.message || "응답 형식이 올바르지 않습니다.");
+        }
       } catch (err) {
-        console.error("제보 전송 에러:", err);
-        alert("제보 전송 중 네트워크 오류가 발생했습니다: " + err.message);
-      } finally {
-        if (btnSubmit) {
-          btnSubmit.disabled = false;
-          btnSubmit.innerHTML = origHtml;
+        if (!isSilent) {
+          console.error("위키 역사 로드 실패:", err);
+          if (!currentWikiHistoryCache || currentWikiHistoryCache.length === 0) {
+            listEl.innerHTML = `
+              <div style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:20px; color:#F87171; font-size:0.85rem; text-align:center;">
+                변경 내역을 불러오지 못했습니다: ${escapeHtml(err.message)}
+              </div>
+            `;
+          }
+        }
+      }
+    }
+
+    // 불필요한 "- → -" 및 동일 값 변경을 제거하는 Diff 요약 정제 헬퍼
+    function sanitizeDiffSummary(diffStr, prevData, newData) {
+      if (!diffStr) return "조건/스탯 갱신";
+      if (diffStr.startsWith("[되돌림]")) return diffStr;
+
+      // 1. prevData와 newData 스냅샷이 존재하는 경우, 스냅샷 기준으로 정확하게 diff 재계산
+      if (prevData && newData) {
+        let pObj = typeof prevData === "string" ? null : prevData;
+        let nObj = typeof newData === "string" ? null : newData;
+        try { if (!pObj && typeof prevData === "string") pObj = JSON.parse(prevData); } catch (e) {}
+        try { if (!nObj && typeof newData === "string") nObj = JSON.parse(newData); } catch (e) {}
+
+        if (pObj && nObj) {
+          const fieldNameMap = {
+            time: "진화시간",
+            vital: "바이탈",
+            pp: "PP",
+            battle: "배틀",
+            winRate: "승률",
+            baseHp: "체력",
+            baseAp: "전투력",
+            baseSpd: "속도",
+            jogress: "조그레스",
+            item: "아이템",
+            note: "비고"
+          };
+          const parts = [];
+          for (const k in fieldNameMap) {
+            const pV = normalizeDiffVal(pObj[k]);
+            const nV = normalizeDiffVal(nObj[k]);
+            if (pV !== nV) {
+              parts.push(`${fieldNameMap[k]}: ${pV || "-"} → ${nV || "-"}`);
+            }
+          }
+          if (parts.length > 0) return parts.join(", ");
+        }
+      }
+
+      // 2. 문자열 단위에서 "- → -" 및 동일한 값 변경 패턴 필터링
+      const parts = diffStr.split(",").map(s => s.trim()).filter(Boolean);
+      const cleanParts = parts.filter(p => {
+        const m = p.match(/^([^:]+):\s*(.+?)\s*→\s*(.+?)$/);
+        if (!m) return true;
+        const fromVal = normalizeDiffVal(m[2]);
+        const toVal = normalizeDiffVal(m[3]);
+        if (fromVal === toVal) return false;
+        return true;
+      });
+
+      return cleanParts.length > 0 ? cleanParts.join(", ") : "조건/스탯 갱신";
+    }
+
+    // 타임스탬프 포맷팅 헬퍼
+    function formatHistoryTimestamp(ts) {
+      if (!ts) return "";
+      const d = new Date(ts);
+      if (isNaN(d.getTime())) return String(ts);
+      return d.toLocaleString("ko-KR", {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric"
+      });
+    }
+
+    // 위키 변경 역사 목록 UI 렌더링
+    function renderWikiHistoryListUI() {
+      const listEl = document.getElementById("wiki-history-list");
+      const countEl = document.getElementById("wiki-history-count-text");
+      if (!listEl) return;
+
+      let itemsToRender = currentWikiHistoryCache || [];
+      if (currentWikiHistoryFilter.to) {
+        const filterToLower = currentWikiHistoryFilter.to.trim().toLowerCase();
+        itemsToRender = itemsToRender.filter(h => (h.toName || "").toLowerCase().includes(filterToLower));
+      }
+      if (currentWikiHistoryFilter.dim) {
+        const filterDimLower = currentWikiHistoryFilter.dim.trim().toLowerCase();
+        itemsToRender = itemsToRender.filter(h => !h.dim || h.dim.toLowerCase().includes(filterDimLower));
+      }
+
+      if (itemsToRender.length === 0) {
+        listEl.innerHTML = `
+          <div style="text-align:center; padding:50px 20px; color:var(--text-sub); font-size:0.85rem;">
+            등록된 위키 변경 내역이 없습니다.
+          </div>
+        `;
+        if (countEl) countEl.textContent = "총 0건의 기록";
+        return;
+      }
+
+      if (countEl) countEl.textContent = `총 ${itemsToRender.length}건의 기록`;
+
+      let html = "";
+      itemsToRender.forEach((item, idx) => {
+        let prevDataObj = {};
+        try {
+          if (item.prevData) prevDataObj = typeof item.prevData === "string" ? JSON.parse(item.prevData) : item.prevData;
+        } catch (e) {}
+
+        const targetDigi = findDigimonByNameOrId(item.toName);
+        const fromDigi = item.fromName ? findDigimonByNameOrId(item.fromName) : null;
+        const targetImg = targetDigi?.img || "";
+        const fromImg = fromDigi?.img || "";
+
+        const isRevertLog = item.diffSummary && item.diffSummary.startsWith("[되돌림]");
+        const histItemUid = (item.uid || "").trim();
+        const isBlockedEditor = histItemUid && histItemUid !== "익명" && currentBlockedUidsCache.some(b => {
+          const bStr = String(b || "").trim();
+          return bStr && (histItemUid.includes(bStr) || bStr.includes(histItemUid));
+        });
+        const cardBorderColor = isBlockedEditor ? 'rgba(220,38,38,0.55)' : (isRevertLog ? '#6366F1' : 'rgba(255,255,255,0.08)');
+
+        html += `
+          <div style="background: ${isBlockedEditor ? '#231A1A' : '#23272A'}; border: 1px solid ${cardBorderColor}; border-radius: 8px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.25);">
+            <!-- 상단 헤더 행 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span style="background: ${isRevertLog ? '#4F46E5' : '#374151'}; color: #FFF; font-size: 0.72rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; font-family: monospace;">${escapeHtml(item.revisionId || ('#' + (idx+1)))}</span>
+                <span style="font-size: 0.75rem; color: #94A3B8;">${escapeHtml(formatHistoryTimestamp(item.timestamp || ''))}</span>
+                <span style="background: rgba(88,101,242,0.2); color: #C4B5FD; font-size: 0.72rem; padding: 1px 6px; border-radius: 4px; font-weight: 600;">${escapeHtml(item.dim || '-')}</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 0.72rem; color: ${isBlockedEditor ? '#FCA5A5' : '#38BDF8'}; font-family: monospace; background: ${isBlockedEditor ? 'rgba(220,38,38,0.2)' : 'rgba(56,189,248,0.1)'}; border: 1px solid ${isBlockedEditor ? 'rgba(220,38,38,0.45)' : 'rgba(56,189,248,0.25)'}; padding: 2px 8px; border-radius: 4px;" title="편집자 식별 번호">
+                  ${escapeHtml(histItemUid || '익명')}
+                </span>
+                ${isBlockedEditor ? '<span style="font-size:0.68rem; background:#DC2626; color:#FFF; padding:2px 6px; border-radius:3px; font-weight:700;">차단됨</span>' : ''}
+              </div>
+            </div>
+
+            <!-- 디지몬 진화 경로 및 변경 요약 -->
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 6px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                ${fromImg ? `<img src="${encodeURI(fromImg)}" style="width:24px; height:24px; object-fit:contain; image-rendering:pixelated;">` : ''}
+                <span style="font-size: 0.85rem; color: #E2E8F0; font-weight: 600;">${escapeHtml(item.fromName || '시작')}</span>
+                <span style="color: #64748B;">➔</span>
+                ${targetImg ? `<img src="${encodeURI(targetImg)}" style="width:24px; height:24px; object-fit:contain; image-rendering:pixelated;">` : ''}
+                <strong style="font-size: 0.9rem; color: #57F287;">${escapeHtml(item.toName || '-')}</strong>
+              </div>
+
+              <!-- 변경 Diff 요약 -->
+              <div style="font-size: 0.8rem; color: ${isRevertLog ? '#A5B4FC' : '#FDE047'}; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                <span>${escapeHtml(sanitizeDiffSummary(item.diffSummary || '수정', item.prevData, item.newData))}</span>
+              </div>
+            </div>
+
+            <!-- 편집 코멘트 및 버튼 영역 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 2px;">
+              <div style="font-size: 0.75rem; color: #CBD5E1; font-style: ${item.comment ? 'normal' : 'italic'};">
+                ${item.comment ? `사유: <span style="color:#FFF; font-weight:600;">${escapeHtml(item.comment)}</span>` : '<span style="color:#64748B;">사유 미기재</span>'}
+              </div>
+
+              <div style="display: flex; gap: 6px; align-items: center;">
+                ${histItemUid && histItemUid !== '익명' ? (isBlockedEditor ? `
+                  <button type="button" class="btn-wiki-unblock-uid editor-only" data-uid="${escapeHtml(histItemUid)}" style="padding: 4px 9px; font-size: 0.73rem; background: #065F46; color: #A7F3D0; border: 1px solid #059669; border-radius: 4px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 3px;" title="이 편집자 UID 차단 해제">
+                    🔓 차단 해제
+                  </button>
+                ` : `
+                  <button type="button" class="btn-wiki-block-uid editor-only" data-uid="${escapeHtml(histItemUid)}" style="padding: 4px 9px; font-size: 0.73rem; background: rgba(220,38,38,0.18); color: #FCA5A5; border: 1px solid rgba(220,38,38,0.5); border-radius: 4px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 3px;" title="이 편집자 UID 차단 (이후 위키 편집 및 제보 불가)">
+                    🚫 UID 차단
+                  </button>
+                `) : ''}
+                <button type="button" class="btn-wiki-delete-action editor-only" data-rev-id="${escapeHtml(item.revisionId)}" style="padding: 4px 8px; font-size: 0.73rem; background: #2B2D31; color: #FCA5A5; border: 1px solid rgba(239,68,68,0.4); border-radius: 4px; cursor: pointer; font-weight: 600;" title="이 변경 내역 항목을 삭제합니다 (에디터 전용)">
+                  <span>내역 삭제</span>
+                </button>
+                <button type="button" class="btn-wiki-revert-action" data-rev-id="${escapeHtml(item.revisionId)}" style="padding: 4px 10px; font-size: 0.75rem; background: #DC2626; color: #FFF; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(220,38,38,0.35);" title="이 편집이 발생하기 전 상태로 디지몬 정보를 되돌립니다.">
+                  <span>이 변경 되돌리기</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        `;
+      });
+
+      listEl.innerHTML = html;
+
+      // 되돌리기 버튼 이벤트 연결
+      const revertBtns = listEl.querySelectorAll(".btn-wiki-revert-action");
+      revertBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const revId = btn.dataset.revId;
+          revertWikiRevision(revId);
+        });
+      });
+
+      // 내역 개별 삭제 버튼 이벤트 연결 (에디터 전용)
+      const deleteBtns = listEl.querySelectorAll(".btn-wiki-delete-action");
+      deleteBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const revId = btn.dataset.revId;
+          deleteWikiRevision(revId);
+        });
+      });
+
+      // UID 차단 버튼 이벤트 연결 (에디터 전용)
+      listEl.querySelectorAll(".btn-wiki-block-uid").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const uid = btn.dataset.uid;
+          handleBlockUid(uid);
+        });
+      });
+
+      // UID 차단 해제 버튼 이벤트 연결 (에디터 전용)
+      listEl.querySelectorAll(".btn-wiki-unblock-uid").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const uid = btn.dataset.uid;
+          handleUnblockUid(uid);
+        });
+      });
+    }
+
+    // 에디터 전용: 특정 위키 변경 내역 개별 삭제
+    async function deleteWikiRevision(revId) {
+      if (!confirm(`리비전 [${revId}] 변경 내역을 삭제하시겠습니까?\n\n※ 테스트용 내역 등을 정리할 때 사용하며, 디지몬의 현재 조건 상태는 유지됩니다.`)) return;
+
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
+
+      // 로컬 캐시 즉시 제거 및 UI 갱신 (0ms 체감)
+      currentWikiHistoryCache = currentWikiHistoryCache.filter(h => String(h.revisionId) !== String(revId));
+      renderWikiHistoryListUI();
+      showToast(`리비전 [${revId}] 내역이 삭제되었습니다.`);
+
+      // 구글 시트 연동 삭제 전송
+      if (gasUrl) {
+        try {
+          const url = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=delete_wiki_history&revisionId=${encodeURIComponent(revId)}`;
+          await fetch(url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({ action: "delete_wiki_history", revisionId: revId })
+          });
+        } catch (e) {
+          console.warn("구글 시트 위키 내역 삭제 전송 실패:", e);
+        }
+      }
+    }
+
+    // 에디터 전용: 위키 변경 내역 전체 비우기
+    async function clearAllWikiHistory() {
+      if (!currentWikiHistoryCache || currentWikiHistoryCache.length === 0) {
+        alert("삭제할 위키 변경 내역이 없습니다.");
+        return;
+      }
+      if (!confirm(`현재 기록된 총 ${currentWikiHistoryCache.length}건의 위키 변경 내역을 모두 비우시겠습니까?\n\n⚠️ 구글 시트의 위키 역사 시트에서도 모든 변경 기록이 영구 삭제됩니다.`)) return;
+
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
+
+      currentWikiHistoryCache = [];
+      renderWikiHistoryListUI();
+      showToast("모든 위키 변경 내역이 비워졌습니다.");
+
+      if (gasUrl) {
+        try {
+          const url = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=clear_all_wiki_history`;
+          await fetch(url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({ action: "clear_all_wiki_history" })
+          });
+        } catch (e) {
+          console.warn("구글 시트 위키 내역 전체 비우기 실패:", e);
+        }
+      }
+    }
+
+    // 특정 리비전 이전 상태로 되돌리기 (Rollback)
+    async function revertWikiRevision(revId) {
+      const item = currentWikiHistoryCache.find(h => String(h.revisionId) === String(revId));
+      if (!item) {
+        alert("되돌릴 리비전 정보를 찾을 수 없습니다.");
+        return;
+      }
+
+      let prevObj = null;
+      try {
+        if (item.prevData) {
+          prevObj = typeof item.prevData === "string" ? JSON.parse(item.prevData) : item.prevData;
+        }
+      } catch (e) {
+        prevObj = null;
+      }
+
+      if (!prevObj || Object.keys(prevObj).length === 0) {
+        alert("이 리비전은 이전 상태 복원 데이터가 보존되어 있지 않아 자동으로 되돌릴 수 없습니다.");
+        return;
+      }
+
+      const confirmMsg = `[${item.toName}] 디지몬의 정보를 이 편집(${formatHistoryTimestamp(item.timestamp)}, 편집자: ${item.uid}) 이전 상태로 되돌리시겠습니까?\n\n복구될 변경 내용:\n${item.diffSummary}`;
+      if (!confirm(confirmMsg)) return;
+
+      const targetDigi = findDigimonByNameOrId(item.toName);
+      if (!targetDigi) {
+        alert(`도감에서 [${item.toName}] 디지몬을 찾을 수 없습니다.`);
+        return;
+      }
+
+      // 1. [로컬 즉시 복원]
+      if (prevObj.baseHp !== undefined && prevObj.baseHp !== "") targetDigi.baseHp = parseInt(prevObj.baseHp, 10) || 0;
+      if (prevObj.baseAp !== undefined && prevObj.baseAp !== "") targetDigi.baseAp = parseInt(prevObj.baseAp, 10) || 0;
+      if (prevObj.baseSpd !== undefined && prevObj.baseSpd !== "") targetDigi.baseSpd = parseInt(prevObj.baseSpd, 10) || 0;
+      autoSyncAllSameNameDigimons();
+
+      const activeEvo = getActiveIncomingEvo(targetDigi.id, activeIncomingFromId);
+      if (activeEvo) {
+        if (prevObj.time !== undefined) activeEvo.time = prevObj.time;
+        if (prevObj.vital !== undefined && prevObj.vital !== "") activeEvo.vital = Number(prevObj.vital);
+        if (prevObj.pp !== undefined && prevObj.pp !== "") activeEvo.pp = Number(prevObj.pp);
+        if (prevObj.battle !== undefined) activeEvo.battle = prevObj.battle;
+        if (prevObj.winRate !== undefined) activeEvo.winRate = prevObj.winRate;
+        if (prevObj.jogress !== undefined) activeEvo.jogress = prevObj.jogress;
+        if (prevObj.item !== undefined) activeEvo.item = prevObj.item;
+        if (prevObj.note !== undefined) activeEvo.note = prevObj.note;
+      } else if (targetDigi.req) {
+        if (prevObj.time !== undefined) targetDigi.req.time = prevObj.time;
+        if (prevObj.vital !== undefined && prevObj.vital !== "") targetDigi.req.vital = Number(prevObj.vital);
+        if (prevObj.pp !== undefined && prevObj.pp !== "") targetDigi.req.pp = Number(prevObj.pp);
+        if (prevObj.battle !== undefined) targetDigi.req.battle = prevObj.battle;
+        if (prevObj.winRate !== undefined) targetDigi.req.winRate = prevObj.winRate;
+        if (prevObj.jogress !== undefined) targetDigi.req.jogress = prevObj.jogress;
+        if (prevObj.item !== undefined) targetDigi.req.item = prevObj.item;
+        if (prevObj.note !== undefined) targetDigi.req.note = prevObj.note;
+      }
+
+      saveState();
+      renderTree();
+      drawConnections();
+      if (selectedDigiId) updateSidebar();
+
+      showToast(`[<strong>${escapeHtml(item.toName)}</strong>] 디지몬이 성공적으로 이전 상태로 되돌려졌습니다!`);
+
+      // 1-C. 롤백 이력 즉시 낙관적 로컬 반영 (0ms 화면 갱신)
+      const revertLocalId = "R" + (currentWikiHistoryCache.length + 1) + " (방금)";
+      const formattedTs = formatHistoryTimestamp(item.timestamp);
+      const revertHistItem = {
+        revisionId: revertLocalId,
+        timestamp: new Date().toLocaleString(),
+        dim: item.dim,
+        fromName: item.fromName,
+        toName: item.toName,
+        diffSummary: `[되돌림] 리비전 #${item.revisionId} 복구`,
+        prevData: item.newData,
+        newData: prevObj,
+        uid: getClientFullIdentifier(),
+        comment: `리비전 #${item.revisionId} (${formattedTs}) 변경 전 상태로 복구`
+      };
+      currentWikiHistoryCache.unshift(revertHistItem);
+      renderWikiHistoryListUI();
+
+      // 2. [구글 시트 연동] wiki_revert 전송
+      const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
+      if (gasUrl) {
+        await getClientMaskedIp();
+        const payload = {
+          action: "wiki_revert",
+          revisionId: item.revisionId,
+          dim: item.dim,
+          fromName: item.fromName,
+          toName: item.toName,
+          targetData: prevObj,
+          uid: getClientFullIdentifier(),
+          rawUid: getClientUid(),
+          maskedIp: cachedMaskedIp || "",
+          comment: `리비전 #${item.revisionId} (${formattedTs}) 변경 전 상태로 복구`
+        };
+
+        try {
+          await fetch(gasUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify(payload)
+          });
+          fetchWikiHistoryFromGas();
+        } catch (e) {
+          console.warn("구글 시트 롤백 전송 실패:", e);
         }
       }
     }
@@ -10219,7 +12192,8 @@
       modal.style.display = "flex";
 
       const myUidEl = document.getElementById("editor-current-client-uid");
-      if (myUidEl) myUidEl.textContent = getClientUid();
+      if (myUidEl) myUidEl.textContent = getClientFullIdentifier();
+      getClientMaskedIp().then(() => updateClientUidDisplays());
 
       const urlInput = document.getElementById("report-gas-url-input");
       const savedUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
@@ -10593,6 +12567,14 @@
               <div><span style="color:var(--text-sub);">PP:</span> <strong style="color:#FEE75C;">${rep.pp !== "" && rep.pp !== undefined ? rep.pp : '-'}</strong></div>
               <div><span style="color:var(--text-sub);">배틀:</span> <strong style="color:#FFF;">${escapeHtml(rep.battle || '-')}</strong></div>
               <div><span style="color:var(--text-sub);">승률:</span> <strong style="color:#FFF;">${escapeHtml(rep.winRate ? (String(rep.winRate).includes('%') ? rep.winRate : rep.winRate + '%') : '-')}</strong></div>
+              ${(rep.baseHp || rep.baseAp || rep.baseSpd) ? `
+                <div style="grid-column: 1 / -1; display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.04); padding:4px 8px; border-radius:4px; border:1px solid rgba(255,255,255,0.06);">
+                  <span style="color:#A5B4FC; font-weight:700; font-size:0.75rem;">기본스탯:</span>
+                  <span style="color:#34D399; font-weight:700;">HP ${escapeHtml(String(rep.baseHp || '-'))}</span>
+                  <span style="color:#F87171; font-weight:700;">AP ${escapeHtml(String(rep.baseAp || '-'))}</span>
+                  <span style="color:#38BDF8; font-weight:700;">SPD ${escapeHtml(String(rep.baseSpd || '-'))}</span>
+                </div>
+              ` : ''}
               ${rep.jogress ? `<div style="grid-column:span 2;"><span style="color:var(--text-sub);">조그레스:</span> <strong style="color:#C4B5FD;">${escapeHtml(rep.jogress)}</strong></div>` : ''}
               ${rep.item ? `<div style="grid-column:span 2;"><span style="color:var(--text-sub);">아이템:</span> <strong style="color:#FFF;">${escapeHtml(rep.item)}</strong></div>` : ''}
               ${rep.note ? `<div style="grid-column:span 2;"><span style="color:var(--text-sub);">비고:</span> <span style="color:#CBD5E1;">${escapeHtml(rep.note)}</span></div>` : ''}
@@ -10924,6 +12906,20 @@
         toDigi.req.note = report.note;
       }
 
+      // 기본 스탯 갱신 (체력 HP, 전투력 AP, 속도 SPD)
+      if (report.baseHp !== undefined && report.baseHp !== "" && report.baseHp !== null && report.baseHp !== "-") {
+        const hpNum = Number(report.baseHp);
+        if (!isNaN(hpNum)) toDigi.baseHp = hpNum;
+      }
+      if (report.baseAp !== undefined && report.baseAp !== "" && report.baseAp !== null && report.baseAp !== "-") {
+        const apNum = Number(report.baseAp);
+        if (!isNaN(apNum)) toDigi.baseAp = apNum;
+      }
+      if (report.baseSpd !== undefined && report.baseSpd !== "" && report.baseSpd !== null && report.baseSpd !== "-") {
+        const spdNum = Number(report.baseSpd);
+        if (!isNaN(spdNum)) toDigi.baseSpd = spdNum;
+      }
+
       // 다중 루트 상태 종합 판정 (A>D, B>D, C>D 등 모든 루트가 밝혀져야 전체 공개, 하나라도 비어있으면 일부 불명)
       updateDigimonConditionStatus(toDigi);
       syncSameNameDigimons(toDigi);
@@ -11007,6 +13003,9 @@
             pp: req.pp !== undefined && req.pp !== null ? req.pp : "",
             battle: req.battle !== undefined && req.battle !== null ? req.battle : "",
             winRate: req.winRate !== undefined && req.winRate !== null ? req.winRate : "",
+            baseHp: toD.baseHp !== undefined && toD.baseHp !== null ? toD.baseHp : "",
+            baseAp: toD.baseAp !== undefined && toD.baseAp !== null ? toD.baseAp : "",
+            baseSpd: toD.baseSpd !== undefined && toD.baseSpd !== null ? toD.baseSpd : "",
             jogress: req.jogress || "",
             item: req.item || "",
             note: req.note || ""
@@ -11031,6 +13030,9 @@
               pp: "",
               battle: "",
               winRate: "",
+              baseHp: d.baseHp !== undefined && d.baseHp !== null ? d.baseHp : "",
+              baseAp: d.baseAp !== undefined && d.baseAp !== null ? d.baseAp : "",
+              baseSpd: d.baseSpd !== undefined && d.baseSpd !== null ? d.baseSpd : "",
               jogress: "",
               item: "",
               note: ""
@@ -11152,6 +13154,29 @@
                 if (c.jogress !== undefined && c.jogress !== "") d.req.jogress = c.jogress;
                 if (c.item !== undefined && c.item !== "") d.req.item = c.item;
                 if (c.note !== undefined && c.note !== "") d.req.note = c.note;
+
+                // 기본 스탯(baseHp, baseAp, baseSpd) 갱신
+                if (c.baseHp !== undefined && c.baseHp !== "") {
+                  const hpNum = parseInt(c.baseHp, 10);
+                  if (!isNaN(hpNum) && d.baseHp !== hpNum) {
+                    d.baseHp = hpNum;
+                    updatedCount++;
+                  }
+                }
+                if (c.baseAp !== undefined && c.baseAp !== "") {
+                  const apNum = parseInt(c.baseAp, 10);
+                  if (!isNaN(apNum) && d.baseAp !== apNum) {
+                    d.baseAp = apNum;
+                    updatedCount++;
+                  }
+                }
+                if (c.baseSpd !== undefined && c.baseSpd !== "") {
+                  const spdNum = parseInt(c.baseSpd, 10);
+                  if (!isNaN(spdNum) && d.baseSpd !== spdNum) {
+                    d.baseSpd = spdNum;
+                    updatedCount++;
+                  }
+                }
               }
             });
           });
@@ -11187,6 +13212,47 @@
       // 제보 전송 버튼
       const submitReportBtn = document.getElementById("btn-report-submit");
       if (submitReportBtn) submitReportBtn.addEventListener("click", submitReport);
+
+      // 위키 변경역사 모달 열기 & 닫기 & 새로고침 버튼들
+      const openWikiHistBtn = document.getElementById("btn-open-wiki-history");
+      if (openWikiHistBtn) openWikiHistBtn.addEventListener("click", () => openWikiHistoryModal());
+
+      const mobileWikiHistBtn = document.getElementById("btn-mobile-wiki-history");
+      if (mobileWikiHistBtn) mobileWikiHistBtn.addEventListener("click", () => openWikiHistoryModal());
+
+      const reportViewHistBtn = document.getElementById("btn-report-view-history");
+      if (reportViewHistBtn) {
+        reportViewHistBtn.addEventListener("click", () => {
+          if (activeReportContext) {
+            openWikiHistoryModal(activeReportContext.toName, activeReportContext.dim);
+          } else {
+            openWikiHistoryModal();
+          }
+        });
+      }
+
+      const closeWikiHistBtn = document.getElementById("btn-wiki-history-close");
+      const closeWikiHistBottomBtn = document.getElementById("btn-wiki-history-close-bottom");
+      if (closeWikiHistBtn) closeWikiHistBtn.addEventListener("click", closeWikiHistoryModal);
+      if (closeWikiHistBottomBtn) closeWikiHistBottomBtn.addEventListener("click", closeWikiHistoryModal);
+
+      const refreshWikiHistBtn = document.getElementById("btn-wiki-history-refresh");
+      if (refreshWikiHistBtn) refreshWikiHistBtn.addEventListener("click", fetchWikiHistoryFromGas);
+
+      const filterClearBtn = document.getElementById("btn-wiki-history-filter-clear");
+      if (filterClearBtn) {
+        filterClearBtn.addEventListener("click", () => {
+          currentWikiHistoryFilter = { to: "", dim: "" };
+          const badgeEl = document.getElementById("wiki-history-target-badge");
+          if (badgeEl) badgeEl.textContent = "전체 최근 변경 내역";
+          filterClearBtn.style.display = "none";
+          fetchWikiHistoryFromGas();
+        });
+      }
+
+      // 위키 변경 역사 전체 비우기 (에디터 전용)
+      const clearAllWikiHistBtn = document.getElementById("btn-wiki-history-clear-all");
+      if (clearAllWikiHistBtn) clearAllWikiHistBtn.addEventListener("click", clearAllWikiHistory);
 
       // 에디터 제보 확인 버튼
       const openReviewBtn = document.getElementById("btn-open-reports");
@@ -11268,6 +13334,1655 @@
         drawConnections();
       }, 200);
     });
+    // =========================================================================
+    // 진화 경로 검색 & 플래너 기능 (Evolution Route Planner)
+    // =========================================================================
+    // 진화 경로 체인 플래너 기능 (Evolution Route Chain Planner)
+    // =========================================================================
+    let plannerChain = []; // [digiId0, digiId1, digiId2, ...]
+    let plannerActiveIndex = 0; // 현재 포커스된 체인 노드 인덱스
+    let plannerBranchDirection = "outgoing"; // 'incoming' (하위 역방향) | 'outgoing' (상위 순방향)
+    let plannerActiveDim = "ALL";
+
+    let pickerTargetSlot = 0; // 체인 내 변경할 슬롯 인덱스 (기본 0: 시작 디지몬)
+    let pickerSearchQuery = "";
+    let pickerStageFilter = "ALL";
+    let pickerAttrFilter = "ALL";
+    let pickerDimFilter = "ALL";
+
+    function getPlannerAvailableDims() {
+      const dimSet = new Set();
+      if (project && Array.isArray(project.dims)) {
+        project.dims.forEach(d => { if (d && typeof d === "string" && d.trim().length > 1) dimSet.add(d.trim()); });
+      }
+      if (window.DIGIPET_DEFAULT_DATA && Array.isArray(window.DIGIPET_DEFAULT_DATA.dims)) {
+        window.DIGIPET_DEFAULT_DATA.dims.forEach(d => { if (d && typeof d === "string" && d.trim().length > 1) dimSet.add(d.trim()); });
+      }
+      if (project && project.digimons) {
+        Object.values(project.digimons).forEach(d => {
+          if (d && d.dim) {
+            d.dim.split(",").map(s => s.trim()).filter(s => s.length > 1).forEach(x => dimSet.add(x));
+          }
+        });
+      }
+      const list = Array.from(dimSet);
+      list.sort((a, b) => {
+        if (a === "아구몬 EX") return -1;
+        if (b === "아구몬 EX") return 1;
+        return a.localeCompare(b, "ko");
+      });
+      return list;
+    }
+
+    function refreshPlannerDimSelects() {
+      const dims = getPlannerAvailableDims();
+
+      // 1. 플래너 헤더 DiM 셀렉트
+      const filterSel = document.getElementById("planner-filter-dim");
+      if (filterSel) {
+        const curVal = filterSel.value || plannerActiveDim || "ALL";
+        let html = '<option value="ALL">전체 DiM</option>';
+        dims.forEach(dim => {
+          html += `<option value="${escapeHtml(dim)}">${escapeHtml(dim)}</option>`;
+        });
+        filterSel.innerHTML = html;
+        filterSel.value = (curVal && (curVal === "ALL" || dims.includes(curVal))) ? curVal : "ALL";
+        plannerActiveDim = filterSel.value;
+      }
+
+      // 2. 피커 모달 DiM 셀렉트
+      const pickerSel = document.getElementById("planner-picker-dim-select");
+      if (pickerSel) {
+        const curVal = pickerSel.value || pickerDimFilter || "ALL";
+        let html = '<option value="ALL">전체 DiM</option>';
+        dims.forEach(dim => {
+          html += `<option value="${escapeHtml(dim)}">${escapeHtml(dim)}</option>`;
+        });
+        pickerSel.innerHTML = html;
+        pickerSel.value = (curVal && (curVal === "ALL" || dims.includes(curVal))) ? curVal : "ALL";
+        pickerDimFilter = pickerSel.value;
+      }
+    }
+
+    function openEvolutionPlannerModal(initialDigiId = null) {
+      try {
+        const modal = document.getElementById("evolution-planner-modal");
+        if (!modal) return;
+
+        // DiM 셀렉트 박스 옵션 갱신
+        refreshPlannerDimSelects();
+
+        // 초기 디지몬 설정:
+        // 1) 명시적 인자 initialDigiId
+        // 2) 현재 트리에서 선택된 디지몬 (디지타마 제외)
+        let targetId = initialDigiId;
+        if (!targetId && selectedDigiId && project.digimons[selectedDigiId]) {
+          const selDigi = project.digimons[selectedDigiId];
+          if (selDigi.stage !== "디지타마" && !selDigi.name.includes("알")) {
+            targetId = selectedDigiId;
+          }
+        }
+
+        if (targetId) {
+          plannerChain = [targetId];
+          plannerActiveIndex = 0;
+          const digiObj = project.digimons[targetId];
+          if (digiObj && ["완전체", "궁극체", "초궁극체", "초궁극체II"].includes(digiObj.stage)) {
+            plannerBranchDirection = "incoming";
+          } else {
+            plannerBranchDirection = "outgoing";
+          }
+        } else if (plannerChain.length === 0) {
+          plannerChain = [];
+          plannerActiveIndex = 0;
+        }
+
+        modal.style.display = "flex";
+        modal.classList.add("active");
+        updateEvolutionPlannerUI();
+        updateSavedChainsBadge();
+
+        // 선택된 디지몬이 없다면 즉시 디지몬 선택 검색창(피커 모달) 오픈
+        if (plannerChain.length === 0) {
+          openPlannerPickerModal(0);
+        }
+      } catch (err) {
+        console.error("openEvolutionPlannerModal error:", err);
+      }
+    }
+    window.openEvolutionPlannerModal = openEvolutionPlannerModal;
+
+    function closeEvolutionPlannerModal() {
+      const modal = document.getElementById("evolution-planner-modal");
+      if (modal) {
+        modal.style.display = "none";
+        modal.classList.remove("active");
+      }
+    }
+    window.closeEvolutionPlannerModal = closeEvolutionPlannerModal;
+
+    // 두 디지몬 간의 직접 진화선 또는 최단 경로 탐색 (BFS)
+    function findDirectOrPathEvo(fromId, toId) {
+      if (!fromId || !toId || !project.evolutions) return null;
+      // 1) 직접 연결선
+      const direct = project.evolutions.find(e => e.from === fromId && e.to === toId);
+      if (direct) return { isDirect: true, path: [fromId, toId], evo: direct };
+
+      // 2) 이름 기반 직접 연결선 (다른 DiM 인스턴스 고려)
+      const fromD = project.digimons[fromId];
+      const toD = project.digimons[toId];
+      if (fromD && toD) {
+        const nameEvos = project.evolutions.filter(e => {
+          const ef = project.digimons[e.from];
+          const et = project.digimons[e.to];
+          return ef && et && ef.name === fromD.name && et.name === toD.name;
+        });
+        if (nameEvos.length > 0) {
+          if (plannerActiveDim !== "ALL") {
+            const dimMatched = nameEvos.find(e => {
+              const ef = project.digimons[e.from];
+              return ef && ef.dim && ef.dim.includes(plannerActiveDim);
+            });
+            if (dimMatched) return { isDirect: true, path: [dimMatched.from, dimMatched.to], evo: dimMatched };
+          }
+          return { isDirect: true, path: [nameEvos[0].from, nameEvos[0].to], evo: nameEvos[0] };
+        }
+      }
+
+      // 3) 다단계 최단 경로 탐색 (BFS)
+      const queue = [[fromId]];
+      const visited = new Set([fromId]);
+      while (queue.length > 0) {
+        const path = queue.shift();
+        const curr = path[path.length - 1];
+        const outgoing = project.evolutions.filter(e => e.from === curr);
+        for (const evo of outgoing) {
+          if (evo.to === toId) {
+            return { isDirect: false, path: [...path, evo.to], evo: evo };
+          }
+          if (!visited.has(evo.to)) {
+            visited.add(evo.to);
+            queue.push([...path, evo.to]);
+          }
+        }
+      }
+      return null;
+    }
+
+    // 두 디지몬 간의 직접 진화선 여부 확인
+    function areDigimonsDirectlyConnected(fromId, toId) {
+      if (!fromId || !toId || !project.evolutions) return false;
+      const res = findDirectOrPathEvo(fromId, toId);
+      return !!(res && res.isDirect);
+    }
+
+    // 인라인 진화 조건 요약 포맷팅 (화살표 사이 표시용)
+    function formatInlineEvoReq(fromDigi, toDigi) {
+      if (!fromDigi || !toDigi) return { html: '<div class="planner-cond-none">-</div>', hasData: false };
+
+      const isDirect = areDigimonsDirectlyConnected(fromDigi.id, toDigi.id);
+      if (!isDirect) {
+        return {
+          html: `<div class="planner-cond-unknown" style="color:#EF4444; border:1px solid rgba(239,68,68,0.4); background:rgba(239,68,68,0.1); font-weight:700;">연결 없음</div>`,
+          hasData: false
+        };
+      }
+
+      const evoResult = findDirectOrPathEvo(fromDigi.id, toDigi.id);
+      const evo = evoResult?.evo || null;
+      const req = getEvoRequirements(evo, toDigi);
+      const isRevealed = evo ? isEvoRevealed(evo, toDigi.stage) : !toDigi.unknownTime;
+
+      // 유년기 또는 성장기로의 진화는 시간이 밝혀져 있으면 조건 공개로 취급
+      const isBabyOrChild = ["디지타마", "유년기 I", "유년기 II", "성장기"].includes(toDigi.stage) || ["유년기 I", "유년기 II"].includes(fromDigi.stage);
+
+      if (!isRevealed && !isBabyOrChild) {
+        return {
+          html: `<div class="planner-cond-unknown">조건 불명</div>`,
+          hasData: false
+        };
+      }
+
+      const tags = [];
+      let jogressSub = "";
+      let itemSub = "";
+
+      // 1. 조그레스
+      if (req.jogress && req.jogress !== "-" && req.jogress !== "없음") {
+        tags.push(`<span class="cond-tag jogress" title="조그레스: ${escapeHtml(req.jogress)}">조그레스</span>`);
+        jogressSub = req.jogress;
+      }
+
+      // 2. 특수 아이템
+      if (req.item && req.item !== "-" && req.item !== "없음") {
+        tags.push(`<span class="cond-tag item" title="필요 아이템: ${escapeHtml(req.item)}">아이템</span>`);
+        itemSub = req.item;
+      }
+
+      // 3. 진화 시간
+      if (req.time && req.time !== "-") {
+        tags.push(`<span class="cond-tag time" title="진화 시간"><img src="진화시간.webp" alt="시간" class="cond-icon">${escapeHtml(req.time)}</span>`);
+      }
+
+      // 4. 바이탈
+      if (req.vital !== "" && req.vital !== undefined && req.vital !== null && req.vital !== "-") {
+        tags.push(`<span class="cond-tag vital" title="필요 바이탈"><img src="바이탈.webp" alt="바이탈" class="cond-icon">${Number(req.vital).toLocaleString()}V</span>`);
+      }
+
+      // 5. PP / 트로피
+      if (req.pp !== "" && req.pp !== undefined && req.pp !== null && req.pp !== "-") {
+        tags.push(`<span class="cond-tag pp" title="필요 트로피/PP"><img src="PP.webp" alt="PP" class="cond-icon">PP ${req.pp}</span>`);
+      }
+
+      // 6. 배틀 / 승률
+      if (req.battle || req.winRate) {
+        const b = req.battle ? `${req.battle}회` : '';
+        const w = req.winRate ? `${req.winRate}%` : '';
+        const str = [b, w].filter(Boolean).join('·');
+        if (str) {
+          tags.push(`<span class="cond-tag battle" title="배틀 및 승률"><img src="승률.webp" alt="배틀/승률" class="cond-icon">${escapeHtml(str)}</span>`);
+        }
+      }
+
+      // 7. 던전 클리어 조건
+      if (req.dungeon && req.dungeon !== "-" && req.dungeon !== "없음") {
+        const dStr = req.dungeon.startsWith("던전") ? req.dungeon : `던전 ${req.dungeon}`;
+        tags.push(`<span class="cond-tag dungeon" title="던전 조건: ${escapeHtml(req.dungeon)}">${escapeHtml(dStr)}</span>`);
+      }
+
+      if (tags.length === 0 && !jogressSub && !itemSub) {
+        return {
+          html: `<div class="planner-cond-none">조건 없음</div>`,
+          hasData: false
+        };
+      }
+
+      // 태그들을 한 줄에 최대 2개씩 분할 (3개가 한 줄에 몰려 삐져나가는 현상 방지)
+      const rows = [];
+      for (let i = 0; i < tags.length; i += 2) {
+        rows.push(tags.slice(i, i + 2).join(" "));
+      }
+      const rowsHtml = rows.map(r => `<div class="planner-cond-row">${r}</div>`).join("");
+
+      let subHtml = "";
+      if (jogressSub) {
+        subHtml += `<div class="planner-cond-sub" title="조그레스: ${escapeHtml(req.jogress)}">${escapeHtml(req.jogress)}</div>`;
+      } else if (itemSub) {
+        subHtml += `<div class="planner-cond-sub" style="color:#FCD34D;" title="아이템: ${escapeHtml(req.item)}">${escapeHtml(req.item)}</div>`;
+      }
+
+      return {
+        html: `
+          ${rowsHtml}
+          ${subHtml}
+        `,
+        hasData: true
+      };
+    }
+
+    function updateEvolutionPlannerUI() {
+      const chainContainer = document.getElementById("planner-chain-container");
+      // chainCountBadge removed
+      const branchesContainer = document.getElementById("planner-branches-container");
+      const branchesGrid = document.getElementById("planner-branches-grid");
+      const branchesTitle = document.getElementById("planner-branches-title");
+      const branchesSubtitle = document.getElementById("planner-branches-subtitle");
+      const btnTabIncoming = document.getElementById("planner-tab-dir-incoming");
+      const btnTabOutgoing = document.getElementById("planner-tab-dir-outgoing");
+      const btnViewTree = document.getElementById("planner-btn-view-in-tree");
+
+      if (!chainContainer) return;
+
+      // 1. 체인 상태 유효성 보정
+      if (plannerChain.length === 0) {
+        chainContainer.innerHTML = `
+          <div class="planner-chain-slot-wrap">
+            <div class="planner-chain-slot-stage">시작 디지몬</div>
+            <div class="planner-chain-slot empty" onclick="openPlannerPickerModal(0)" title="클릭하여 디지몬 선택">
+              <div class="planner-slot-empty-icon">
+                <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </div>
+              <span style="font-size:0.72rem; color:#94A3B8; font-weight:600; margin-top:4px;">디지몬 선택</span>
+            </div>
+          </div>
+        `;
+        if (branchesContainer) branchesContainer.style.display = "none";
+        return;
+      }
+
+      if (plannerActiveIndex >= plannerChain.length) {
+        plannerActiveIndex = plannerChain.length - 1;
+      }
+      if (plannerActiveIndex < 0) plannerActiveIndex = 0;
+
+      const activeDigi = project.digimons[plannerChain[plannerActiveIndex]];
+      const attrKoMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
+
+      // 2. 트리에서 보기 버튼 바인딩
+      if (btnViewTree && activeDigi) {
+        btnViewTree.onclick = () => {
+          closeEvolutionPlannerModal();
+          navigateToDigimon(activeDigi.id, `[<strong>${activeDigi.name}</strong>] 트리 위치로 이동했습니다!`);
+        };
+      }
+
+      // 3. 현재 포커스된 디지몬의 들어오는(incoming) 및 나가는(outgoing) 진화선 모두 수집
+      let incomingEvos = [];
+      let outgoingEvos = [];
+
+      if (activeDigi) {
+        if (plannerActiveDim === "ALL") {
+          const sameNameDigis = Object.values(project.digimons).filter(d => d.name === activeDigi.name);
+          const allIds = sameNameDigis.map(d => d.id);
+          incomingEvos = (project.evolutions || []).filter(e => allIds.includes(e.to));
+          outgoingEvos = (project.evolutions || []).filter(e => allIds.includes(e.from));
+        } else {
+          const matchedDigis = Object.values(project.digimons).filter(d => {
+            if (d.name !== activeDigi.name) return false;
+            const dims = d.dim ? d.dim.split(",").map(s => s.trim()) : [];
+            return dims.includes(plannerActiveDim);
+          });
+          const matchIds = matchedDigis.length > 0 ? matchedDigis.map(d => d.id) : [activeDigi.id];
+          incomingEvos = (project.evolutions || []).filter(e => {
+            if (!matchIds.includes(e.to)) return false;
+            const fd = project.digimons[e.from];
+            if (!fd) return false;
+            const fDims = fd.dim ? fd.dim.split(",").map(s => s.trim()) : [];
+            return fDims.includes(plannerActiveDim);
+          });
+          outgoingEvos = (project.evolutions || []).filter(e => {
+            if (!matchIds.includes(e.from)) return false;
+            const td = project.digimons[e.to];
+            if (!td) return false;
+            const tDims = td.dim ? td.dim.split(",").map(s => s.trim()) : [];
+            return tDims.includes(plannerActiveDim);
+          });
+        }
+      }
+
+      // 하위 진화체(incoming) 후보군 집계
+      const inBranchMap = new Map();
+      incomingEvos.forEach(evo => {
+        const fd = project.digimons[evo.from];
+        if (!fd) return;
+        // 디지타마(알)는 하위 진화체 탐색에서 완전히 제외
+        if (fd.stage === "디지타마") return;
+        const evoDim = (fd.dim ? fd.dim.split(",")[0].trim() : "");
+        if (!inBranchMap.has(fd.name)) {
+          inBranchMap.set(fd.name, { candDigi: fd, evos: [evo], dims: evoDim ? [evoDim] : [] });
+        } else {
+          const grp = inBranchMap.get(fd.name);
+          grp.evos.push(evo);
+          if (evoDim && !grp.dims.includes(evoDim)) grp.dims.push(evoDim);
+        }
+      });
+      const incomingList = Array.from(inBranchMap.values());
+
+      // 상위 진화체(outgoing) 후보군 집계
+      const outBranchMap = new Map();
+      outgoingEvos.forEach(evo => {
+        const td = project.digimons[evo.to];
+        if (!td) return;
+        const fromD = project.digimons[evo.from];
+        const evoDim = (fromD && fromD.dim ? fromD.dim.split(",")[0].trim() : (td.dim ? td.dim.split(",")[0].trim() : ""));
+        if (!outBranchMap.has(td.name)) {
+          outBranchMap.set(td.name, { candDigi: td, evos: [evo], dims: evoDim ? [evoDim] : [] });
+        } else {
+          const grp = outBranchMap.get(td.name);
+          grp.evos.push(evo);
+          if (evoDim && !grp.dims.includes(evoDim)) grp.dims.push(evoDim);
+        }
+      });
+      const outgoingList = Array.from(outBranchMap.values());
+
+      // 만약 선택된 방향의 후보가 0개이고 반대 방향 후보가 있으면 자동 전환 (초궁극체 선택 시 incoming, 유년기 선택 시 outgoing 자동 활성화)
+      if (plannerBranchDirection === "incoming" && incomingList.length === 0 && outgoingList.length > 0) {
+        plannerBranchDirection = "outgoing";
+      } else if (plannerBranchDirection === "outgoing" && outgoingList.length === 0 && incomingList.length > 0) {
+        plannerBranchDirection = "incoming";
+      }
+
+      // 4. 방향 탭 버튼 텍스트 및 활성화 상태 갱신
+      if (btnTabIncoming) {
+        btnTabIncoming.textContent = `◀ 이전 진화체 (하위 ${incomingList.length}종)`;
+        btnTabIncoming.className = `planner-dir-btn ${plannerBranchDirection === "incoming" ? "active" : ""}`;
+        btnTabIncoming.onclick = () => {
+          plannerBranchDirection = "incoming";
+          updateEvolutionPlannerUI();
+        };
+      }
+      if (btnTabOutgoing) {
+        btnTabOutgoing.textContent = `다음 진화체 (상위 ${outgoingList.length}종) ▶`;
+        btnTabOutgoing.className = `planner-dir-btn ${plannerBranchDirection === "outgoing" ? "active" : ""}`;
+        btnTabOutgoing.onclick = () => {
+          plannerBranchDirection = "outgoing";
+          updateEvolutionPlannerUI();
+        };
+      }
+
+      const activeList = plannerBranchDirection === "incoming" ? incomingList : outgoingList;
+
+      // 5. 체인 슬롯 & 인라인 진화 조건 커넥터 렌더링
+      chainContainer.innerHTML = "";
+
+      // 5-A. 역방향 탐색 슬롯 (체인 첫 노드가 유년기 I가 아니고 incoming 후보가 있는 경우)
+      if (incomingList.length > 0 && plannerActiveIndex === 0) {
+        const prevStageSample = incomingList[0]?.candDigi?.stage || "이전 진화";
+        const prevWrap = document.createElement("div");
+        prevWrap.className = "planner-chain-slot-wrap";
+        prevWrap.innerHTML = `
+          <div class="planner-chain-slot-stage" style="color:#A78BFA; border-color:rgba(167,139,250,0.3);">${escapeHtml(prevStageSample)}</div>
+          <div class="planner-chain-slot empty" title="클릭하여 하위(이전) 진화체를 선택하세요">
+            <div class="planner-slot-empty-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </div>
+            <span style="font-size:0.67rem; color:#A78BFA; font-weight:700; margin-top:2px;">이전 진화</span>
+          </div>
+          <span style="font-size:0.62rem; color:#949BA4;">하위 선택</span>
+        `;
+        prevWrap.querySelector(".planner-chain-slot").addEventListener("click", () => {
+          plannerActiveIndex = 0;
+          plannerBranchDirection = "incoming";
+          updateEvolutionPlannerUI();
+        });
+        chainContainer.appendChild(prevWrap);
+
+        const connector = document.createElement("div");
+        connector.className = "planner-chain-connector";
+        connector.innerHTML = `
+          <div class="planner-cond-bubble" style="border:1.5px dashed rgba(167,139,250,0.4); background:rgba(167,139,250,0.06);">
+            <span style="font-size:0.65rem; color:#C4B5FD; font-weight:600;">진화 대기</span>
+          </div>
+          <div class="planner-connector-arrow" style="color:#A78BFA;">
+            <svg viewBox="0 0 24 24" width="22" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <polyline points="15 6 22 12 15 18"></polyline>
+            </svg>
+          </div>
+        `;
+        chainContainer.appendChild(connector);
+      }
+
+      // 5-B. 확정된 체인 노드들 및 커넥터 렌더링
+      plannerChain.forEach((digiId, idx) => {
+        const digi = project.digimons[digiId];
+        if (!digi) return;
+
+        // 화살표 및 조건 커넥터 (2번째 노드부터 노드 앞에 삽입)
+        if (idx > 0) {
+          const prevDigi = project.digimons[plannerChain[idx - 1]];
+          const reqInfo = formatInlineEvoReq(prevDigi, digi);
+
+          const connector = document.createElement("div");
+          connector.className = "planner-chain-connector";
+          connector.innerHTML = `
+            <div class="planner-cond-bubble" title="${escapeHtml(prevDigi.name)} → ${escapeHtml(digi.name)} 진화 조건">
+              ${reqInfo.html}
+            </div>
+            <div class="planner-connector-arrow">
+              <svg viewBox="0 0 24 24" width="22" height="14" fill="none" stroke="#5865F2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <polyline points="15 6 22 12 15 18"></polyline>
+              </svg>
+            </div>
+          `;
+          connector.addEventListener("click", () => {
+            plannerActiveIndex = idx;
+            updateEvolutionPlannerUI();
+          });
+          chainContainer.appendChild(connector);
+        }
+
+        const isFocus = idx === plannerActiveIndex;
+        const wrap = document.createElement("div");
+        wrap.className = "planner-chain-slot-wrap";
+
+        wrap.innerHTML = `
+          <div class="planner-chain-slot-stage">${escapeHtml(digi.stage || `Step ${idx+1}`)}</div>
+          <div class="planner-chain-slot filled ${isFocus ? 'active' : ''}" title="${escapeHtml(digi.name)} (클릭 시 이 단계에서 분기/하위 탐색)">
+            <img class="planner-slot-img" style="width:44px; height:44px;" src="${encodeURI(digi.img || '')}" alt="${escapeHtml(digi.name)}" onerror="handleDigiImgError(this, '${escapeHtml(digi.name)}', '${escapeHtml(digi.img || '')}', '${digi.id}')">
+            <div class="planner-slot-name">${escapeHtml(digi.name)}</div>
+            <div class="planner-slot-sub">${escapeHtml(attrKoMap[digi.attr] || digi.attr || '-')}</div>
+          </div>
+          <button type="button" class="planner-btn-select" style="padding:2px 6px; font-size:0.68rem; width:82%;">변경</button>
+        `;
+
+        const slotCard = wrap.querySelector(".planner-chain-slot");
+        slotCard.addEventListener("click", () => {
+          plannerActiveIndex = idx;
+          updateEvolutionPlannerUI();
+        });
+
+        const btnChange = wrap.querySelector(".planner-btn-select");
+        btnChange.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openPlannerPickerModal(idx);
+        });
+
+        chainContainer.appendChild(wrap);
+      });
+
+      // 5-C. 순방향 다음 진화 슬롯 (체인의 마지막 노드가 포커스되어 있고, outgoing 후보가 있는 경우)
+      if (plannerActiveIndex === plannerChain.length - 1) {
+        if (outgoingList.length > 0) {
+          const connector = document.createElement("div");
+          connector.className = "planner-chain-connector";
+          connector.innerHTML = `
+            <div class="planner-cond-bubble" style="border:1.5px dashed rgba(88,101,242,0.4); background:rgba(88,101,242,0.06);">
+              <span style="font-size:0.66rem; color:#7DD3FC; font-weight:600;">진화 대기</span>
+            </div>
+            <div class="planner-connector-arrow">
+              <svg viewBox="0 0 24 24" width="22" height="14" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <polyline points="15 6 22 12 15 18"></polyline>
+              </svg>
+            </div>
+          `;
+          chainContainer.appendChild(connector);
+
+          const nextWrap = document.createElement("div");
+          nextWrap.className = "planner-chain-slot-wrap";
+          const nextStageSample = outgoingList[0]?.candDigi?.stage || "다음 진화";
+          nextWrap.innerHTML = `
+            <div class="planner-chain-slot-stage" style="color:#38BDF8; border-color:rgba(56,189,248,0.3);">${escapeHtml(nextStageSample)}</div>
+            <div class="planner-chain-slot empty" title="하단에서 다음 진화할 디지몬을 선택하세요">
+              <div class="planner-slot-empty-icon">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </div>
+              <span style="font-size:0.68rem; color:#38BDF8; font-weight:600; margin-top:2px;">다음 진화</span>
+            </div>
+            <span style="font-size:0.63rem; color:#94A3B8;">상위 선택</span>
+          `;
+          nextWrap.querySelector(".planner-chain-slot").addEventListener("click", () => {
+            plannerActiveIndex = plannerChain.length - 1;
+            plannerBranchDirection = "outgoing";
+            updateEvolutionPlannerUI();
+          });
+          chainContainer.appendChild(nextWrap);
+        } else if (incomingList.length === 0) {
+          // 최종 진화체 도달
+          const connector = document.createElement("div");
+          connector.className = "planner-chain-connector";
+          connector.style.minWidth = "60px";
+          connector.style.maxWidth = "80px";
+          connector.innerHTML = `
+            <div class="planner-connector-arrow" style="color:#F59E0B;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+          `;
+          chainContainer.appendChild(connector);
+
+          const finalWrap = document.createElement("div");
+          finalWrap.className = "planner-chain-slot-wrap";
+          finalWrap.innerHTML = `
+            <div class="planner-chain-slot-stage" style="color:#F59E0B; border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.1);">최종 형태</div>
+            <div class="planner-chain-slot" style="border: 1.5px solid rgba(245,158,11,0.35); background: rgba(245,158,11,0.06); cursor: default;">
+              <div style="font-size:0.75rem; font-weight:700; color:#FCD34D;">진화 완료</div>
+              <span style="font-size:0.64rem; color:#949BA4; margin-top:2px;">최대 형태</span>
+            </div>
+          `;
+          chainContainer.appendChild(finalWrap);
+        }
+      }
+
+
+
+      // 6. 진화 가능한 디지몬 후보군 서랍 렌더링
+      if (activeDigi) {
+        branchesContainer.style.display = "flex";
+        if (plannerBranchDirection === "incoming") {
+          branchesTitle.textContent = `${activeDigi.name}(으)로 진화하는 하위 디지몬 (${incomingList.length}종)`;
+          if (branchesSubtitle) branchesSubtitle.textContent = "카드를 클릭하면 경로 앞쪽에 하위 단계로 추가됩니다.";
+        } else {
+          branchesTitle.textContent = `${activeDigi.name}에서 진화하는 상위 디지몬 (${outgoingList.length}종)`;
+          if (branchesSubtitle) branchesSubtitle.textContent = "카드를 클릭하면 경로 뒤쪽에 다음 단계로 추가됩니다.";
+        }
+        branchesGrid.innerHTML = "";
+
+        if (activeList.length > 0) {
+          activeList.forEach(item => {
+            const candDigi = item.candDigi;
+            const card = document.createElement("div");
+            card.className = `planner-cand-card`;
+
+            // DiM 뱃지
+            let dimBadgeHtml = "";
+            if (item.dims.length === 1) {
+              dimBadgeHtml = `<div class="planner-dim-badge" title="${escapeHtml(item.dims[0])}">${escapeHtml(item.dims[0])}</div>`;
+            } else if (item.dims.length > 1) {
+              dimBadgeHtml = `<div class="planner-dim-badge multi" title="${escapeHtml(item.dims.join(', '))}">다중 DiM (${item.dims.length})</div>`;
+            }
+
+            card.innerHTML = `
+              <img class="planner-cand-img" src="${encodeURI(candDigi.img || '')}" alt="${escapeHtml(candDigi.name)}" onerror="handleDigiImgError(this, '${escapeHtml(candDigi.name)}', '${escapeHtml(candDigi.img || '')}', '${candDigi.id}')">
+              <div class="planner-cand-name">${escapeHtml(candDigi.name)}</div>
+              <div class="planner-cand-info">${escapeHtml(candDigi.stage || '-')} · ${escapeHtml(attrKoMap[candDigi.attr] || candDigi.attr || '-')}</div>
+              ${dimBadgeHtml}
+            `;
+
+            // 후보 카드 클릭 핸들러
+            card.addEventListener("click", () => {
+              if (plannerBranchDirection === "incoming") {
+                // 역방향: 체인 앞쪽에 삽입!
+                if (plannerActiveIndex === 0) {
+                  plannerChain.unshift(candDigi.id);
+                  plannerActiveIndex = 0;
+                } else {
+                  plannerChain = [candDigi.id, ...plannerChain.slice(plannerActiveIndex)];
+                  plannerActiveIndex = 0;
+                }
+              } else {
+                // 순방향: 체인 뒤쪽에 추가 또는 분기 교체!
+                if (plannerActiveIndex === plannerChain.length - 1) {
+                  plannerChain.push(candDigi.id);
+                  plannerActiveIndex = plannerChain.length - 1;
+                } else {
+                  plannerChain = plannerChain.slice(0, plannerActiveIndex + 1);
+                  plannerChain.push(candDigi.id);
+                  plannerActiveIndex = plannerChain.length - 1;
+                }
+              }
+              updateEvolutionPlannerUI();
+            });
+
+            branchesGrid.appendChild(card);
+          });
+        } else {
+          const msg = plannerBranchDirection === "incoming" 
+            ? "더 이상 하위 진화체가 존재하지 않는 최초 진화 단계(유년기)입니다."
+            : "다음 진화체가 등록되어 있지 않거나 최종 진화체입니다.";
+          branchesGrid.innerHTML = `<div style="grid-column: 1/-1; font-size:0.78rem; color:#949BA4; text-align:center; padding:12px;">${msg}</div>`;
+        }
+      } else {
+        branchesContainer.style.display = "none";
+      }
+    }
+
+    function openPlannerPickerModal(targetSlot = 0) {
+      try {
+        pickerTargetSlot = targetSlot;
+        const modal = document.getElementById("planner-picker-modal");
+        if (!modal) return;
+
+        const titleEl = document.getElementById("planner-picker-modal-title");
+        if (titleEl) {
+          if (plannerChain && plannerChain.length > 0 && plannerChain[targetSlot]) {
+            const curDigi = project.digimons[plannerChain[targetSlot]];
+            const prevDigi = targetSlot > 0 ? project.digimons[plannerChain[targetSlot - 1]] : null;
+            if (prevDigi) {
+              titleEl.textContent = `디지몬 변경 (${prevDigi.name}의 다음 단계 선택)`;
+            } else {
+              titleEl.textContent = `디지몬 변경 (현재: ${curDigi ? curDigi.name : '선택'})`;
+            }
+          } else {
+            titleEl.textContent = "디지몬 선택";
+          }
+        }
+
+        refreshPlannerDimSelects();
+        modal.style.display = "flex";
+        modal.classList.add("active");
+        renderPlannerPickerList();
+      } catch (err) {
+        console.error("openPlannerPickerModal error:", err);
+      }
+    }
+    window.openPlannerPickerModal = openPlannerPickerModal;
+
+    function closePlannerPickerModal() {
+      const modal = document.getElementById("planner-picker-modal");
+      if (modal) {
+        modal.style.display = "none";
+        modal.classList.remove("active");
+      }
+    }
+    window.closePlannerPickerModal = closePlannerPickerModal;
+
+    // 플래너에서 선택한 디지몬을 체인에 지능적으로 연계 적용
+    function applyPlannerSelection(did, targetSlot) {
+      const newDigi = project.digimons[did];
+      if (!newDigi) return;
+
+      // 1. 체인이 비어있거나 최초 선택인 경우
+      if (!plannerChain || plannerChain.length === 0) {
+        plannerChain = [did];
+        plannerActiveIndex = 0;
+        if (["완전체", "궁극체", "초궁극체", "초궁극체II"].includes(newDigi.stage)) {
+          plannerBranchDirection = "incoming";
+        } else {
+          plannerBranchDirection = "outgoing";
+        }
+        return;
+      }
+
+      // targetSlot 범위 방어
+      if (targetSlot < 0 || targetSlot >= plannerChain.length) {
+        targetSlot = plannerChain.length - 1;
+      }
+
+      // 2. 체인의 유일한 노드(길이 1)인 경우
+      if (plannerChain.length === 1) {
+        plannerChain = [did];
+        plannerActiveIndex = 0;
+        if (["완전체", "궁극체", "초궁극체", "초궁극체II"].includes(newDigi.stage)) {
+          plannerBranchDirection = "incoming";
+        } else {
+          plannerBranchDirection = "outgoing";
+        }
+        return;
+      }
+
+      // 3. 앞(이전) 노드 및 뒤(다음) 노드와의 연결성 검사
+      const prevId = targetSlot > 0 ? plannerChain[targetSlot - 1] : null;
+      const nextId = targetSlot < plannerChain.length - 1 ? plannerChain[targetSlot + 1] : null;
+
+      const connectsWithPrev = prevId ? areDigimonsDirectlyConnected(prevId, did) : true;
+      const connectsWithNext = nextId ? areDigimonsDirectlyConnected(did, nextId) : true;
+
+      // Case A: 앞뒤 모두 정상 연결되는 경우 -> 슬롯만 안전 교체
+      if (connectsWithPrev && connectsWithNext) {
+        plannerChain[targetSlot] = did;
+        plannerActiveIndex = targetSlot;
+        showToast(`[${newDigi.name}] 디지몬으로 교체되었습니다.`);
+        return;
+      }
+
+      // Case B: 앞쪽과는 연결되나, 뒤쪽과는 연결 불가능한 경우 (순방향 분기)
+      // 예: 그루스감마몬 -> 베텔감마몬으로 변경 (감마몬과는 연결되나 뒤쪽 레굴루스몬과는 불일치)
+      if (connectsWithPrev && !connectsWithNext) {
+        plannerChain = [...plannerChain.slice(0, targetSlot), did];
+        plannerActiveIndex = plannerChain.length - 1;
+        plannerBranchDirection = "outgoing";
+        showToast(`[${newDigi.name}] 기준으로 새로운 상위 진화 경로를 탐색합니다.`);
+        return;
+      }
+
+      // Case C: 앞쪽과는 연결되지 않으나, 뒤쪽과는 연결 가능한 경우 (역방향 분기)
+      if (!connectsWithPrev && connectsWithNext) {
+        plannerChain = [did, ...plannerChain.slice(targetSlot + 1)];
+        plannerActiveIndex = 0;
+        plannerBranchDirection = "incoming";
+        showToast(`[${newDigi.name}] 기준으로 새로운 하위 진화 경로를 탐색합니다.`);
+        return;
+      }
+
+      // Case D: 앞쪽과도, 뒤쪽과도 전혀 연결되지 않는 완전히 무관한 디지몬 (예: 감마몬 라인에 유노몬 선택)
+      // 연관 없는 앞뒤 단계를 모두 제거하고, 선택한 디지몬으로 새 진화 경로 시작
+      plannerChain = [did];
+      plannerActiveIndex = 0;
+      if (["완전체", "궁극체", "초궁극체", "초궁극체II"].includes(newDigi.stage)) {
+        plannerBranchDirection = "incoming";
+      } else {
+        plannerBranchDirection = "outgoing";
+      }
+      showToast(`[${newDigi.name}] 디지몬으로 새로운 진화 경로를 시작합니다.`);
+    }
+
+    function renderPlannerPickerList() {
+      const grid = document.getElementById("planner-picker-grid");
+      const countEl = document.getElementById("planner-picker-count");
+      if (!grid) return;
+
+      const allDigis = Object.values(project.digimons || {});
+      const query = (pickerSearchQuery || "").toLowerCase().trim();
+
+      // 이름 기준 그룹핑 (여러 DiM에 속한 동일 디지몬 중복 방지)
+      const nameGroupMap = new Map();
+      allDigis.forEach(d => {
+        // 디지타마(알) 제외
+        if (d.stage === "디지타마" || (d.name && d.name.includes("알")) || (d.id && d.id.startsWith("digitama"))) return;
+
+        // 세대 필터
+        if (pickerStageFilter !== "ALL" && d.stage !== pickerStageFilter) return;
+
+        // 속성 필터
+        if (pickerAttrFilter !== "ALL" && d.attr !== pickerAttrFilter) return;
+
+        // DiM 필터
+        const dDims = d.dim ? d.dim.split(",").map(s => s.trim()) : [];
+        if (pickerDimFilter !== "ALL" && !dDims.includes(pickerDimFilter)) return;
+
+        // 검색어 필터 (이름, 세대, DiM)
+        if (query) {
+          const matchName = (d.name || "").toLowerCase().includes(query);
+          const matchDim = dDims.some(dm => dm.toLowerCase().includes(query));
+          const matchStage = (d.stage || "").toLowerCase().includes(query);
+          if (!matchName && !matchDim && !matchStage) return;
+        }
+
+        if (!nameGroupMap.has(d.name)) {
+          nameGroupMap.set(d.name, {
+            digi: d,
+            dims: new Set(dDims)
+          });
+        } else {
+          const entry = nameGroupMap.get(d.name);
+          dDims.forEach(dm => entry.dims.add(dm));
+        }
+      });
+
+      const list = Array.from(nameGroupMap.values());
+      const stageOrderMap = {
+        "유년기 I": 1, "유년기 II": 2, "성장기": 3, "성숙기": 4,
+        "완전체": 5, "궁극체": 6, "초궁극체": 7, "초궁극체II": 8
+      };
+
+      const prevId = (pickerTargetSlot > 0 && plannerChain && plannerChain[pickerTargetSlot - 1]) ? plannerChain[pickerTargetSlot - 1] : null;
+      const nextId = (plannerChain && pickerTargetSlot < plannerChain.length - 1) ? plannerChain[pickerTargetSlot + 1] : null;
+
+      list.sort((a, b) => {
+        const isConnA = (prevId && areDigimonsDirectlyConnected(prevId, a.digi.id)) || (nextId && areDigimonsDirectlyConnected(a.digi.id, nextId));
+        const isConnB = (prevId && areDigimonsDirectlyConnected(prevId, b.digi.id)) || (nextId && areDigimonsDirectlyConnected(b.digi.id, nextId));
+        if (isConnA && !isConnB) return -1;
+        if (!isConnA && isConnB) return 1;
+
+        const sA = stageOrderMap[a.digi.stage] || 99;
+        const sB = stageOrderMap[b.digi.stage] || 99;
+        if (sA !== sB) return sA - sB;
+        return (a.digi.name || "").localeCompare(b.digi.name || "", "ko");
+      });
+
+      if (countEl) countEl.textContent = `${list.length}종`;
+
+      const attrKoMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
+
+      if (list.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color:#949BA4; padding:30px 0; font-size:0.85rem;">검색 조건에 맞는 디지몬이 없습니다.</div>';
+        return;
+      }
+
+      grid.innerHTML = list.map(item => {
+        const d = item.digi;
+        const dimsArr = Array.from(item.dims);
+        let dimBadge = '';
+        if (dimsArr.length === 1) {
+          dimBadge = `<div class="planner-dim-badge" title="${escapeHtml(dimsArr[0])}">${escapeHtml(dimsArr[0])}</div>`;
+        } else if (dimsArr.length > 1) {
+          dimBadge = `<div class="planner-dim-badge multi" title="${escapeHtml(dimsArr.join(', '))}">다중 DiM (${dimsArr.length})</div>`;
+        }
+
+        const isConnected = (prevId && areDigimonsDirectlyConnected(prevId, d.id)) || (nextId && areDigimonsDirectlyConnected(d.id, nextId));
+        let connBadge = '';
+        if (isConnected) {
+          connBadge = `<div style="font-size:0.62rem; color:#38BDF8; font-weight:700; background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.3); border-radius:4px; padding:1px 5px; margin-top:2px;">⚡ 연결 가능</div>`;
+        }
+
+        return `
+          <div class="planner-cand-card ${isConnected ? 'planner-connected-cand' : ''}" data-id="${escapeHtml(d.id)}">
+            <img class="planner-cand-img" src="${encodeURI(d.img || '')}" alt="${escapeHtml(d.name)}" onerror="handleDigiImgError(this, '${escapeHtml(d.name)}', '${escapeHtml(d.img || '')}', '${d.id}')">
+            <div class="planner-cand-name">${escapeHtml(d.name)}</div>
+            <div class="planner-cand-info">${escapeHtml(d.stage || '-')} · ${escapeHtml(attrKoMap[d.attr] || d.attr || '-')}</div>
+            ${dimBadge}
+            ${connBadge}
+          </div>
+        `;
+      }).join('');
+
+      grid.querySelectorAll(".planner-cand-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const did = card.dataset.id;
+          if (!did || !project.digimons[did]) return;
+
+          applyPlannerSelection(did, pickerTargetSlot);
+          closePlannerPickerModal();
+          updateEvolutionPlannerUI();
+        });
+      });
+    }
+
+    // =========================================================================
+    // 진화 플래너 - 저장된 진화 경로 관리 (localStorage)
+    // =========================================================================
+    const SAVED_CHAINS_KEY = "digipet_saved_planner_chains";
+
+    function getSavedPlannerChains() {
+      try {
+        const raw = localStorage.getItem(SAVED_CHAINS_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        console.error("getSavedPlannerChains parse error:", e);
+        return [];
+      }
+    }
+
+    function setSavedPlannerChains(list) {
+      try {
+        localStorage.setItem(SAVED_CHAINS_KEY, JSON.stringify(list));
+      } catch (e) {
+        console.error("setSavedPlannerChains error:", e);
+      }
+      updateSavedChainsBadge();
+    }
+
+    function updateSavedChainsBadge() {
+      const list = getSavedPlannerChains();
+      const badge = document.getElementById("planner-saved-count-badge");
+      if (badge) badge.textContent = list.length;
+      const totalCount = document.getElementById("planner-saved-total-count");
+      if (totalCount) totalCount.textContent = `${list.length}개`;
+    }
+
+    async function saveCurrentPlannerChain() {
+      if (!plannerChain || plannerChain.length === 0) {
+        showToast("저장할 진화 경로가 없습니다. 디지몬을 먼저 선택해주세요.");
+        return;
+      }
+      const firstDigi = project.digimons[plannerChain[0]];
+      const lastDigi = project.digimons[plannerChain[plannerChain.length - 1]];
+      const firstName = firstDigi ? firstDigi.name : "시작";
+      const lastName = lastDigi ? lastDigi.name : "끝";
+      const defaultName = (plannerChain.length === 1) ? firstName : `${firstName} ➔ ${lastName}`;
+
+      let nameToSave = defaultName;
+      if (typeof showCustomPrompt === "function") {
+        const res = await showCustomPrompt(
+          "진화 경로 저장",
+          "저장할 진화 경로의 이름을 입력해주세요:",
+          defaultName,
+          "예: 쿠리몬 ➔ 프로시마몬",
+          "",
+          true
+        );
+        if (res === null) return;
+        if (res.trim()) nameToSave = res.trim();
+      } else {
+        const res = prompt("저장할 진화 경로의 이름을 입력해주세요:", defaultName);
+        if (res === null) return;
+        if (res.trim()) nameToSave = res.trim();
+      }
+
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, "0");
+      const dd = String(now.getDate()).padStart(2, "0");
+      const hh = String(now.getHours()).padStart(2, "0");
+      const mi = String(now.getMinutes()).padStart(2, "0");
+      const dateStr = `${yyyy}.${mm}.${dd} ${hh}:${mi}`;
+
+      const newChainItem = {
+        id: "chain_" + Date.now(),
+        name: nameToSave,
+        chain: [...plannerChain],
+        dim: plannerActiveDim || "ALL",
+        createdAt: dateStr
+      };
+
+      const list = getSavedPlannerChains();
+      list.unshift(newChainItem);
+      setSavedPlannerChains(list);
+      showToast(`[${nameToSave}] 경로가 저장되었습니다!`);
+    }
+
+    function openSavedPlannerModal() {
+      renderSavedPlannerList();
+      const modal = document.getElementById("planner-saved-modal");
+      if (modal) {
+        modal.style.display = "flex";
+        modal.classList.add("active");
+      }
+    }
+
+    function closeSavedPlannerModal() {
+      const modal = document.getElementById("planner-saved-modal");
+      if (modal) {
+        modal.style.display = "none";
+        modal.classList.remove("active");
+      }
+    }
+
+    function renderSavedPlannerList() {
+      const container = document.getElementById("planner-saved-list-container");
+      if (!container) return;
+
+      const list = getSavedPlannerChains();
+      updateSavedChainsBadge();
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:48px 20px; color:#949BA4; font-size:0.88rem; line-height:1.6;">
+            저장된 진화 경로가 없습니다.<br>
+            진화 플래너 상단의 <strong style="color:#4ADE80;">[경로 저장]</strong> 버튼을 눌러 나만의 진화 트리를 저장해보세요.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map((item) => {
+        const digis = (item.chain || []).map(id => project.digimons[id]).filter(Boolean);
+        const flowHtml = digis.map((d, dIdx) => `
+          <div style="display:inline-flex; align-items:center; gap:6px; flex-shrink:0;">
+            <div style="display:flex; flex-direction:column; align-items:center; background:#1E1F22; border:1px solid #3F4147; border-radius:8px; padding:4px 6px; min-width:58px;" title="${escapeHtml(d.name)} (${escapeHtml(d.stage || '-')})">
+              <img src="${encodeURI(d.img || '')}" alt="${escapeHtml(d.name)}" onerror="handleDigiImgError(this, '${escapeHtml(d.name)}', '${escapeHtml(d.img || '')}', '${d.id}')" style="width:28px; height:28px; object-fit:contain;">
+              <span style="font-size:0.65rem; color:#F2F3F5; font-weight:600; margin-top:2px; max-width:62px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(d.name)}</span>
+            </div>
+            ${dIdx < digis.length - 1 ? '<span style="color:#5865F2; font-size:0.8rem; font-weight:bold;">➔</span>' : ''}
+          </div>
+        `).join('');
+
+        const dimTag = (item.dim && item.dim !== "ALL")
+          ? `<span style="font-size:0.68rem; color:#38BDF8; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.3); padding:1px 6px; border-radius:4px;">${escapeHtml(item.dim)}</span>`
+          : `<span style="font-size:0.68rem; color:#94A3B8; background:rgba(255,255,255,0.06); padding:1px 6px; border-radius:4px;">전체 DiM</span>`;
+
+        return `
+          <div class="planner-saved-card" data-id="${escapeHtml(item.id)}" style="background:#23272A; border:1px solid #3F4147; border-radius:12px; padding:12px 16px; display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:0.92rem; font-weight:700; color:#FFFFFF;">${escapeHtml(item.name)}</span>
+                ${dimTag}
+                <span style="font-size:0.7rem; color:#94A3B8;">총 ${digis.length}단계</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="font-size:0.7rem; color:#64748B;">${escapeHtml(item.createdAt || '')}</span>
+                <button type="button" class="btn-saved-rename planner-btn-select" data-id="${escapeHtml(item.id)}" style="padding:2px 8px; font-size:0.7rem; background:rgba(255,255,255,0.06); border:1px solid #4E5058; color:#94A3B8;">이름</button>
+                <button type="button" class="btn-saved-delete planner-btn-select" data-id="${escapeHtml(item.id)}" style="padding:2px 8px; font-size:0.7rem; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#F87171;">삭제</button>
+                <button type="button" class="btn-saved-load planner-btn-select" data-id="${escapeHtml(item.id)}" style="padding:3px 12px; font-size:0.75rem; background:rgba(88,101,242,0.25); border:1px solid #5865F2; color:#FFFFFF; font-weight:700;">불러오기</button>
+              </div>
+            </div>
+            <!-- 디지몬 흐름 미리보기 -->
+            <div style="display:flex; align-items:center; gap:6px; overflow-x:auto; padding-bottom:4px;">
+              ${flowHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 이벤트 바인딩
+      container.querySelectorAll(".btn-saved-load").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.id;
+          const target = list.find(x => x.id === id);
+          if (!target || !target.chain || target.chain.length === 0) return;
+
+          plannerChain = [...target.chain];
+          plannerActiveIndex = plannerChain.length - 1;
+          plannerActiveDim = target.dim || "ALL";
+
+          const dimSelect = document.getElementById("planner-filter-dim");
+          if (dimSelect) dimSelect.value = plannerActiveDim;
+
+          closeSavedPlannerModal();
+          updateEvolutionPlannerUI();
+          showToast(`[${target.name}] 경로를 불러왔습니다!`);
+        });
+      });
+
+      container.querySelectorAll(".btn-saved-rename").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.id;
+          const target = list.find(x => x.id === id);
+          if (!target) return;
+          let newName = null;
+          if (typeof showCustomPrompt === "function") {
+            newName = await showCustomPrompt(
+              "경로 이름 변경",
+              "새로운 경로 이름을 입력해주세요:",
+              target.name,
+              "경로 이름 입력",
+              "",
+              true
+            );
+          } else {
+            newName = prompt("변경할 경로 이름을 입력해주세요:", target.name);
+          }
+          if (newName === null) return;
+          const trimmed = newName.trim();
+          if (!trimmed) return;
+          target.name = trimmed;
+          setSavedPlannerChains(list);
+          renderSavedPlannerList();
+          showToast("경로 이름이 변경되었습니다.");
+        });
+      });
+
+      container.querySelectorAll(".btn-saved-delete").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.id;
+          const target = list.find(x => x.id === id);
+          if (!target) return;
+          if (!confirm(`'${target.name}' 경로를 목록에서 삭제하시겠습니까?`)) return;
+          const nextList = list.filter(x => x.id !== id);
+          setSavedPlannerChains(nextList);
+          renderSavedPlannerList();
+          showToast("경로가 삭제되었습니다.");
+        });
+      });
+    }
+
+    // =========================================================================
+    // 진화 체인 고화질 캔버스(Canvas) 생성 및 클립보드 / PNG 내보내기
+    // =========================================================================
+    function getEvoCondSummary(fromDigi, toDigi) {
+      if (!fromDigi || !toDigi) return { lines: ["-"], isUnknown: false, isDisconnected: false, items: [] };
+
+      const isDirect = areDigimonsDirectlyConnected(fromDigi.id, toDigi.id);
+      if (!isDirect) {
+        return { lines: ["연결 없음"], isUnknown: true, isDisconnected: true, items: [] };
+      }
+
+      const evoResult = findDirectOrPathEvo(fromDigi.id, toDigi.id);
+      const evo = evoResult?.evo || null;
+      const req = getEvoRequirements(evo, toDigi);
+      const isRevealed = evo ? isEvoRevealed(evo, toDigi.stage) : !toDigi.unknownTime;
+      const isBabyOrChild = ["디지타마", "유년기 I", "유년기 II", "성장기"].includes(toDigi.stage) || ["유년기 I", "유년기 II"].includes(fromDigi.stage);
+
+      if (!isRevealed && !isBabyOrChild) {
+        return { lines: ["조건 불명"], isUnknown: true, isDisconnected: false, items: [] };
+      }
+
+      const items = [];
+      if (req.jogress && req.jogress !== "-" && req.jogress !== "없음") {
+        items.push({ label: "조그레스", val: req.jogress, color: "#C084FC" });
+      }
+      if (req.item && req.item !== "-" && req.item !== "없음") {
+        items.push({ label: "아이템", val: req.item, color: "#FCD34D" });
+      }
+      if (req.time && req.time !== "-") {
+        items.push({ label: "시간", val: req.time, color: "#FBBF24" });
+      }
+      if (req.vital !== "" && req.vital !== undefined && req.vital !== null && req.vital !== "-") {
+        items.push({ label: "바이탈", val: Number(req.vital).toLocaleString() + "V", color: "#34D399" });
+      }
+      if (req.pp !== "" && req.pp !== undefined && req.pp !== null && req.pp !== "-") {
+        items.push({ label: "PP", val: "PP " + req.pp, color: "#38BDF8" });
+      }
+      if (req.battle || req.winRate) {
+        const b = req.battle ? `${req.battle}회` : '';
+        const w = req.winRate ? `${req.winRate}%` : '';
+        const str = [b, w].filter(Boolean).join(' · ');
+        if (str) items.push({ label: "배틀", val: str, color: "#F87171" });
+      }
+      if (req.dungeon && req.dungeon !== "-" && req.dungeon !== "없음") {
+        const dStr = req.dungeon.startsWith("던전") ? req.dungeon : `던전 ${req.dungeon}`;
+        items.push({ label: "던전", val: dStr, color: "#FB923C" });
+      }
+
+      if (items.length === 0) {
+        return { lines: ["조건 없음"], isUnknown: false, items: [] };
+      }
+      return { lines: [], isUnknown: false, items };
+    }
+
+    async function loadImgAsync(src) {
+      if (!src) return null;
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+
+    function drawRoundedRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+
+    async function generatePlannerChainCanvas() {
+      if (!plannerChain || plannerChain.length === 0) return null;
+
+      const digis = plannerChain.map(id => project.digimons[id]).filter(Boolean);
+      if (digis.length === 0) return null;
+
+      const attrKoMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
+
+      // 이미지 사전 로드
+      const loadedImages = await Promise.all(digis.map(d => loadImgAsync(d.img)));
+
+      // 레이아웃 계산: 4개 이하 1줄, 5개 이상 2줄 분할
+      const totalCards = digis.length;
+      const maxPerRow = (totalCards <= 4) ? totalCards : Math.ceil(totalCards / 2);
+      const row1Count = (totalCards <= 4) ? totalCards : maxPerRow;
+      const row2Count = (totalCards <= 4) ? 0 : (totalCards - row1Count);
+
+      const cardW = 96;
+      const cardH = 104;
+      const connW = 136;
+      const padX = 24;
+      const padY = 20;
+      const headerH = 52;
+      const rowH = 134; // pill(20) + gap(4) + card(104) + bottom spacing
+      const rowGap = 28;
+
+      const rowCols = Math.max(row1Count, row2Count);
+      const contentW = rowCols * cardW + (rowCols - 1) * connW;
+      const totalW = contentW + padX * 2;
+      const totalH = headerH + (row2Count > 0 ? (rowH * 2 + rowGap) : rowH) + padY * 2;
+
+      const scale = 2; // 선명한 2배 레티나 스케일
+      const canvas = document.createElement("canvas");
+      canvas.width = totalW * scale;
+      canvas.height = totalH * scale;
+      const ctx = canvas.getContext("2d");
+      ctx.scale(scale, scale);
+
+      // 1. 전체 다크 배경
+      ctx.fillStyle = "#1E1F22";
+      drawRoundedRect(ctx, 0, 0, totalW, totalH, 16);
+      ctx.fill();
+      ctx.strokeStyle = "#2B2D31";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // 2. 상단 헤더
+      const firstName = digis[0].name;
+      const lastName = digis[digis.length - 1].name;
+      const title = (totalCards === 1) ? `${firstName} 진화 정보` : `${firstName} ➔ ${lastName} 진화 경로`;
+      const dimLabel = (plannerActiveDim && plannerActiveDim !== "ALL") ? plannerActiveDim : "전체 DiM";
+
+      // 타이틀
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.font = "bold 15px 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillText(title, padX, padY + 14);
+
+      // 서브타이틀
+      ctx.font = "11px 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+      ctx.fillStyle = "#94A3B8";
+      ctx.fillText(`DIGIPET 진화 플래너 · ${dimLabel} · 총 ${totalCards}단계`, padX, padY + 32);
+
+      // 헤더 구분선
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padX, padY + headerH - 8);
+      ctx.lineTo(totalW - padX, padY + headerH - 8);
+      ctx.stroke();
+
+      // 3. 카드 및 커넥터 렌더링 함수
+      function renderStep(dIdx, colIdx, rowIdx) {
+        const d = digis[dIdx];
+        const img = loadedImages[dIdx];
+        const startY = padY + headerH + rowIdx * (rowH + rowGap);
+        const x = padX + colIdx * (cardW + connW);
+        const y = startY + 22; // pill 아래
+
+        // A. 이전 단계와의 커넥터 (해당 행의 첫 카드가 아닐 때)
+        if (colIdx > 0) {
+          const prevDigi = digis[dIdx - 1];
+          const connX = x - connW;
+          const connY = y;
+          const bubbleW = connW - 14;
+          const bubbleH = 50;
+          const bx = connX + 7;
+          const by = connY + 6;
+
+          // 조건 버블 배경
+          ctx.fillStyle = "#18191C";
+          drawRoundedRect(ctx, bx, by, bubbleW, bubbleH, 8);
+          ctx.fill();
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          // 조건 텍스트 렌더링
+          const cond = getEvoCondSummary(prevDigi, d);
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+
+          if (cond.isDisconnected) {
+            ctx.font = "bold 10px 'Pretendard', sans-serif";
+            ctx.fillStyle = "#EF4444";
+            ctx.fillText("연결 없음", bx + bubbleW / 2, by + bubbleH / 2);
+          } else if (cond.isUnknown) {
+            ctx.font = "10px 'Pretendard', sans-serif";
+            ctx.fillStyle = "#94A3B8";
+            ctx.fillText("조건 불명", bx + bubbleW / 2, by + bubbleH / 2);
+          } else if (cond.items.length === 0) {
+            ctx.font = "10px 'Pretendard', sans-serif";
+            ctx.fillStyle = "#64748B";
+            ctx.fillText("조건 없음", bx + bubbleW / 2, by + bubbleH / 2);
+          } else {
+            // 최대 2행으로 분할
+            const row1Items = cond.items.slice(0, 2);
+            const row2Items = cond.items.slice(2, 4);
+
+            const r1Str = row1Items.map(it => it.label === "시간" ? it.val : (it.label === "바이탈" ? it.val : `${it.label} ${it.val}`)).join(" · ");
+            const r2Str = row2Items.map(it => it.label === "조그레스" ? `조그레스: ${it.val}` : `${it.label} ${it.val}`).join(" · ");
+
+            if (row2Items.length > 0) {
+              ctx.font = "bold 9.5px 'Pretendard', sans-serif";
+              ctx.fillStyle = row1Items[0]?.color || "#F2F3F5";
+              ctx.fillText(r1Str, bx + bubbleW / 2, by + 16);
+
+              ctx.font = "bold 9px 'Pretendard', sans-serif";
+              ctx.fillStyle = row2Items[0]?.color || "#C084FC";
+              ctx.fillText(r2Str, bx + bubbleW / 2, by + 34);
+            } else {
+              ctx.font = "bold 10px 'Pretendard', sans-serif";
+              ctx.fillStyle = row1Items[0]?.color || "#38BDF8";
+              ctx.fillText(r1Str, bx + bubbleW / 2, by + bubbleH / 2);
+            }
+          }
+
+          // 화살표 선 & 화살촉
+          const arrY = by + bubbleH + 16;
+          ctx.strokeStyle = cond.isDisconnected ? "#EF4444" : "#5865F2";
+          ctx.fillStyle = cond.isDisconnected ? "#EF4444" : "#5865F2";
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(bx + 14, arrY);
+          ctx.lineTo(bx + bubbleW - 14, arrY);
+          ctx.stroke();
+
+          // 화살촉
+          ctx.beginPath();
+          ctx.moveTo(bx + bubbleW - 14, arrY);
+          ctx.lineTo(bx + bubbleW - 20, arrY - 4);
+          ctx.lineTo(bx + bubbleW - 20, arrY + 4);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        // B. 세대 배지 (Pill)
+        const stageText = d.stage || `Step ${dIdx + 1}`;
+        ctx.font = "bold 10px 'Pretendard', sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        const stageW = Math.max(60, ctx.measureText(stageText).width + 16);
+        const stageH = 18;
+        const stageX = x + (cardW - stageW) / 2;
+        const stageY = startY;
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+        drawRoundedRect(ctx, stageX, stageY, stageW, stageH, 9);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        ctx.fillStyle = "#94A3B8";
+        ctx.fillText(stageText, stageX + stageW / 2, stageY + stageH / 2);
+
+        // C. 디지몬 카드 본체
+        ctx.fillStyle = "#2B2D31";
+        drawRoundedRect(ctx, x, y, cardW, cardH, 12);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // 디지몬 이미지
+        if (img) {
+          const imgSize = 44;
+          const imgX = x + (cardW - imgSize) / 2;
+          const imgY = y + 8;
+          ctx.drawImage(img, imgX, imgY, imgSize, imgSize);
+        } else {
+          // 대체 플레이스홀더
+          ctx.fillStyle = "#1E1F22";
+          ctx.beginPath();
+          ctx.arc(x + cardW / 2, y + 30, 20, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "#64748B";
+          ctx.font = "12px sans-serif";
+          ctx.fillText("?", x + cardW / 2, y + 30);
+        }
+
+        // 디지몬 이름
+        ctx.font = "bold 11px 'Pretendard', sans-serif";
+        ctx.fillStyle = "#FFFFFF";
+        let displayName = d.name;
+        if (ctx.measureText(displayName).width > cardW - 12) {
+          while (ctx.measureText(displayName + "…").width > cardW - 12 && displayName.length > 1) {
+            displayName = displayName.slice(0, -1);
+          }
+          displayName += "…";
+        }
+        ctx.fillText(displayName, x + cardW / 2, y + 68);
+
+        // 디지몬 속성
+        ctx.font = "10px 'Pretendard', sans-serif";
+        ctx.fillStyle = "#94A3B8";
+        ctx.fillText(attrKoMap[d.attr] || d.attr || "-", x + cardW / 2, y + 84);
+      }
+
+      // 1행 카드 렌더링
+      for (let i = 0; i < row1Count; i++) {
+        renderStep(i, i, 0);
+      }
+
+      // 2행 카드 렌더링
+      if (row2Count > 0) {
+        for (let i = 0; i < row2Count; i++) {
+          const dIdx = row1Count + i;
+          renderStep(dIdx, i, 1);
+        }
+
+        // 1행과 2행 사이 줄바꿈 커넥터 인디케이터
+        const bridgePrev = digis[row1Count - 1];
+        const bridgeNext = digis[row1Count];
+        const bridgeCond = getEvoCondSummary(bridgePrev, bridgeNext);
+        const isBridgeDirect = !bridgeCond.isDisconnected;
+        const bridgeText = bridgeCond.items.length > 0
+          ? bridgeCond.items.map(it => `${it.label} ${it.val}`).join(" · ")
+          : (bridgeCond.isDisconnected ? "연결 없음" : (bridgeCond.isUnknown ? "조건 불명" : "다음 진화"));
+
+        const indY = padY + headerH + rowH + 6;
+        ctx.font = "bold 10px 'Pretendard', sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = isBridgeDirect ? "#7DD3FC" : "#EF4444";
+        ctx.fillText(isBridgeDirect ? `↵ 다음 단계 계속 [${bridgeText}]` : `✕ 연결 끊김 [${bridgeText}]`, padX + 8, indY);
+      }
+
+      return canvas;
+    }
+
+    async function copyPlannerChainImageToClipboard() {
+      if (!plannerChain || plannerChain.length === 0) {
+        showToast("복사할 진화 경로가 없습니다. 디지몬을 먼저 선택해주세요.");
+        return;
+      }
+      showToast("이미지를 생성하는 중입니다...");
+      try {
+        const canvas = await generatePlannerChainCanvas();
+        if (!canvas) throw new Error("Canvas generation failed");
+
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            showToast("이미지 변환 실패: PNG 다운로드를 진행합니다.");
+            downloadCanvasAsPng(canvas);
+            return;
+          }
+
+          if (navigator.clipboard && typeof ClipboardItem !== "undefined") {
+            try {
+              const item = new ClipboardItem({ "image/png": blob });
+              await navigator.clipboard.write([item]);
+              showToast("진화 경로 이미지가 클립보드에 복사되었습니다! (Ctrl+V로 붙여넣기)");
+              return;
+            } catch (clipErr) {
+              console.warn("ClipboardItem write failed, fallback to download:", clipErr);
+            }
+          }
+
+          downloadCanvasAsPng(canvas);
+          showToast("클립보드 접근이 제한되어 PNG 파일로 다운로드되었습니다.");
+        }, "image/png");
+      } catch (err) {
+        console.error("copyPlannerChainImageToClipboard error:", err);
+        showToast("이미지 복사 중 오류: " + err.message);
+      }
+    }
+
+    async function downloadPlannerChainImage() {
+      if (!plannerChain || plannerChain.length === 0) {
+        showToast("다운로드할 진화 경로가 없습니다. 디지몬을 먼저 선택해주세요.");
+        return;
+      }
+      showToast("이미지를 생성하는 중입니다...");
+      try {
+        const canvas = await generatePlannerChainCanvas();
+        if (!canvas) throw new Error("Canvas generation failed");
+        downloadCanvasAsPng(canvas);
+        showToast("진화 경로 이미지가 다운로드되었습니다!");
+      } catch (err) {
+        console.error("downloadPlannerChainImage error:", err);
+        showToast("이미지 다운로드 중 오류: " + err.message);
+      }
+    }
+
+    function downloadCanvasAsPng(canvas, filename) {
+      if (!filename) {
+        const firstName = project.digimons[plannerChain[0]]?.name || "시작";
+        const lastName = project.digimons[plannerChain[plannerChain.length - 1]]?.name || "끝";
+        filename = `진화경로_${firstName}_to_${lastName}.png`;
+      }
+      const link = document.createElement("a");
+      link.download = filename;
+      link.href = canvas.toDataURL("image/png");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function initEvolutionPlanner() {
+      // 1. 헤더 오픈 버튼
+      const btnOpen = document.getElementById("btn-open-evolution-planner");
+      if (btnOpen) btnOpen.addEventListener("click", () => openEvolutionPlannerModal());
+      const btnMobileOpen = document.getElementById("btn-mobile-evolution-planner");
+      if (btnMobileOpen) btnMobileOpen.addEventListener("click", () => openEvolutionPlannerModal());
+
+      // 2. 메인 플래너 닫기
+      const btnClose = document.getElementById("evolution-planner-close");
+      if (btnClose) btnClose.addEventListener("click", closeEvolutionPlannerModal);
+      const modalPlanner = document.getElementById("evolution-planner-modal");
+      if (modalPlanner) {
+        modalPlanner.addEventListener("click", (e) => {
+          if (e.target === modalPlanner) closeEvolutionPlannerModal();
+        });
+      }
+
+      // 3. 체인 초기화 버튼
+      const btnResetChain = document.getElementById("planner-btn-reset-chain");
+      if (btnResetChain) {
+        btnResetChain.addEventListener("click", () => {
+          plannerChain = [];
+          plannerActiveIndex = 0;
+          updateEvolutionPlannerUI();
+          openPlannerPickerModal(0);
+        });
+      }
+
+      // 4. 플래너 내 DiM 필터
+      const filterDimSel = document.getElementById("planner-filter-dim");
+      if (filterDimSel) {
+        filterDimSel.addEventListener("change", (e) => {
+          plannerActiveDim = e.target.value;
+          updateEvolutionPlannerUI();
+        });
+      }
+
+      // 5. 피커 모달 닫기
+      const btnPickerClose = document.getElementById("planner-picker-close");
+      if (btnPickerClose) btnPickerClose.addEventListener("click", closePlannerPickerModal);
+      const modalPicker = document.getElementById("planner-picker-modal");
+      if (modalPicker) {
+        modalPicker.addEventListener("click", (e) => {
+          if (e.target === modalPicker) closePlannerPickerModal();
+        });
+      }
+
+      // 6. 피커 검색어 입력
+      const searchInput = document.getElementById("planner-search-input");
+      const searchClear = document.getElementById("planner-search-clear");
+      if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+          pickerSearchQuery = e.target.value;
+          if (searchClear) searchClear.style.display = pickerSearchQuery ? "block" : "none";
+          renderPlannerPickerList();
+        });
+      }
+      if (searchClear) {
+        searchClear.addEventListener("click", () => {
+          if (searchInput) searchInput.value = "";
+          pickerSearchQuery = "";
+          searchClear.style.display = "none";
+          renderPlannerPickerList();
+        });
+      }
+
+      // 7. 피커 세대 칩 클릭
+      document.querySelectorAll("#planner-stage-chips .planner-chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+          document.querySelectorAll("#planner-stage-chips .planner-chip").forEach(c => c.classList.remove("active"));
+          chip.classList.add("active");
+          pickerStageFilter = chip.dataset.stage;
+          renderPlannerPickerList();
+        });
+      });
+
+      // 8. 피커 속성 칩 클릭
+      document.querySelectorAll("#planner-attr-chips .planner-chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+          document.querySelectorAll("#planner-attr-chips .planner-chip").forEach(c => c.classList.remove("active"));
+          chip.classList.add("active");
+          pickerAttrFilter = chip.dataset.attr;
+          renderPlannerPickerList();
+        });
+      });
+
+      // 9. 피커 DiM 셀렉트 변경
+      const pickerDimSelect = document.getElementById("planner-picker-dim-select");
+      if (pickerDimSelect) {
+        pickerDimSelect.addEventListener("change", (e) => {
+          pickerDimFilter = e.target.value;
+          renderPlannerPickerList();
+        });
+      }
+
+      // 10. 진화 경로 저장 버튼
+      const btnSaveChain = document.getElementById("planner-btn-save-chain");
+      if (btnSaveChain) btnSaveChain.addEventListener("click", saveCurrentPlannerChain);
+
+      // 11. 저장된 목록 모달 열기 버튼
+      const btnSavedList = document.getElementById("planner-btn-saved-list");
+      if (btnSavedList) btnSavedList.addEventListener("click", openSavedPlannerModal);
+
+      // 12. 저장된 목록 모달 닫기
+      const btnSavedClose = document.getElementById("planner-saved-modal-close");
+      if (btnSavedClose) btnSavedClose.addEventListener("click", closeSavedPlannerModal);
+      const modalSaved = document.getElementById("planner-saved-modal");
+      if (modalSaved) {
+        modalSaved.addEventListener("click", (e) => {
+          if (e.target === modalSaved) closeSavedPlannerModal();
+        });
+      }
+
+      // 13. 이미지 복사 / PNG 다운로드 버튼
+      const btnCopyImg = document.getElementById("planner-btn-copy-img");
+      if (btnCopyImg) btnCopyImg.addEventListener("click", copyPlannerChainImageToClipboard);
+      const btnDownloadImg = document.getElementById("planner-btn-download-img");
+      if (btnDownloadImg) btnDownloadImg.addEventListener("click", downloadPlannerChainImage);
+
+      // 초기 배지 갱신
+      updateSavedChainsBadge();
+    }
+
     window.addEventListener("load", () => {
       if (window.innerWidth <= 768) {
         isViewerMode = true;
@@ -11277,9 +14992,10 @@
       recalculateAllDigimonConditionStatuses();
       initOfficialDatalist();
       initTrainingCalc();
+      initEvolutionPlanner();
       initReportsSystem();
-      const headerMyUid = document.getElementById("editor-header-my-uid");
-      if (headerMyUid) headerMyUid.textContent = getClientUid();
+      updateClientUidDisplays();
+      getClientMaskedIp().then(() => updateClientUidDisplays());
       updateLineStyleButton();
       if (!filterDim || (project.dims && !project.dims.includes(filterDim))) {
         filterDim = (project.dims && project.dims.includes("아구몬 EX")) ? "아구몬 EX" : ((project.dims && project.dims[0]) || "아구몬 EX");

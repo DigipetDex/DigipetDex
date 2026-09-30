@@ -19,6 +19,7 @@
 
 var SHEET_NAME_REPORTS = "유저_제보";
 var SHEET_NAME_CONDITIONS = "실시간_진화조건";
+var SHEET_NAME_HISTORY = "위키_변경역사";
 var SHEET_NAME_TRASH = "제보_휴지통";
 var SHEET_NAME_BLOCKED = "차단_목록";
 
@@ -35,7 +36,10 @@ var REPORT_HEADERS = [
   "조그레스 파트너",
   "아이템/캡슐",
   "비고/메모",
-  "제보자 UID"
+  "제보자 UID",
+  "체력(HP)",
+  "전투력(AP)",
+  "속도(SPD)"
 ];
 
 var TRASH_HEADERS = [
@@ -52,7 +56,10 @@ var TRASH_HEADERS = [
   "조그레스 파트너",
   "아이템/캡슐",
   "비고/메모",
-  "제보자 UID"
+  "제보자 UID",
+  "체력(HP)",
+  "전투력(AP)",
+  "속도(SPD)"
 ];
 
 var BLOCKED_HEADERS = [
@@ -75,7 +82,24 @@ var CONDITION_HEADERS = [
   "조그레스 파트너",
   "필요 아이템",
   "비고/메모",
-  "최종 갱신일시"
+  "최종 갱신일시",
+  "체력(HP)",
+  "전투력(AP)",
+  "속도(SPD)",
+  "마지막 편집자"
+];
+
+var HISTORY_HEADERS = [
+  "리비전 ID",
+  "일시",
+  "DiM",
+  "출발 디지몬",
+  "진화 디지몬",
+  "변경 요약",
+  "이전 데이터",
+  "변경 데이터",
+  "편집자",
+  "편집 코멘트"
 ];
 
 /**
@@ -124,7 +148,11 @@ function doPost(e) {
           c.jogress || "",
           c.item || "",
           c.note || "",
-          nowStr
+          nowStr,
+          c.baseHp !== undefined && c.baseHp !== null ? c.baseHp : "",
+          c.baseAp !== undefined && c.baseAp !== null ? c.baseAp : "",
+          c.baseSpd !== undefined && c.baseSpd !== null ? c.baseSpd : "",
+          c.editor || "관리자 배포"
         ];
       });
 
@@ -227,14 +255,100 @@ function doPost(e) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
+    // 위키 편집 액션 (유저가 직접 조건/스탯 수정 시 즉시 반영 & 역사 기록)
+    if (data.action === "wiki_edit") {
+      var clientUid = String(data.uid || "").trim();
+      var rawUid = String(data.rawUid || "").trim();
+      var maskedIp = String(data.maskedIp || "").trim();
+      if (clientUid || rawUid || maskedIp) {
+        var blockedList = getBlockedUids(ss);
+        var isBlocked = false;
+        for (var bi = 0; bi < blockedList.length; bi++) {
+          var b = String(blockedList[bi] || "").trim();
+          if (!b) continue;
+          if ((clientUid && (clientUid.indexOf(b) !== -1 || b.indexOf(clientUid) !== -1)) ||
+              (rawUid && (rawUid.indexOf(b) !== -1 || b.indexOf(rawUid) !== -1)) ||
+              (maskedIp && (maskedIp.indexOf(b) !== -1 || b.indexOf(maskedIp) !== -1))) {
+            isBlocked = true;
+            break;
+          }
+        }
+        if (isBlocked) {
+          return ContentService.createTextOutput(JSON.stringify({
+            status: "blocked",
+            message: "편집 권한이 제한된 사용자(차단된 UID/IP)입니다."
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+
+      var editResult = handleWikiEdit(ss, data);
+      return ContentService.createTextOutput(JSON.stringify(editResult)).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 위키 되돌리기 / 롤백 액션
+    if (data.action === "wiki_revert") {
+      var clientUid = String(data.uid || "").trim();
+      var rawUid = String(data.rawUid || "").trim();
+      var maskedIp = String(data.maskedIp || "").trim();
+      if (clientUid || rawUid || maskedIp) {
+        var blockedList = getBlockedUids(ss);
+        var isBlocked = false;
+        for (var bi = 0; bi < blockedList.length; bi++) {
+          var b = String(blockedList[bi] || "").trim();
+          if (!b) continue;
+          if ((clientUid && (clientUid.indexOf(b) !== -1 || b.indexOf(clientUid) !== -1)) ||
+              (rawUid && (rawUid.indexOf(b) !== -1 || b.indexOf(rawUid) !== -1)) ||
+              (maskedIp && (maskedIp.indexOf(b) !== -1 || b.indexOf(maskedIp) !== -1))) {
+            isBlocked = true;
+            break;
+          }
+        }
+        if (isBlocked) {
+          return ContentService.createTextOutput(JSON.stringify({
+            status: "blocked",
+            message: "되돌리기 권한이 제한된 사용자(차단된 UID/IP)입니다."
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+
+      var revertResult = handleWikiRevert(ss, data);
+      return ContentService.createTextOutput(JSON.stringify(revertResult)).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 위키 변경 역사 개별 삭제 액션 (에디터 전용)
+    if (data.action === "delete_wiki_history") {
+      var revIdToDel = String(data.revisionId || "").trim();
+      var delRes = handleDeleteWikiHistory(ss, revIdToDel);
+      return ContentService.createTextOutput(JSON.stringify(delRes)).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 위키 변경 역사 전체 비우기 액션 (에디터 전용)
+    if (data.action === "clear_all_wiki_history") {
+      var clearRes = handleClearAllWikiHistory(ss);
+      return ContentService.createTextOutput(JSON.stringify(clearRes)).setMimeType(ContentService.MimeType.JSON);
+    }
+
     // 신규 제보 추가 (유저 뷰어에서 제보 전송 시)
     var clientUid = String(data.uid || "").trim();
-    if (clientUid) {
+    var rawUid = String(data.rawUid || "").trim();
+    var maskedIp = String(data.maskedIp || "").trim();
+    if (clientUid || rawUid || maskedIp) {
       var blockedList = getBlockedUids(ss);
-      if (blockedList.indexOf(clientUid) !== -1) {
+      var isBlocked = false;
+      for (var bi = 0; bi < blockedList.length; bi++) {
+        var b = String(blockedList[bi] || "").trim();
+        if (!b) continue;
+        if ((clientUid && (clientUid.indexOf(b) !== -1 || b.indexOf(clientUid) !== -1)) ||
+            (rawUid && (rawUid.indexOf(b) !== -1 || b.indexOf(rawUid) !== -1)) ||
+            (maskedIp && (maskedIp.indexOf(b) !== -1 || b.indexOf(maskedIp) !== -1))) {
+          isBlocked = true;
+          break;
+        }
+      }
+      if (isBlocked) {
         return ContentService.createTextOutput(JSON.stringify({
           status: "blocked",
-          message: "제보가 제한된 사용자(차단된 UID)입니다."
+          message: "제보가 제한된 사용자(차단된 UID/IP)입니다."
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
@@ -256,7 +370,10 @@ function doPost(e) {
       data.jogress || "",
       data.item || "",
       data.note || "",
-      clientUid
+      clientUid,
+      data.baseHp !== undefined && data.baseHp !== null ? data.baseHp : "",
+      data.baseAp !== undefined && data.baseAp !== null ? data.baseAp : "",
+      data.baseSpd !== undefined && data.baseSpd !== null ? data.baseSpd : ""
     ];
 
     // 13번째 열(제보자 UID) 헤더 자동 보정
@@ -267,6 +384,23 @@ function doPost(e) {
       reportSheet.getRange(1, 13).setFontWeight("bold");
       reportSheet.getRange(1, 13).setHorizontalAlignment("center");
       reportSheet.setColumnWidth(13, 150);
+    }
+
+    // 14~16번째 열(기본 스탯) 헤더 자동 보정
+    if (reportSheet.getLastColumn() < 16) {
+      var statHeaders = ["체력(HP)", "전투력(AP)", "속도(SPD)"];
+      var statColors = ["#059669", "#DC2626", "#0284C7"];
+      for (var shi = 0; shi < 3; shi++) {
+        var colNum = 14 + shi;
+        if (!reportSheet.getRange(1, colNum).getValue()) {
+          reportSheet.getRange(1, colNum).setValue(statHeaders[shi]);
+          reportSheet.getRange(1, colNum).setBackground(statColors[shi]);
+          reportSheet.getRange(1, colNum).setFontColor("#FFFFFF");
+          reportSheet.getRange(1, colNum).setFontWeight("bold");
+          reportSheet.getRange(1, colNum).setHorizontalAlignment("center");
+          reportSheet.setColumnWidth(colNum, 90);
+        }
+      }
     }
 
     reportSheet.appendRow(row);
@@ -329,6 +463,10 @@ function doGet(e) {
       var itemIdx = colMap["필요 아이템"];
       var noteIdx = colMap["비고/메모"];
       var updatedIdx = colMap["최종 갱신일시"];
+      var hpIdx = colMap["체력(HP)"] !== undefined ? colMap["체력(HP)"] : colMap["HP"];
+      var apIdx = colMap["전투력(AP)"] !== undefined ? colMap["전투력(AP)"] : colMap["AP"];
+      var spdIdx = colMap["속도(SPD)"] !== undefined ? colMap["속도(SPD)"] : colMap["SPD"];
+      var editorIdx = colMap["마지막 편집자"] !== undefined ? colMap["마지막 편집자"] : colMap["편집자"];
 
       var condList = [];
       for (var ci = 1; ci < allValues.length; ci++) {
@@ -351,7 +489,11 @@ function doGet(e) {
           jogress: jogressIdx !== undefined ? cr[jogressIdx] : "",
           item: itemIdx !== undefined ? cr[itemIdx] : "",
           note: noteIdx !== undefined ? cr[noteIdx] : "",
-          updatedAt: updatedIdx !== undefined ? cr[updatedIdx] : ""
+          updatedAt: updatedIdx !== undefined ? cr[updatedIdx] : "",
+          baseHp: hpIdx !== undefined && cr[hpIdx] !== undefined ? String(cr[hpIdx]).trim() : "",
+          baseAp: apIdx !== undefined && cr[apIdx] !== undefined ? String(cr[apIdx]).trim() : "",
+          baseSpd: spdIdx !== undefined && cr[spdIdx] !== undefined ? String(cr[spdIdx]).trim() : "",
+          lastEditor: editorIdx !== undefined && cr[editorIdx] !== undefined ? String(cr[editorIdx]).trim() : ""
         });
       }
 
@@ -360,6 +502,106 @@ function doGet(e) {
         count: condList.length,
         conditions: condList
       })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 2. [위키 변경 역사 조회 (최근 변경 순)]
+    if (action === "get_wiki_history") {
+      var histSheet = ss.getSheetByName(SHEET_NAME_HISTORY);
+      if (!histSheet || histSheet.getLastRow() <= 1) {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: "success",
+          count: 0,
+          history: []
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+
+      var filterTo = String(e.parameter.to || "").trim().toLowerCase();
+      var filterDim = String(e.parameter.dim || "").trim().toLowerCase();
+      var limit = parseInt(e.parameter.limit || "100", 10);
+
+      var hLastRow = histSheet.getLastRow();
+      if (hLastRow <= 1) {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: "success",
+          count: 0,
+          history: []
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+
+      // 속도 대폭 최적화: 전체 시트가 아닌 최근 행만 슬라이스 조회하여 GAS 응답 속도 극대화
+      var maxScan = (filterTo || filterDim) ? Math.min(hLastRow - 1, 300) : Math.min(hLastRow - 1, limit);
+      var startRow = hLastRow - maxScan + 1;
+      var allHistVals = histSheet.getRange(startRow, 1, maxScan, HISTORY_HEADERS.length).getValues();
+
+      var historyList = [];
+      // 최신순 (역순 탐색)
+      for (var hi = allHistVals.length - 1; hi >= 0; hi--) {
+        var hr = allHistVals[hi];
+        var rRevId = String(hr[0] || "");
+        var rTs = (hr[1] instanceof Date) 
+          ? Utilities.formatDate(hr[1], Session.getScriptTimeZone() || "Asia/Seoul", "yyyy-MM-dd HH:mm:ss")
+          : String(hr[1] || "");
+        var rDim = String(hr[2] || "");
+        var rFrom = String(hr[3] || "");
+        var rTo = String(hr[4] || "");
+        var rDiff = String(hr[5] || "");
+        var rPrev = String(hr[6] || "");
+        var rNew = String(hr[7] || "");
+        var rUid = String(hr[8] || "");
+        var rComment = String(hr[9] || "");
+
+        if (!rTo && !rFrom && !rRevId) continue;
+
+        if (filterTo && rTo.toLowerCase().indexOf(filterTo) === -1) continue;
+        if (filterDim && rDim.toLowerCase().indexOf(filterDim) === -1) continue;
+
+        historyList.push({
+          revisionId: rRevId,
+          timestamp: rTs,
+          dim: rDim,
+          fromName: rFrom,
+          toName: rTo,
+          diffSummary: rDiff,
+          prevData: rPrev,
+          newData: rNew,
+          uid: rUid,
+          comment: rComment
+        });
+
+        if (historyList.length >= limit) break;
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        count: historyList.length,
+        history: historyList,
+        blockedUids: getBlockedUids(ss)
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // GET 방식 위키 롤백 지원
+    if (action === "wiki_revert") {
+      var revertResult = handleWikiRevert(ss, e.parameter);
+      return ContentService.createTextOutput(JSON.stringify(revertResult)).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // GET 방식 위키 편집 지원
+    if (action === "wiki_edit") {
+      var editResult = handleWikiEdit(ss, e.parameter);
+      return ContentService.createTextOutput(JSON.stringify(editResult)).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // GET 방식 위키 내역 개별 삭제 (에디터 전용)
+    if (action === "delete_wiki_history") {
+      var revIdToDel = String(e.parameter.revisionId || "").trim();
+      var delRes = handleDeleteWikiHistory(ss, revIdToDel);
+      return ContentService.createTextOutput(JSON.stringify(delRes)).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // GET 방식 위키 내역 전체 비우기 (에디터 전용)
+    if (action === "clear_all_wiki_history") {
+      var clearRes = handleClearAllWikiHistory(ss);
+      return ContentService.createTextOutput(JSON.stringify(clearRes)).setMimeType(ContentService.MimeType.JSON);
     }
 
     // 2. [유저 제보 관련 처리]
@@ -471,6 +713,9 @@ function doGet(e) {
       var rItemIdx = rColMap["아이템/캡슐"] !== undefined ? rColMap["아이템/캡슐"] : 10;
       var rNoteIdx = rColMap["비고/메모"] !== undefined ? rColMap["비고/메모"] : 11;
       var rUidIdx = rColMap["제보자 UID"] !== undefined ? rColMap["제보자 UID"] : rColMap["UID"];
+      var rHpIdx = rColMap["체력(HP)"] !== undefined ? rColMap["체력(HP)"] : (rColMap["HP"] !== undefined ? rColMap["HP"] : (lastCol >= 14 ? 13 : undefined));
+      var rApIdx = rColMap["전투력(AP)"] !== undefined ? rColMap["전투력(AP)"] : (rColMap["AP"] !== undefined ? rColMap["AP"] : (lastCol >= 15 ? 14 : undefined));
+      var rSpdIdx = rColMap["속도(SPD)"] !== undefined ? rColMap["속도(SPD)"] : (rColMap["SPD"] !== undefined ? rColMap["SPD"] : (lastCol >= 16 ? 15 : undefined));
       if (rUidIdx === undefined) {
         for (var colKey in rColMap) {
           if (colKey.indexOf("UID") !== -1) {
@@ -517,6 +762,9 @@ function doGet(e) {
           pp: rPpIdx !== undefined ? r[rPpIdx] : "",
           battle: rBattleIdx !== undefined ? r[rBattleIdx] : "",
           winRate: rWinRateIdx !== undefined ? r[rWinRateIdx] : "",
+          baseHp: (rHpIdx !== undefined && r[rHpIdx] !== undefined) ? String(r[rHpIdx]).trim() : "",
+          baseAp: (rApIdx !== undefined && r[rApIdx] !== undefined) ? String(r[rApIdx]).trim() : "",
+          baseSpd: (rSpdIdx !== undefined && r[rSpdIdx] !== undefined) ? String(r[rSpdIdx]).trim() : "",
           jogress: rJogressIdx !== undefined ? r[rJogressIdx] : "",
           item: rItemIdx !== undefined ? r[rItemIdx] : "",
           note: rNoteIdx !== undefined ? r[rNoteIdx] : "",
@@ -551,6 +799,9 @@ function doGet(e) {
       var tItemIdx = tColMap["아이템/캡슐"] !== undefined ? tColMap["아이템/캡슐"] : 11;
       var tNoteIdx = tColMap["비고/메모"] !== undefined ? tColMap["비고/메모"] : 12;
       var tUidIdx = tColMap["제보자 UID"] !== undefined ? tColMap["제보자 UID"] : 13;
+      var tHpIdx = tColMap["체력(HP)"] !== undefined ? tColMap["체력(HP)"] : (tColMap["HP"] !== undefined ? tColMap["HP"] : (tLastCol >= 15 ? 14 : undefined));
+      var tApIdx = tColMap["전투력(AP)"] !== undefined ? tColMap["전투력(AP)"] : (tColMap["AP"] !== undefined ? tColMap["AP"] : (tLastCol >= 16 ? 15 : undefined));
+      var tSpdIdx = tColMap["속도(SPD)"] !== undefined ? tColMap["속도(SPD)"] : (tColMap["SPD"] !== undefined ? tColMap["SPD"] : (tLastCol >= 17 ? 16 : undefined));
 
       for (var ti = 1; ti < allTrashVals.length; ti++) {
         var tr = allTrashVals[ti];
@@ -574,6 +825,9 @@ function doGet(e) {
           pp: tPpIdx !== undefined ? tr[tPpIdx] : "",
           battle: tBattleIdx !== undefined ? tr[tBattleIdx] : "",
           winRate: tWinRateIdx !== undefined ? tr[tWinRateIdx] : "",
+          baseHp: (tHpIdx !== undefined && tr[tHpIdx] !== undefined) ? String(tr[tHpIdx]).trim() : "",
+          baseAp: (tApIdx !== undefined && tr[tApIdx] !== undefined) ? String(tr[tApIdx]).trim() : "",
+          baseSpd: (tSpdIdx !== undefined && tr[tSpdIdx] !== undefined) ? String(tr[tSpdIdx]).trim() : "",
           jogress: tJogressIdx !== undefined ? tr[tJogressIdx] : "",
           item: tItemIdx !== undefined ? tr[tItemIdx] : "",
           note: tNoteIdx !== undefined ? tr[tNoteIdx] : "",
@@ -657,11 +911,13 @@ function blockUid(ss, uid, reason) {
  */
 function unblockUid(ss, uid) {
   if (!uid) return;
+  var target = String(uid).trim();
   var sheet = getBlockedSheet(ss);
   if (sheet.getLastRow() <= 1) return;
   var vals = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
   for (var i = vals.length - 1; i >= 0; i--) {
-    if (String(vals[i][0] || "").trim() === uid) {
+    var val = String(vals[i][0] || "").trim();
+    if (val === target || (val && target && (val.indexOf(target) !== -1 || target.indexOf(val) !== -1))) {
       sheet.deleteRow(i + 2);
     }
   }
@@ -854,11 +1110,410 @@ function initConditionSheetHeaders(sheet) {
   headerRange.setHorizontalAlignment("center");
   sheet.setFrozenRows(1);
   for (var col = 1; col <= CONDITION_HEADERS.length; col++) {
-    sheet.setColumnWidth(col, 130);
+    sheet.setColumnWidth(col, 120);
   }
   sheet.setColumnWidth(1, 140); // DiM
-  sheet.setColumnWidth(4, 100); // 속성
-  sheet.setColumnWidth(5, 110); // 조건상태
-  sheet.setColumnWidth(13, 220); // 비고
-  sheet.setColumnWidth(14, 160); // 갱신일시
+  sheet.setColumnWidth(2, 130); // 출발 디지몬
+  sheet.setColumnWidth(3, 130); // 진화 디지몬
+  sheet.setColumnWidth(4, 90);  // 속성
+  sheet.setColumnWidth(5, 100); // 조건상태
+  sheet.setColumnWidth(13, 200); // 비고
+  sheet.setColumnWidth(14, 150); // 갱신일시
+  sheet.setColumnWidth(15, 90);  // HP
+  sheet.setColumnWidth(16, 90);  // AP
+  sheet.setColumnWidth(17, 90);  // SPD
+  sheet.setColumnWidth(18, 160); // 마지막 편집자
+}
+
+/**
+ * 위키_변경역사 시트 반환 및 없으면 생성/초기화
+ */
+function getHistorySheet(ss) {
+  var sheet = ss.getSheetByName(SHEET_NAME_HISTORY);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME_HISTORY);
+    sheet.appendRow(HISTORY_HEADERS);
+    var hRange = sheet.getRange(1, 1, 1, HISTORY_HEADERS.length);
+    hRange.setBackground("#4C1D95"); // 짙은 보라색 (위키 테마)
+    hRange.setFontColor("#FFFFFF");
+    hRange.setFontWeight("bold");
+    hRange.setHorizontalAlignment("center");
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(1, 90);  // 리비전 ID
+    sheet.setColumnWidth(2, 150); // 일시
+    sheet.setColumnWidth(3, 130); // DiM
+    sheet.setColumnWidth(4, 120); // 출발 디지몬
+    sheet.setColumnWidth(5, 120); // 진화 디지몬
+    sheet.setColumnWidth(6, 260); // 변경 요약
+    sheet.setColumnWidth(7, 180); // 이전 데이터
+    sheet.setColumnWidth(8, 180); // 변경 데이터
+    sheet.setColumnWidth(9, 160); // 편집자 UID
+    sheet.setColumnWidth(10, 200); // 코멘트
+  }
+  return sheet;
+}
+
+/**
+ * 위키 편집 처리 (실시간_진화조건 즉시 갱신 + 위키_변경역사 리비전 생성)
+ */
+function handleWikiEdit(ss, data) {
+  var condSheet = ss.getSheetByName(SHEET_NAME_CONDITIONS);
+  if (!condSheet) {
+    condSheet = ss.insertSheet(SHEET_NAME_CONDITIONS);
+    initConditionSheetHeaders(condSheet);
+  }
+
+  var timeZone = Session.getScriptTimeZone() || "Asia/Seoul";
+  var nowStr = Utilities.formatDate(new Date(), timeZone, "yyyy-MM-dd HH:mm:ss");
+
+  var targetTo = String(data.toName || data.to || "").trim();
+  var targetFrom = String(data.fromName || data.from || "").trim();
+  var targetDim = String(data.dim || "").trim();
+  var editorUid = String(data.uid || "익명").trim();
+  var comment = String(data.comment || "").trim();
+
+  // 기존 행 검색 및 이전 데이터 파악
+  var matchedRowIdx = -1;
+  var prevSnapshot = data.prevData || {};
+  if (typeof prevSnapshot === "string") {
+    try { prevSnapshot = JSON.parse(prevSnapshot); } catch (e) { prevSnapshot = {}; }
+  }
+
+  var lastRow = condSheet.getLastRow();
+  var lastCol = condSheet.getLastColumn();
+  if (lastRow > 1) {
+    var allVals = condSheet.getRange(1, 1, lastRow, Math.max(lastCol, CONDITION_HEADERS.length)).getValues();
+    var headerRow = allVals[0];
+    var colMap = {};
+    for (var hi = 0; hi < headerRow.length; hi++) colMap[String(headerRow[hi]).trim()] = hi;
+
+    var toIdx = colMap["진화 디지몬"] !== undefined ? colMap["진화 디지몬"] : 2;
+    var fromIdx = colMap["출발 디지몬"] !== undefined ? colMap["출발 디지몬"] : 1;
+    var dimIdx = colMap["DiM"] !== undefined ? colMap["DiM"] : 0;
+
+    for (var ri = 1; ri < allVals.length; ri++) {
+      var row = allVals[ri];
+      var rTo = String(row[toIdx] || "").trim();
+      var rFrom = String(row[fromIdx] || "").trim();
+      var rDim = String(row[dimIdx] || "").trim();
+
+      if (rTo.toLowerCase() === targetTo.toLowerCase()) {
+        if (!targetFrom || !rFrom || rFrom.toLowerCase() === targetFrom.toLowerCase()) {
+          matchedRowIdx = ri + 1;
+          if (!data.prevData || Object.keys(data.prevData).length === 0) {
+            prevSnapshot = {
+              dim: rDim,
+              from: rFrom,
+              to: rTo,
+              attr: colMap["속성"] !== undefined ? row[colMap["속성"]] : "",
+              status: colMap["조건상태"] !== undefined ? row[colMap["조건상태"]] : "",
+              time: colMap["진화 시간"] !== undefined ? row[colMap["진화 시간"]] : "",
+              vital: colMap["필요 바이탈"] !== undefined ? row[colMap["필요 바이탈"]] : "",
+              pp: colMap["필요 PP"] !== undefined ? row[colMap["필요 PP"]] : "",
+              battle: colMap["배틀 횟수"] !== undefined ? row[colMap["배틀 횟수"]] : "",
+              winRate: colMap["필요 승률(%)"] !== undefined ? row[colMap["필요 승률(%)"]] : "",
+              jogress: colMap["조그레스 파트너"] !== undefined ? row[colMap["조그레스 파트너"]] : "",
+              item: colMap["필요 아이템"] !== undefined ? row[colMap["필요 아이템"]] : "",
+              note: colMap["비고/메모"] !== undefined ? row[colMap["비고/메모"]] : "",
+              baseHp: colMap["체력(HP)"] !== undefined ? row[colMap["체력(HP)"]] : "",
+              baseAp: colMap["전투력(AP)"] !== undefined ? row[colMap["전투력(AP)"]] : "",
+              baseSpd: colMap["속도(SPD)"] !== undefined ? row[colMap["속도(SPD)"]] : ""
+            };
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  function hasVal(val) {
+    return val !== undefined && val !== null && String(val).trim() !== "";
+  }
+
+  function normalizeDiffVal(v) {
+    if (v === undefined || v === null) return "";
+    var s = String(v).trim();
+    if (s === "-" || s === "null" || s === "undefined") return "";
+    return s;
+  }
+
+  // 새 데이터 구성 (입력되지 않은 빈 필드는 이전 스냅샷 값을 온전히 보존하여 허위 변경 방지)
+  var newSnapshot = {
+    dim: targetDim || prevSnapshot.dim || "",
+    from: targetFrom || prevSnapshot.from || "",
+    to: targetTo,
+    attr: hasVal(data.attr) ? data.attr : (prevSnapshot.attr || ""),
+    status: hasVal(data.status) ? data.status : (prevSnapshot.status || "공개"),
+    time: hasVal(data.time) ? data.time : (prevSnapshot.time || ""),
+    vital: hasVal(data.vital) ? data.vital : (prevSnapshot.vital !== undefined && prevSnapshot.vital !== null ? prevSnapshot.vital : ""),
+    pp: hasVal(data.pp) ? data.pp : (prevSnapshot.pp !== undefined && prevSnapshot.pp !== null ? prevSnapshot.pp : ""),
+    battle: hasVal(data.battle) ? data.battle : (prevSnapshot.battle !== undefined && prevSnapshot.battle !== null ? prevSnapshot.battle : ""),
+    winRate: hasVal(data.winRate) ? data.winRate : (prevSnapshot.winRate !== undefined && prevSnapshot.winRate !== null ? prevSnapshot.winRate : ""),
+    jogress: hasVal(data.jogress) ? data.jogress : (prevSnapshot.jogress || ""),
+    item: hasVal(data.item) ? data.item : (prevSnapshot.item || ""),
+    note: hasVal(data.note) ? data.note : (prevSnapshot.note || ""),
+    baseHp: hasVal(data.baseHp) ? data.baseHp : (prevSnapshot.baseHp !== undefined && prevSnapshot.baseHp !== null ? prevSnapshot.baseHp : ""),
+    baseAp: hasVal(data.baseAp) ? data.baseAp : (prevSnapshot.baseAp !== undefined && prevSnapshot.baseAp !== null ? prevSnapshot.baseAp : ""),
+    baseSpd: hasVal(data.baseSpd) ? data.baseSpd : (prevSnapshot.baseSpd !== undefined && prevSnapshot.baseSpd !== null ? prevSnapshot.baseSpd : "")
+  };
+
+  // human-readable diff 요약 생성
+  var diffParts = [];
+  var fieldLabels = {
+    time: "진화시간",
+    vital: "바이탈",
+    pp: "PP",
+    battle: "배틀",
+    winRate: "승률",
+    baseHp: "체력",
+    baseAp: "전투력",
+    baseSpd: "속도",
+    jogress: "조그레스",
+    item: "아이템",
+    note: "비고"
+  };
+  for (var k in fieldLabels) {
+    var pVal = normalizeDiffVal(prevSnapshot[k]);
+    var nVal = normalizeDiffVal(newSnapshot[k]);
+    if (pVal !== nVal) {
+      diffParts.push(fieldLabels[k] + ": " + (pVal || "-") + " → " + (nVal || "-"));
+    }
+  }
+  var clientDiff = String(data.diffSummary || "").trim();
+  var diffSummary = clientDiff || (diffParts.length > 0 ? diffParts.join(", ") : "조건/스탯 갱신");
+
+  // 실시간 진화조건 시트에 저장
+  var rowValues = [
+    newSnapshot.dim,
+    newSnapshot.from,
+    newSnapshot.to,
+    newSnapshot.attr,
+    newSnapshot.status,
+    newSnapshot.time,
+    newSnapshot.vital,
+    newSnapshot.pp,
+    newSnapshot.battle,
+    newSnapshot.winRate,
+    newSnapshot.jogress,
+    newSnapshot.item,
+    newSnapshot.note,
+    nowStr,
+    newSnapshot.baseHp,
+    newSnapshot.baseAp,
+    newSnapshot.baseSpd,
+    editorUid
+  ];
+
+  if (matchedRowIdx > 1) {
+    condSheet.getRange(matchedRowIdx, 1, 1, rowValues.length).setValues([rowValues]);
+  } else {
+    condSheet.appendRow(rowValues);
+  }
+
+  // 위키 역사 시트에 리비전 기록
+  var histSheet = getHistorySheet(ss);
+  var revId = "R" + (histSheet.getLastRow());
+  var histRow = [
+    revId,
+    nowStr,
+    newSnapshot.dim,
+    newSnapshot.from,
+    newSnapshot.to,
+    diffSummary,
+    JSON.stringify(prevSnapshot),
+    JSON.stringify(newSnapshot),
+    editorUid,
+    comment
+  ];
+  histSheet.appendRow(histRow);
+
+  return {
+    status: "success",
+    message: "위키 편집이 즉시 도감에 반영되고 역사에 기록되었습니다.",
+    revisionId: revId,
+    diffSummary: diffSummary,
+    updatedAt: nowStr
+  };
+}
+
+/**
+ * 위키 롤백 / 되돌리기 처리
+ */
+function handleWikiRevert(ss, data) {
+  var condSheet = ss.getSheetByName(SHEET_NAME_CONDITIONS);
+  if (!condSheet) {
+    return { status: "error", message: "진화 조건 시트를 찾을 수 없습니다." };
+  }
+
+  var targetTo = String(data.toName || data.to || "").trim();
+  var targetFrom = String(data.fromName || data.from || "").trim();
+  var targetDim = String(data.dim || "").trim();
+  var targetData = data.targetData || {};
+  if (typeof targetData === "string") {
+    try { targetData = JSON.parse(targetData); } catch (e) { targetData = {}; }
+  }
+
+  var timeZone = Session.getScriptTimeZone() || "Asia/Seoul";
+  var nowStr = Utilities.formatDate(new Date(), timeZone, "yyyy-MM-dd HH:mm:ss");
+  var editorUid = String(data.uid || "익명").trim();
+  var revIdToRevert = String(data.revisionId || "").trim();
+  var userComment = String(data.comment || "").trim();
+
+  // 기존 행 검색
+  var lastRow = condSheet.getLastRow();
+  var matchedRowIdx = -1;
+  var currentSnapshot = {};
+
+  if (lastRow > 1) {
+    var allVals = condSheet.getRange(1, 1, lastRow, Math.max(condSheet.getLastColumn(), CONDITION_HEADERS.length)).getValues();
+    var headerRow = allVals[0];
+    var colMap = {};
+    for (var hi = 0; hi < headerRow.length; hi++) colMap[String(headerRow[hi]).trim()] = hi;
+
+    var toIdx = colMap["진화 디지몬"] !== undefined ? colMap["진화 디지몬"] : 2;
+    var fromIdx = colMap["출발 디지몬"] !== undefined ? colMap["출발 디지몬"] : 1;
+
+    for (var ri = 1; ri < allVals.length; ri++) {
+      var row = allVals[ri];
+      var rTo = String(row[toIdx] || "").trim();
+      var rFrom = String(row[fromIdx] || "").trim();
+
+      if (rTo.toLowerCase() === targetTo.toLowerCase()) {
+        if (!targetFrom || !rFrom || rFrom.toLowerCase() === targetFrom.toLowerCase()) {
+          matchedRowIdx = ri + 1;
+          currentSnapshot = {
+            dim: row[colMap["DiM"] !== undefined ? colMap["DiM"] : 0] || "",
+            from: rFrom,
+            to: rTo,
+            attr: colMap["속성"] !== undefined ? row[colMap["속성"]] : "",
+            status: colMap["조건상태"] !== undefined ? row[colMap["조건상태"]] : "",
+            time: colMap["진화 시간"] !== undefined ? row[colMap["진화 시간"]] : "",
+            vital: colMap["필요 바이탈"] !== undefined ? row[colMap["필요 바이탈"]] : "",
+            pp: colMap["필요 PP"] !== undefined ? row[colMap["필요 PP"]] : "",
+            battle: colMap["배틀 횟수"] !== undefined ? row[colMap["배틀 횟수"]] : "",
+            winRate: colMap["필요 승률(%)"] !== undefined ? row[colMap["필요 승률(%)"]] : "",
+            jogress: colMap["조그레스 파트너"] !== undefined ? row[colMap["조그레스 파트너"]] : "",
+            item: colMap["필요 아이템"] !== undefined ? row[colMap["필요 아이템"]] : "",
+            note: colMap["비고/메모"] !== undefined ? row[colMap["비고/메모"]] : "",
+            baseHp: colMap["체력(HP)"] !== undefined ? row[colMap["체력(HP)"]] : "",
+            baseAp: colMap["전투력(AP)"] !== undefined ? row[colMap["전투력(AP)"]] : "",
+            baseSpd: colMap["속도(SPD)"] !== undefined ? row[colMap["속도(SPD)"]] : ""
+          };
+          break;
+        }
+      }
+    }
+  }
+
+  var restoredRow = [
+    targetData.dim || targetDim || currentSnapshot.dim || "",
+    targetData.from || targetFrom || currentSnapshot.from || "",
+    targetTo,
+    targetData.attr !== undefined ? targetData.attr : (currentSnapshot.attr || ""),
+    targetData.status !== undefined ? targetData.status : (currentSnapshot.status || "공개"),
+    targetData.time !== undefined ? targetData.time : "",
+    targetData.vital !== undefined && targetData.vital !== null ? targetData.vital : "",
+    targetData.pp !== undefined && targetData.pp !== null ? targetData.pp : "",
+    targetData.battle !== undefined && targetData.battle !== null ? targetData.battle : "",
+    targetData.winRate !== undefined && targetData.winRate !== null ? targetData.winRate : "",
+    targetData.jogress || "",
+    targetData.item || "",
+    targetData.note || "",
+    nowStr,
+    targetData.baseHp !== undefined && targetData.baseHp !== null ? targetData.baseHp : "",
+    targetData.baseAp !== undefined && targetData.baseAp !== null ? targetData.baseAp : "",
+    targetData.baseSpd !== undefined && targetData.baseSpd !== null ? targetData.baseSpd : "",
+    editorUid + " [되돌림]"
+  ];
+
+  if (matchedRowIdx > 1) {
+    condSheet.getRange(matchedRowIdx, 1, 1, restoredRow.length).setValues([restoredRow]);
+  } else {
+    condSheet.appendRow(restoredRow);
+  }
+
+  // 역사 시트에 되돌리기 기록
+  var histSheet = getHistorySheet(ss);
+  var newRevId = "R" + (histSheet.getLastRow());
+  var diffSummary = "[되돌림] " + (revIdToRevert ? revIdToRevert + " " : "") + "이전 버전으로 복원";
+  var commentText = userComment || (revIdToRevert ? revIdToRevert + " 상태로 롤백" : "이전 버전 복원");
+
+  var histRow = [
+    newRevId,
+    nowStr,
+    restoredRow[0],
+    restoredRow[1],
+    targetTo,
+    diffSummary,
+    JSON.stringify(currentSnapshot),
+    JSON.stringify(targetData),
+    editorUid,
+    commentText
+  ];
+  histSheet.appendRow(histRow);
+
+  return {
+    status: "success",
+    message: "성공적으로 이전 상태로 되돌려졌습니다.",
+    revisionId: newRevId,
+    restoredData: targetData
+  };
+}
+
+/**
+ * 위키 변경 역사 개별 리비전 삭제 (에디터 전용)
+ */
+function handleDeleteWikiHistory(ss, revId) {
+  if (!revId) {
+    return { status: "error", message: "삭제할 리비전 ID가 지정되지 않았습니다." };
+  }
+  var histSheet = ss.getSheetByName(SHEET_NAME_HISTORY);
+  if (!histSheet || histSheet.getLastRow() <= 1) {
+    return { status: "error", message: "삭제할 변경 내역이 없습니다." };
+  }
+
+  var lastR = histSheet.getLastRow();
+  var revVals = histSheet.getRange(2, 1, lastR - 1, 1).getValues();
+  var targetRow = -1;
+
+  for (var i = revVals.length - 1; i >= 0; i--) {
+    var rId = String(revVals[i][0] || "").trim();
+    if (rId === revId || rId.toLowerCase() === revId.toLowerCase()) {
+      targetRow = i + 2;
+      break;
+    }
+  }
+
+  if (targetRow > 1) {
+    histSheet.deleteRow(targetRow);
+    return {
+      status: "success",
+      message: "리비전 [" + revId + "] 내역이 성공적으로 삭제되었습니다.",
+      deletedRevisionId: revId
+    };
+  } else {
+    return {
+      status: "error",
+      message: "리비전 [" + revId + "]을 찾을 수 없습니다."
+    };
+  }
+}
+
+/**
+ * 위키 변경 역사 전체 비우기 (에디터 전용)
+ */
+function handleClearAllWikiHistory(ss) {
+  var histSheet = ss.getSheetByName(SHEET_NAME_HISTORY);
+  if (!histSheet || histSheet.getLastRow() <= 1) {
+    return { status: "success", message: "비울 변경 내역이 없습니다.", deletedCount: 0 };
+  }
+
+  var count = histSheet.getLastRow() - 1;
+  histSheet.deleteRows(2, count);
+
+  return {
+    status: "success",
+    message: "위키 변경 역사 " + count + "건이 모두 삭제되었습니다.",
+    deletedCount: count
+  };
 }
