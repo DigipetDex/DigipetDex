@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="digimon_db.js?v=v1.3.81"></script>
-  <script src="project_data.js?v=v1.3.81"></script>
+  <script src="digimon_db.js?v=v1.3.83"></script>
+  <script src="project_data.js?v=v1.3.83"></script>
   <script src="xlsx.full.min.js"></script>
   <style>
     :root {
@@ -2409,7 +2409,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.81</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.83</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -3577,7 +3577,7 @@
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.81 (10.01 20:40)";
+    const APP_VERSION = "v1.3.83 (10.01 20:51)";
 
     // -------------------------------------------------------------------------
     // 영문-한글 디지몬 도감 매핑 및 바이링구얼(한/영) 검색 유틸리티
@@ -13411,10 +13411,18 @@
 
       if (syncBtn) {
         syncBtn.disabled = true;
-        syncBtn.innerHTML = "<span>📡 배포 중... ⏳</span>";
+        syncBtn.innerHTML = "<span>🔄 최신 유저 제보 병합 중... ⏳</span>";
       }
 
       try {
+        // [안전장치] 배포 전 서버의 최신 유저 제보/수정 내역을 먼저 가져와 로컬 데이터에 안전하게 병합
+        await fetchAndApplyLiveConditions();
+        recalculateAllDigimonConditionStatuses();
+
+        if (syncBtn) {
+          syncBtn.innerHTML = "<span>📡 구글 시트 배포 중... ⏳</span>";
+        }
+
         const conditions = [];
 
         // 1. 모든 진화선 수집
@@ -13483,7 +13491,7 @@
           })
         });
 
-        showToast(`🎉 총 <strong>${conditions.length}개</strong>의 진화 조건, 속성 및 공개상태가 구글 시트에 실시간 배포되었습니다!<br>이제 뷰어에서 깃 배포 없이 즉시 최신 조건이 표시됩니다.`);
+        showToast(`🎉 최신 유저 제보를 안전하게 병합한 후, 총 <strong>${conditions.length}개</strong>의 진화 조건이 구글 시트에 실시간 배포되었습니다!<br>이제 뷰어에서 깃 배포 없이 즉시 최신 조건이 표시됩니다.`);
       } catch (err) {
         console.error("실시간 조건 배포 실패:", err);
         alert("실시간 조건 배포 중 오류가 발생했습니다: " + err.message);
