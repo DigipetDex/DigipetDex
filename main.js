@@ -3,6 +3,10 @@ const path = require('path');
 const fs = require('fs');
 const { exec } = require('child_process');
 
+// 로컬 file:// 환경에서 이미지(스프라이트/아이콘)를 캔버스에 그려도 오염(taint)되지 않도록 허용.
+// 진화 플래너 PNG/클립보드 캡쳐가 images/ 폴더의 스프라이트를 읽으려면 필요하다.
+app.commandLine.appendSwitch('allow-file-access-from-files');
+
 let mainWindow = null;
 
 function createWindow() {

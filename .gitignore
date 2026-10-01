@@ -4,3 +4,5 @@ node_modules/
 dist/
 배포용/
 *.log
+_backup_*/
+__pycache__/
