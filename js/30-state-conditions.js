@@ -72,6 +72,30 @@
       };
     }
 
+    // 과거 템플릿 기본값(바이탈 1200, PP 8)이 다른 조건 없이 남아 있으면 빈칸으로 정리. 정리했으면 true.
+    // (진화선 evo 와 디지몬 req 둘 다 같은 필드 이름을 쓴다)
+    function clearLegacyDummyReq(req) {
+      if (!req) return false;
+      const v = String(req.vital || "").trim();
+      const p = String(req.pp || "").trim();
+      const hasOther = Boolean(req.battle || req.winRate || (req.jogress && req.jogress !== "-" && req.jogress !== "없음") || (req.item && req.item !== "-" && req.item !== "없음") || (req.dungeon && req.dungeon !== "-" && req.dungeon !== "없음"));
+      if ((v === "1200" || v === "1,200") && p === "8" && !hasOther) {
+        req.vital = "";
+        req.pp = "";
+        return true;
+      }
+      return false;
+    }
+
+    // 전체 진화선/디지몬의 1200/8 더미값 정리. 정리한 개수를 반환.
+    // 구글 시트(실시간 조건)에도 같은 더미값이 남아 있어서, 시트 병합 뒤에도 다시 호출해야 한다.
+    function clearAllLegacyDummyValues() {
+      let count = 0;
+      (project.evolutions || []).forEach(e => { if (clearLegacyDummyReq(e)) count++; });
+      Object.values(project.digimons || {}).forEach(d => { if (clearLegacyDummyReq(d.req)) count++; });
+      return count;
+    }
+
     function ensureDigimonRequirements() {
       if (!project.dims) project.dims = [];
 
@@ -113,16 +137,10 @@
           digi.req = getDefaultReqForStage(digi.stage);
         }
 
-        // 세대별 표준 진화 시간 및 유년기1/유년기2/성장기 조건 보정
+        // 세대별 표준 진화 시간 보정
+        // (유년기/성장기도 바이탈 등 조건이 있는 DiM 이 있으므로 시간 외 조건은 지우지 않는다. 예: 뿌요요몬→젤리몬 바이탈 350)
         if (["유년기 I", "유년기 II", "성장기"].includes(digi.stage)) {
           digi.req.time = "1시간";
-          digi.req.vital = "";
-          digi.req.pp = "";
-          digi.req.battle = "";
-          digi.req.winRate = "";
-          digi.req.dungeon = "-";
-          digi.req.jogress = "-";
-          digi.req.item = "-";
         } else if (digi.stage === "성숙기") {
           if (!digi.req.time || digi.req.time === "12시간" || digi.req.time === "-") {
             digi.req.time = "24시간";
@@ -141,38 +159,14 @@
           }
         }
 
-        // 과거 템플릿 기본값(바이탈 1200, PP 8)이 다른 조건 없이 방치된 경우 빈칸으로 자동 정리
-        if (digi.req) {
-          const v = String(digi.req.vital || "").trim();
-          const p = String(digi.req.pp || "").trim();
-          const hasOther = Boolean(digi.req.battle || digi.req.winRate || (digi.req.jogress && digi.req.jogress !== "-" && digi.req.jogress !== "없음") || (digi.req.item && digi.req.item !== "-" && digi.req.item !== "없음") || (digi.req.dungeon && digi.req.dungeon !== "-" && digi.req.dungeon !== "없음"));
-          if ((v === "1200" || v === "1,200") && p === "8" && !hasOther) {
-            digi.req.vital = "";
-            digi.req.pp = "";
-          }
-        }
+        clearLegacyDummyReq(digi.req);
 
         // 해당 디지몬으로 향하는 모든 진화선에 시간과 유년기/성장기 조건 반영 (루트별 고유 시간이 이미 있으면 유지)
         project.evolutions.filter(e => e.to === digi.id).forEach(e => {
           if (!e.time) {
             e.time = digi.req.time;
           }
-          const v = String(e.vital || "").trim();
-          const p = String(e.pp || "").trim();
-          const hasOther = Boolean(e.battle || e.winRate || (e.jogress && e.jogress !== "-" && e.jogress !== "없음") || (e.item && e.item !== "-" && e.item !== "없음") || (e.dungeon && e.dungeon !== "-" && e.dungeon !== "없음"));
-          if ((v === "1200" || v === "1,200") && p === "8" && !hasOther) {
-            e.vital = "";
-            e.pp = "";
-          }
-          if (["유년기 I", "유년기 II", "성장기"].includes(digi.stage)) {
-            e.vital = "";
-            e.pp = "";
-            e.battle = "";
-            e.winRate = "";
-            e.dungeon = "-";
-            e.jogress = "-";
-            e.item = "-";
-          }
+          clearLegacyDummyReq(e);
         });
       });
     }

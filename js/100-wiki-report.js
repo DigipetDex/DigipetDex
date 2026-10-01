@@ -1915,6 +1915,7 @@
         });
 
         if (!(await postAdminToGas(gasUrl, { action: "sync_live_conditions", conditions: conditions }))) return;
+        resetLiveBaselineToLocal();
 
         showToast(`🎉 최신 유저 제보를 안전하게 병합한 후, 총 <strong>${conditions.length}개</strong>의 진화 조건이 구글 시트에 실시간 배포되었습니다!<br>이제 뷰어에서 깃 배포 없이 즉시 최신 조건이 표시됩니다.`);
       } catch (err) {
@@ -1929,6 +1930,49 @@
     }
 
     // 뷰어 및 에디터: 구글 시트에서 최신 진화 조건 실시간 로드 및 트리 덮어쓰기
+    // -------------------------------------------------------------
+    // 에디터 수동 수정 보호 (시트 병합이 에디터에서 고친 값을 덮어쓰지 않도록)
+    // 마지막으로 시트에서 받아 적용한 값(기준값)을 기억해 두고, 지금 값이 기준값과 다르면
+    // 에디터에서 고친 것으로 보고 시트 값을 적용하지 않는다. [실시간 배포]에 성공하면 기준값을 현재 값으로 맞춘다.
+    // -------------------------------------------------------------
+    // v2: 성장기 조건 강제 삭제 버그 수정 때 키를 바꿔, 그 버그로 지워진 값이 "에디터 수정"으로 보호되지 않게 초기화
+    const LIVE_BASELINE_STORAGE_KEY = "digipet_live_baseline_v2";
+    const LIVE_CONDITION_FIELDS = ["time", "vital", "pp", "battle", "winRate", "jogress", "item", "note"];
+
+    function conditionSignature(obj) {
+      return LIVE_CONDITION_FIELDS.map(f => {
+        const v = obj ? obj[f] : "";
+        const str = (v === undefined || v === null) ? "" : String(v).trim();
+        return str === "-" ? "" : str;
+      }).join("␟");
+    }
+
+    function loadLiveBaseline() {
+      try {
+        return JSON.parse(localStorage.getItem(LIVE_BASELINE_STORAGE_KEY) || "{}") || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveLiveBaseline(baseline) {
+      try {
+        localStorage.setItem(LIVE_BASELINE_STORAGE_KEY, JSON.stringify(baseline));
+      } catch (e) {}
+    }
+
+    function forEachLiveConditionTarget(fn) {
+      (project.evolutions || []).forEach(ev => fn(`${ev.from}|${ev.to}`, ev));
+      Object.values(project.digimons || {}).forEach(d => fn(`req|${d.id}`, d.req));
+    }
+
+    // 실시간 배포 성공 후: 지금 값이 곧 시트 값이므로 기준값으로 저장
+    function resetLiveBaselineToLocal() {
+      const baseline = {};
+      forEachLiveConditionTarget((key, obj) => { baseline[key] = conditionSignature(obj); });
+      saveLiveBaseline(baseline);
+    }
+
     async function fetchAndApplyLiveConditions() {
       const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
       if (!gasUrl) return;
@@ -1940,6 +1984,16 @@
 
         if (data.status === "success" && Array.isArray(data.conditions) && data.conditions.length > 0) {
           let updatedCount = 0;
+
+          // 에디터에서 고친(기준값과 달라진) 진화선/조건 키. 뷰어는 보호하지 않고 항상 시트 값을 따른다.
+          const protectEdits = !isViewerMode;
+          const baseline = protectEdits ? loadLiveBaseline() : {};
+          const locallyEdited = new Set();
+          if (protectEdits) {
+            forEachLiveConditionTarget((key, obj) => {
+              if (baseline[key] !== undefined && baseline[key] !== conditionSignature(obj)) locallyEdited.add(key);
+            });
+          }
 
           data.conditions.forEach(c => {
             if (!c.to) return;
@@ -1963,6 +2017,7 @@
               });
 
               matchedEvos.forEach(ev => {
+                if (locallyEdited.has(`${ev.from}|${ev.to}`)) return;
                 if (c.time !== undefined && c.time !== "") ev.time = c.time;
                 if (c.vital !== undefined) ev.vital = (c.vital === "" || c.vital === "-") ? "" : Number(c.vital);
                 if (c.pp !== undefined) ev.pp = (c.pp === "" || c.pp === "-") ? "" : Number(c.pp);
@@ -2010,16 +2065,18 @@
                   }
                 }
 
-                // 기본 요구조건(req) 갱신
+                // 기본 요구조건(req) 갱신 (에디터에서 고친 조건은 유지)
                 if (!d.req) d.req = getDefaultReqForStage(d.stage);
-                if (c.time !== undefined && c.time !== "" && c.time !== "-") d.req.time = c.time;
-                if (c.vital !== undefined) d.req.vital = (c.vital === "" || c.vital === "-") ? "" : Number(c.vital);
-                if (c.pp !== undefined) d.req.pp = (c.pp === "" || c.pp === "-") ? "" : Number(c.pp);
-                if (c.battle !== undefined) d.req.battle = c.battle === "-" ? "" : c.battle;
-                if (c.winRate !== undefined) d.req.winRate = c.winRate === "-" ? "" : c.winRate;
-                if (c.jogress !== undefined) d.req.jogress = c.jogress === "-" ? "" : c.jogress;
-                if (c.item !== undefined) d.req.item = c.item === "-" ? "" : c.item;
-                if (c.note !== undefined) d.req.note = c.note;
+                if (!locallyEdited.has(`req|${d.id}`)) {
+                  if (c.time !== undefined && c.time !== "" && c.time !== "-") d.req.time = c.time;
+                  if (c.vital !== undefined) d.req.vital = (c.vital === "" || c.vital === "-") ? "" : Number(c.vital);
+                  if (c.pp !== undefined) d.req.pp = (c.pp === "" || c.pp === "-") ? "" : Number(c.pp);
+                  if (c.battle !== undefined) d.req.battle = c.battle === "-" ? "" : c.battle;
+                  if (c.winRate !== undefined) d.req.winRate = c.winRate === "-" ? "" : c.winRate;
+                  if (c.jogress !== undefined) d.req.jogress = c.jogress === "-" ? "" : c.jogress;
+                  if (c.item !== undefined) d.req.item = c.item === "-" ? "" : c.item;
+                  if (c.note !== undefined) d.req.note = c.note;
+                }
 
                 // 기본 스탯(baseHp, baseAp, baseSpd) 갱신
                 if (c.baseHp !== undefined && c.baseHp !== "") {
@@ -2046,6 +2103,26 @@
               }
             });
           });
+
+          // 시트에서 받은 값을 새 기준값으로 기억 (에디터에서 고친 항목은 이전 기준값 유지 → 계속 보호)
+          if (protectEdits) {
+            const newBaseline = {};
+            forEachLiveConditionTarget((key, obj) => {
+              newBaseline[key] = locallyEdited.has(key) ? baseline[key] : conditionSignature(obj);
+            });
+            saveLiveBaseline(newBaseline);
+            if (locallyEdited.size > 0) {
+              console.log(`[라이브 조건 동기화] 에디터에서 수정한 ${locallyEdited.size}건은 시트 값으로 덮어쓰지 않았습니다 (실시간 배포 시 시트에 반영).`);
+            }
+          }
+
+          // 시트에 남아 있는 1200/8 더미값이 병합으로 되살아나지 않도록 다시 정리
+          // (기준값 저장 뒤에 정리하므로 에디터 수정으로 취급되어, 다음 실시간 배포 때 시트에서도 지워진다)
+          const dummyCleared = clearAllLegacyDummyValues();
+          if (dummyCleared > 0) {
+            console.log(`[라이브 조건 동기화] 시트의 1200/8 더미값 ${dummyCleared}건 정리`);
+            updatedCount += dummyCleared;
+          }
 
           if (updatedCount > 0) {
             renderTree();
