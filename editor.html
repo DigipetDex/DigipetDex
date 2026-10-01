@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="digimon_db.js?v=v1.3.83"></script>
-  <script src="project_data.js?v=v1.3.83"></script>
+  <script src="digimon_db.js?v=v1.3.87"></script>
+  <script src="project_data.js?v=v1.3.87"></script>
   <script src="xlsx.full.min.js"></script>
   <style>
     :root {
@@ -2409,7 +2409,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.83</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.87</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -2709,6 +2709,12 @@
       </div>
 
         <div id="req-condition-container" class="editor-only" style="display: block;">
+          <div style="margin-bottom: 8px;">
+            <label style="display:inline-flex; align-items:center; gap:7px; cursor:pointer; font-size:0.78rem; color:#57F287; font-weight:700; background:rgba(87,242,135,0.08); border:1px solid rgba(87,242,135,0.25); padding:5px 10px; border-radius:6px; user-select:none;">
+              <input type="checkbox" id="req-is-idle" style="accent-color:#22C55E; width:15px; height:15px; cursor:pointer;">
+              <span>⏳ 방치 시 진화 (시간 경과만으로 진화 / 추가 조건 없음)</span>
+            </label>
+          </div>
           <div class="cond-grid">
             <div class="form-group">
               <label style="display:flex; align-items:center; gap:4px;"><img src="진화시간.webp" alt="진화시간" style="width:13px; height:13px; object-fit:contain; image-rendering:pixelated;"><span>진화 시간</span></label>
@@ -3160,6 +3166,14 @@
           </div>
         </div>
 
+        <!-- 방치 시 진화 체크박스 -->
+        <div>
+          <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-size:0.82rem; color:#57F287; font-weight:700; background:rgba(87,242,135,0.1); border:1px solid rgba(87,242,135,0.3); padding:7px 12px; border-radius:8px; user-select:none; width:100%; box-sizing:border-box;">
+            <input type="checkbox" id="report-input-idle" style="accent-color:#22C55E; width:16px; height:16px; cursor:pointer;">
+            <span>⏳ 방치 시 진화 (시간 경과만으로 진화 / 추가 조건 없음)</span>
+          </label>
+        </div>
+
         <!-- 에디터와 동일한 규격화된 조건 입력 폼 -->
         <div>
           <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
@@ -3577,7 +3591,7 @@
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.83 (10.01 20:51)";
+    const APP_VERSION = "v1.3.87 (10.01 21:07)";
 
     // -------------------------------------------------------------------------
     // 영문-한글 디지몬 도감 매핑 및 바이링구얼(한/영) 검색 유틸리티
@@ -7722,10 +7736,28 @@
           }
         }
 
+        // 과거 템플릿 기본값(바이탈 1200, PP 8)이 다른 조건 없이 방치된 경우 빈칸으로 자동 정리
+        if (digi.req) {
+          const v = String(digi.req.vital || "").trim();
+          const p = String(digi.req.pp || "").trim();
+          const hasOther = Boolean(digi.req.battle || digi.req.winRate || (digi.req.jogress && digi.req.jogress !== "-" && digi.req.jogress !== "없음") || (digi.req.item && digi.req.item !== "-" && digi.req.item !== "없음") || (digi.req.dungeon && digi.req.dungeon !== "-" && digi.req.dungeon !== "없음"));
+          if ((v === "1200" || v === "1,200") && p === "8" && !hasOther) {
+            digi.req.vital = "";
+            digi.req.pp = "";
+          }
+        }
+
         // 해당 디지몬으로 향하는 모든 진화선에 시간과 유년기/성장기 조건 반영 (루트별 고유 시간이 이미 있으면 유지)
         project.evolutions.filter(e => e.to === digi.id).forEach(e => {
           if (!e.time) {
             e.time = digi.req.time;
+          }
+          const v = String(e.vital || "").trim();
+          const p = String(e.pp || "").trim();
+          const hasOther = Boolean(e.battle || e.winRate || (e.jogress && e.jogress !== "-" && e.jogress !== "없음") || (e.item && e.item !== "-" && e.item !== "없음") || (e.dungeon && e.dungeon !== "-" && e.dungeon !== "없음"));
+          if ((v === "1200" || v === "1,200") && p === "8" && !hasOther) {
+            e.vital = "";
+            e.pp = "";
           }
           if (["유년기 I", "유년기 II", "성장기"].includes(digi.stage)) {
             e.vital = "";
@@ -8087,6 +8119,7 @@
     // 특정 진화선(evo)의 조건이 실제로 밝혀졌는지(입력되었는지) 판별
     function isEvoRevealed(evo, stage = null) {
       if (!evo) return false;
+      if (evo.isRevealed === true || evo.isRevealed === "true") return true;
       const fromDigi = (evo.from && typeof project !== "undefined" && project.digimons) ? project.digimons[evo.from] : null;
       const fromStage = fromDigi ? fromDigi.stage : null;
       const hasTime = Boolean(evo.time && evo.time !== "-");
@@ -8094,6 +8127,11 @@
       // 유년기 단계 또는 유년기에서 성장기로의 진화는 진화 시간(time)이 주 조건입니다.
       if (["디지타마", "유년기 I", "유년기 II"].includes(fromStage) || ["디지타마", "유년기 I", "유년기 II"].includes(stage) || stage === "성장기") {
         return hasTime;
+      }
+
+      // 비고에 방치 진화 또는 조건 없음이 명시된 경우 공개로 판정
+      if (evo.note && (evo.note.includes("방치") || evo.note.includes("조건 없음") || evo.note.includes("조건없음") || evo.note.includes("시간 경과"))) {
+        return true;
       }
 
       const hasVital = evo.vital !== "" && evo.vital !== undefined && evo.vital !== null && evo.vital !== "-";
@@ -8112,6 +8150,21 @@
       if (digi.stage === "디지타마") {
         digi.unknownTime = false;
         digi.partialUnknown = false;
+        return;
+      }
+
+      // 관리자/유저가 수동 지정한 상태가 있는 경우 최우선 적용
+      if (digi.conditionStatus === "known") {
+        digi.unknownTime = false;
+        digi.partialUnknown = false;
+        return;
+      } else if (digi.conditionStatus === "unknown") {
+        digi.unknownTime = true;
+        digi.partialUnknown = false;
+        return;
+      } else if (digi.conditionStatus === "partial") {
+        digi.unknownTime = false;
+        digi.partialUnknown = true;
         return;
       }
 
@@ -9483,6 +9536,13 @@
 
       const elNote = document.getElementById("req-note");
       if (elNote) elNote.value = curReq.note || "";
+
+      const elIdle = document.getElementById("req-is-idle");
+      if (elIdle) {
+        const isIdleCond = Boolean(curReq.isIdle || (curReq.note && (curReq.note.includes("방치") || curReq.note.includes("조건 없음") || curReq.note.includes("조건없음") || curReq.note.includes("시간 경과"))));
+        elIdle.checked = isIdleCond;
+        elIdle.disabled = isBabyStage;
+      }
     }
 
     // -------------------------------------------------------------------------
@@ -10199,6 +10259,40 @@
       input.addEventListener("change", handleReqFieldChange);
     });
 
+    const elReqIdle = document.getElementById("req-is-idle");
+    if (elReqIdle) {
+      elReqIdle.addEventListener("change", (e) => {
+        const digi = project.digimons[selectedDigiId];
+        if (!digi) return;
+        if (!digi.req) digi.req = getDefaultReqForStage(digi.stage);
+        const isChecked = e.target.checked;
+        const activeEvo = getActiveIncomingEvo(selectedDigiId, activeIncomingFromId);
+        if (activeEvo) {
+          activeEvo.isIdle = isChecked;
+          if (isChecked && (!activeEvo.note || activeEvo.note.trim() === "")) {
+            activeEvo.note = "방치 진화";
+          } else if (!isChecked && activeEvo.note === "방치 진화") {
+            activeEvo.note = "";
+          }
+        }
+        if (digi.req) {
+          digi.req.isIdle = isChecked;
+          if (isChecked && (!digi.req.note || digi.req.note.trim() === "")) {
+            digi.req.note = "방치 진화";
+          } else if (!isChecked && digi.req.note === "방치 진화") {
+            digi.req.note = "";
+          }
+        }
+        const noteInput = document.getElementById("req-note");
+        if (noteInput && activeEvo) noteInput.value = activeEvo.note || "";
+        updateDigimonConditionStatus(digi);
+        saveState();
+        syncSameNameDigimons(digi);
+        renderTree();
+        drawConnections();
+      });
+    }
+
     const btnCopyRoutes = document.getElementById("btn-copy-req-to-all-routes");
     if (btnCopyRoutes) {
       btnCopyRoutes.addEventListener("click", copyCurrentReqToAllRoutes);
@@ -10334,6 +10428,7 @@
         const digi = project.digimons[selectedDigiId];
         if (!digi) return;
         const status = btn.dataset.status;
+        digi.conditionStatus = status;
         digi.unknownTime = (status === "unknown");
         digi.partialUnknown = (status === "partial");
         syncSameNameDigimons(digi);
@@ -11783,6 +11878,11 @@
       if (inputItem) inputItem.value = (req.item && req.item !== "-") ? req.item : "";
       if (inputNote) inputNote.value = req.note || "";
 
+      const inputIdle = document.getElementById("report-input-idle");
+      if (inputIdle) {
+        inputIdle.checked = Boolean(req.isIdle || (req.note && (req.note.includes("방치") || req.note.includes("조건 없음") || req.note.includes("조건없음") || req.note.includes("시간 경과"))));
+      }
+
       const uidEl = document.getElementById("report-modal-client-uid");
       if (uidEl) uidEl.textContent = `UID: ${getClientFullIdentifier()}`;
       getClientMaskedIp().then(() => updateClientUidDisplays());
@@ -11828,10 +11928,15 @@
       const inputSpd = document.getElementById("report-input-spd")?.value.trim() || "";
       const inputJogress = document.getElementById("report-input-jogress")?.value.trim() || "";
       const inputItem = document.getElementById("report-input-item")?.value.trim() || "";
-      const inputNote = document.getElementById("report-input-note")?.value.trim() || "";
+      let inputNote = document.getElementById("report-input-note")?.value.trim() || "";
       const inputComment = document.getElementById("report-input-comment")?.value.trim() || "";
+      const inputIdle = document.getElementById("report-input-idle")?.checked || false;
 
-      if (!inputTime && !inputVital && !inputPp && !inputBattle && !inputWinrate && !inputJogress && !inputItem && !inputNote && !inputHp && !inputAp && !inputSpd) {
+      if (inputIdle && !inputNote) {
+        inputNote = "방치 진화";
+      }
+
+      if (!inputTime && !inputVital && !inputPp && !inputBattle && !inputWinrate && !inputJogress && !inputItem && !inputNote && !inputHp && !inputAp && !inputSpd && !inputIdle) {
         alert("최소 하나 이상의 진화 조건, 기본 스탯, 또는 비고 내용을 입력해 주세요.");
         return;
       }
@@ -11883,6 +11988,7 @@
         if (inputJogress !== "") activeEvo.jogress = inputJogress;
         if (inputItem !== "") activeEvo.item = inputItem;
         if (inputNote !== "") activeEvo.note = inputNote;
+        if (inputIdle) activeEvo.isIdle = true;
       } else {
         if (!toDigi.req) toDigi.req = getDefaultReqForStage(toDigi.stage);
         if (inputTime !== "") toDigi.req.time = inputTime;
