@@ -4,6 +4,8 @@
 > **Webhook URL:** `https://script.google.com/macros/s/AKfycbx1XUIl4kVde4m0G1RhLNiNAloJIR7BVpfvqnSV2Eah8scuEA79Bg3fKYTnqEOttjji/exec`  
 > 배포 설정: 웹 앱 / 실행 사용자 "나" / 액세스 **"모든 사용자(Anyone)"** (필수)
 
+> 🔑 **관리자 토큰:** 스크립트 속성 `ADMIN_TOKEN` 에 등록한 값과 요청의 `adminToken` 이 같아야 관리자 액션(아래 표의 🔒)이 실행됩니다. 속성이 없으면 관리자 액션은 전부 `{status:"unauthorized"}` 로 거부됩니다. 에디터는 토큰을 `localStorage["digipet_admin_token"]` 에만 보관합니다(`project` 에 넣으면 project_data.js 로 공개 배포되므로 금지).
+
 > ⚠ **코드를 수정하면 반드시 Apps Script 에서 '새 버전'으로 다시 배포**해야 반영됩니다. 이 저장소의 `google_apps_script.js` 는 소스 보관용이며 자동 배포되지 않습니다.
 
 ---
@@ -24,7 +26,11 @@
 
 ## POST API
 
-클라이언트는 `Content-Type: text/plain` + `mode: "no-cors"` 로 전송합니다(프리플라이트 회피). **응답 본문을 읽을 수 없으므로** 클라이언트는 낙관적 UI(로컬 먼저 반영)를 씁니다. 서버는 `JSON.parse(e.postData.contents)` 로 파싱합니다.
+모든 요청은 `Content-Type: text/plain` 으로 전송합니다(프리플라이트 회피). 유저 액션(`wiki_edit`, `wiki_revert`)은 `mode: "no-cors"` + 낙관적 UI, **관리자 액션은 `postAdminToGas()`(`js/100-wiki-report.js`)가 응답을 읽어** `unauthorized` 면 알림을 띄웁니다. 모든 POST 는 `LockService` 스크립트 락(최대 20초 대기) 안에서 처리됩니다. 관리자 외 요청은 본문 20,000자 초과 시 거부됩니다.
+
+🔒 관리자 토큰 필요: `sync_live_conditions`, `delete`/`move_to_trash`, `clear_all`/`move_all_to_trash`, `delete_by_uid`, `restore_trash`, `delete_trash_permanent`, `empty_trash`, `block_uid`, `unblock_uid`, `delete_wiki_history`, `clear_all_wiki_history`.
+
+`sync_live_conditions` 는 덮어쓰기 전에 `실시간_진화조건` 을 `실시간_진화조건_백업` 탭으로 복사(최근 1개)하고, 빈 목록은 거부합니다. 서버는 `JSON.parse(e.postData.contents)` 로 파싱합니다.
 
 | action | 필수 필드 | 설명 |
 |---|---|---|
@@ -70,7 +76,7 @@
 
 ## GET API
 
-쿼리스트링 방식: `?action=xxx&t={timestamp}` (`t` 는 캐시 방지용). 위 POST 의 쓰기 액션 대부분(`wiki_edit`, `wiki_revert`, `delete*`, `clear_all*`, `restore_trash`, `empty_trash`, `block_uid`, `unblock_uid`, …)이 **GET 으로도 동작**합니다.
+쿼리스트링 방식: `?action=xxx&t={timestamp}` (`t` 는 캐시 방지용). **GET 은 읽기 전용**입니다. 쓰기 액션을 GET 으로 보내면 `{status:"error", message:"이 작업은 POST 요청으로만 가능합니다."}` 를 돌려줍니다.
 
 ### `get_live_conditions`
 ```
@@ -87,9 +93,10 @@ GET ?action=get_wiki_history&t=...&to=<진화 디지몬명>&dim=<DiM>&limit=100
 ```
 - `to`/`dim` 필터는 부분 일치(소문자). 필터가 있으면 최근 300행, 없으면 `limit` 행만 스캔합니다 (속도 최적화). 최신순.
 
-### (action 없음) 제보 목록
+### (action 없음) 제보 목록 🔒
+제보자 UID/IP 가 들어 있어 관리자 토큰이 필요합니다. 없거나 틀리면 `{status:"unauthorized", reports:[], blockedUids:[]}`.
 ```
-GET ?t=...
+GET ?adminToken=<토큰>&t=...
 → { "status": "success", "count": N, "reports": [...], "trashCount": M, "trash": [...], "blockedUids": [...] }
 ```
 
@@ -97,7 +104,7 @@ GET ?t=...
 
 ## 주의사항
 
-1. **인증이 없습니다.** 어떤 액션에도 관리자 확인이 없고, 웹 앱이 "모든 사용자" 로 열려 있습니다. URL 은 클라이언트 코드(`js/100-wiki-report.js` 의 `DEFAULT_GAS_WEBHOOK_URL`, `project_data.js` 의 `gasWebhookUrl`)에 공개돼 있으므로 URL 을 아는 사람은 `sync_live_conditions`, `clear_all_wiki_history`, `empty_trash` 등을 호출할 수 있습니다. 차단 목록 검사는 제보/위키 편집에만 적용됩니다. → [KNOWN_ISSUES.md](./KNOWN_ISSUES.md)
-2. **동시성 보호가 없습니다.** 이전 문서에는 `LockService` 10초 락을 쓴다고 적혀 있었으나 `google_apps_script.js` 에는 `LockService` 호출이 없습니다. 동시에 `sync_live_conditions`(clear 후 쓰기)와 `wiki_edit` 가 겹치면 편집이 유실될 수 있습니다. 클라이언트의 Pre-Merge 안전장치(`syncLiveConditionsToGas` 가 먼저 서버 최신본을 병합)가 이를 완화합니다.
-3. **no-cors 전송** — 응답 바디를 읽을 수 없어 낙관적 UI 방식을 채택했습니다. 서버 거부(`blocked`)도 클라이언트가 알 수 없습니다. (GET 은 응답을 읽습니다.)
+1. **유저 액션은 여전히 누구나 호출할 수 있습니다** (`wiki_edit`, `wiki_revert`, 신규 제보). 위키 특성상 의도된 것이며, 차단 목록·크기 제한만 적용됩니다. UID 는 클라이언트가 보내는 값이라 우회가 가능합니다.
+2. **관리자 토큰을 바꾸려면** 스크립트 속성 값을 바꾸고 에디터의 토큰 칸도 같은 값으로 저장하면 됩니다 (재배포 불필요).
+3. **유저 액션은 no-cors 전송** — 응답 바디를 읽을 수 없어 낙관적 UI 방식을 채택했습니다. 서버 거부(`blocked`)를 유저 화면에서는 알 수 없습니다.
 4. 파싱 실패 시 `data = e.parameter` 로 폴백합니다.

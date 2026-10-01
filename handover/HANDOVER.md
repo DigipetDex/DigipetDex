@@ -1,7 +1,7 @@
 # 📖 DIGIPET 바이탈 링크 — AI 프로젝트 인수인계 문서
 
 > **작성일:** 2026-10-01  
-> **마지막 버전:** v1.3.87 (10.01 21:07)  
+> **마지막 버전:** v1.3.88 (10.02 01:39)  
 > **프로젝트 경로:** `f:\Game\DIGIPET\`  
 > **배포 사이트:** https://digipetdex.github.io/DigipetDex/ (GitHub Pages, 저장소 `DigipetDex/DigipetDex`)
 
@@ -167,7 +167,7 @@ conditionStatus = "partial" → 강제 일부불명
 | `block_uid` / `unblock_uid` | POST | UID 차단/해제 |
 | `get_live_conditions` / `get_wiki_history` | GET | 최신 조건 / 변경 역사 로드 |
 
-> ⚠ **인증이 없습니다.** URL 을 아는 누구나 모든 액션을 호출할 수 있습니다. [KNOWN_ISSUES.md](./KNOWN_ISSUES.md) 참고.
+> 🔑 **관리자 액션은 토큰이 필요합니다.** Apps Script 스크립트 속성 `ADMIN_TOKEN` 과 에디터 [📬 제보 확인] 창의 '관리자 토큰' 칸(이 PC 의 localStorage 에만 저장)이 같아야 합니다. 쓰기는 POST 전용. [GAS_API_REFERENCE.md](./GAS_API_REFERENCE.md) 참고.
 
 ---
 

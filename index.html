@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="js/05-img-fallback.js?v=v1.3.87"></script>
-  <script src="digimon_db.js?v=v1.3.87"></script>
-  <script src="project_data.js?v=v1.3.87"></script>
+  <script src="js/05-img-fallback.js?v=v1.3.88"></script>
+  <script src="digimon_db.js?v=v1.3.88"></script>
+  <script src="project_data.js?v=v1.3.88"></script>
   <script src="xlsx.full.min.js"></script>
-  <link rel="stylesheet" href="css/editor.css?v=v1.3.87">
+  <link rel="stylesheet" href="css/editor.css?v=v1.3.88">
 </head>
 <body>
 
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.87</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.88</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -975,6 +975,11 @@
             <span>🗑️ 전체 비우기</span>
           </button>
         </div>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <span style="font-size: 0.78rem; color: var(--text-sub); font-weight: 600; white-space: nowrap;">🔑 관리자 토큰:</span>
+          <input type="password" id="report-admin-token-input" class="form-control" placeholder="GAS 스크립트 속성 ADMIN_TOKEN 값 (이 PC 에만 저장됨)" autocomplete="off" style="flex: 1; min-width: 160px; font-size: 0.8rem; padding: 5px 8px;">
+          <button type="button" id="btn-save-admin-token" class="btn-primary" style="padding: 5px 12px; font-size: 0.78rem; white-space: nowrap;">저장</button>
+        </div>
         <div style="font-size: 0.72rem; color: #94A3B8; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
           <span>구글 스프레드시트의 <code>[확장 프로그램 ➔ Apps Script]</code>에 <code>google_apps_script.js</code>를 웹 앱으로 배포한 뒤 URL을 등록하세요.</span>
           <span style="color: #6EE7B7; font-size: 0.7rem;">※ 구글 시트 13번째 열(제보자 UID) 자동 연동</span>
@@ -1195,22 +1200,22 @@
     </div>
   </div>
 
-  <script src="js/00-config.js?v=v1.3.87"></script>
-  <script src="js/10-search-utils.js?v=v1.3.87"></script>
-  <script src="js/20-mode.js?v=v1.3.87"></script>
-  <script src="js/legacy/default-project.js?v=v1.3.87"></script>
-  <script src="js/30-state-conditions.js?v=v1.3.87"></script>
-  <script src="js/40-render-tree.js?v=v1.3.87"></script>
-  <script src="js/50-node-sidebar.js?v=v1.3.87"></script>
-  <script src="js/60-condition-clipboard.js?v=v1.3.87"></script>
-  <script src="js/70-digimon-crud.js?v=v1.3.87"></script>
-  <script src="js/80-export.js?v=v1.3.87"></script>
-  <script src="js/90-zoom-mobile.js?v=v1.3.87"></script>
-  <script src="js/95-training-calc.js?v=v1.3.87"></script>
-  <script src="js/96-mode-save-deploy.js?v=v1.3.87"></script>
-  <script src="js/100-wiki-report.js?v=v1.3.87"></script>
-  <script src="js/110-planner.js?v=v1.3.87"></script>
-  <script src="js/120-planner-canvas.js?v=v1.3.87"></script>
+  <script src="js/00-config.js?v=v1.3.88"></script>
+  <script src="js/10-search-utils.js?v=v1.3.88"></script>
+  <script src="js/20-mode.js?v=v1.3.88"></script>
+  <script src="js/legacy/default-project.js?v=v1.3.88"></script>
+  <script src="js/30-state-conditions.js?v=v1.3.88"></script>
+  <script src="js/40-render-tree.js?v=v1.3.88"></script>
+  <script src="js/50-node-sidebar.js?v=v1.3.88"></script>
+  <script src="js/60-condition-clipboard.js?v=v1.3.88"></script>
+  <script src="js/70-digimon-crud.js?v=v1.3.88"></script>
+  <script src="js/80-export.js?v=v1.3.88"></script>
+  <script src="js/90-zoom-mobile.js?v=v1.3.88"></script>
+  <script src="js/95-training-calc.js?v=v1.3.88"></script>
+  <script src="js/96-mode-save-deploy.js?v=v1.3.88"></script>
+  <script src="js/100-wiki-report.js?v=v1.3.88"></script>
+  <script src="js/110-planner.js?v=v1.3.88"></script>
+  <script src="js/120-planner-canvas.js?v=v1.3.88"></script>
 
   <div id="global-toast" class="toast-msg">최신 데이터가 내장된 배포용 'index.html' 파일이 다운로드되었습니다!
   (폴더의 index.html에 덮어쓰거나 그대로 웹에 업로드하시면 됩니다)</div>

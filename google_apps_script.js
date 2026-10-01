@@ -14,6 +14,8 @@
  *    - 다음 사용자 모드로 실행: 나 (your-email@gmail.com)
  *    - 액세스 권한: 모든 사용자 (Anyone)  ★ 반드시 '모든 사용자'로 지정!
  * 6. 발급된 "웹 앱 URL"을 디지몬 에디터의 [📬 제보 확인] 창에 등록하세요.
+ * 7. ⚙ 프로젝트 설정 ➔ 스크립트 속성에 ADMIN_TOKEN 을 추가하고,
+ *    같은 값을 에디터 [📬 제보 확인] 창의 "관리자 토큰" 칸에 저장하세요. (아래 [보안] 참고)
  * ============================================================================
  */
 
@@ -103,30 +105,105 @@ var HISTORY_HEADERS = [
 ];
 
 /**
+ * ============================================================================
+ * [보안] 관리자 토큰
+ * ----------------------------------------------------------------------------
+ * 아래 액션은 관리자 토큰(adminToken)이 맞아야만 실행됩니다.
+ * 토큰 등록: Apps Script 편집기 ➔ ⚙ 프로젝트 설정 ➔ 스크립트 속성
+ *            ➔ 속성 "ADMIN_TOKEN", 값은 길고 추측하기 어려운 임의 문자열
+ * 토큰이 등록돼 있지 않으면 관리자 액션은 전부 거부됩니다.
+ * 에디터에서는 [📬 제보 확인] 창 상단의 "관리자 토큰" 칸에 같은 값을 저장하세요.
+ * ============================================================================
+ */
+var ADMIN_ACTIONS = {
+  "sync_live_conditions": true,
+  "delete": true,
+  "move_to_trash": true,
+  "clear_all": true,
+  "move_all_to_trash": true,
+  "delete_by_uid": true,
+  "restore_trash": true,
+  "delete_trash_permanent": true,
+  "empty_trash": true,
+  "block_uid": true,
+  "unblock_uid": true,
+  "delete_wiki_history": true,
+  "clear_all_wiki_history": true
+};
+
+// 일반 유저 요청(제보/위키 편집/되돌리기)의 최대 크기 (문자 수)
+var MAX_PUBLIC_PAYLOAD = 20000;
+
+function isAdminRequest(token) {
+  var expected = PropertiesService.getScriptProperties().getProperty("ADMIN_TOKEN");
+  return !!expected && String(token || "") === expected;
+}
+
+function jsonOut(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+/**
+ * 배포(sync_live_conditions)로 덮어쓰기 전에 실시간_진화조건 시트를 백업 탭으로 복사 (최근 1개 유지)
+ */
+function backupConditionSheet(ss, condSheet) {
+  if (condSheet.getLastRow() <= 1) return;
+  var backupName = SHEET_NAME_CONDITIONS + "_백업";
+  var oldBackup = ss.getSheetByName(backupName);
+  if (oldBackup) ss.deleteSheet(oldBackup);
+  condSheet.copyTo(ss).setName(backupName);
+}
+
+/**
  * POST 핸들러 (제보 등록, 실시간 조건 동기화, 제보 삭제 등)
+ * 권한 확인 + 동시 실행 잠금(LockService) 후 handlePost 로 넘깁니다.
  */
 function doPost(e) {
-  try {
-    var rawData = e.postData ? e.postData.contents : "";
-    var data = {};
-    if (rawData) {
-      try {
-        data = JSON.parse(rawData);
-      } catch (jsonErr) {
-        data = e.parameter || {};
-      }
-    } else {
-      data = e.parameter || {};
+  var rawData = (e && e.postData) ? e.postData.contents : "";
+  var data = {};
+  if (rawData) {
+    try {
+      data = JSON.parse(rawData);
+    } catch (jsonErr) {
+      data = (e && e.parameter) || {};
     }
+  } else {
+    data = (e && e.parameter) || {};
+  }
 
+  if (ADMIN_ACTIONS[data.action]) {
+    if (!isAdminRequest(data.adminToken)) {
+      return jsonOut({ status: "unauthorized", message: "관리자 토큰이 없거나 일치하지 않습니다." });
+    }
+  } else if (rawData.length > MAX_PUBLIC_PAYLOAD) {
+    return jsonOut({ status: "error", message: "요청 데이터가 너무 큽니다." });
+  }
+
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(20000)) {
+    return jsonOut({ status: "error", message: "서버가 다른 요청을 처리 중입니다. 잠시 후 다시 시도해 주세요." });
+  }
+  try {
+    return handlePost(data);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function handlePost(data) {
+  try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
 
     // 1. [실시간 진화 조건 전체 동기화 액션]
     if (data.action === "sync_live_conditions" && Array.isArray(data.conditions)) {
+      if (data.conditions.length === 0) {
+        return jsonOut({ status: "error", message: "빈 조건 목록으로는 덮어쓸 수 없습니다." });
+      }
       var condSheet = ss.getSheetByName(SHEET_NAME_CONDITIONS);
       if (!condSheet) {
         condSheet = ss.insertSheet(SHEET_NAME_CONDITIONS);
       }
+      backupConditionSheet(ss, condSheet);
       condSheet.clear();
       condSheet.appendRow(CONDITION_HEADERS);
 
@@ -579,112 +656,22 @@ function doGet(e) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // GET 방식 위키 롤백 지원
-    if (action === "wiki_revert") {
-      var revertResult = handleWikiRevert(ss, e.parameter);
-      return ContentService.createTextOutput(JSON.stringify(revertResult)).setMimeType(ContentService.MimeType.JSON);
+    // 쓰기 액션은 GET 으로 받지 않음 (주소창 호출 차단). 모두 doPost 로만 처리.
+    if (ADMIN_ACTIONS[action] || action === "wiki_edit" || action === "wiki_revert") {
+      return jsonOut({ status: "error", message: "이 작업은 POST 요청으로만 가능합니다." });
     }
 
-    // GET 방식 위키 편집 지원
-    if (action === "wiki_edit") {
-      var editResult = handleWikiEdit(ss, e.parameter);
-      return ContentService.createTextOutput(JSON.stringify(editResult)).setMimeType(ContentService.MimeType.JSON);
+    // 2. [유저 제보 목록 조회] — 제보자 UID/IP 가 들어 있으므로 관리자 전용
+    if (!isAdminRequest(e.parameter.adminToken)) {
+      return jsonOut({
+        status: "unauthorized",
+        message: "제보 목록은 관리자 토큰이 있어야 볼 수 있습니다.",
+        reports: [],
+        blockedUids: []
+      });
     }
 
-    // GET 방식 위키 내역 개별 삭제 (에디터 전용)
-    if (action === "delete_wiki_history") {
-      var revIdToDel = String(e.parameter.revisionId || "").trim();
-      var delRes = handleDeleteWikiHistory(ss, revIdToDel);
-      return ContentService.createTextOutput(JSON.stringify(delRes)).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // GET 방식 위키 내역 전체 비우기 (에디터 전용)
-    if (action === "clear_all_wiki_history") {
-      var clearRes = handleClearAllWikiHistory(ss);
-      return ContentService.createTextOutput(JSON.stringify(clearRes)).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // 2. [유저 제보 관련 처리]
     var reportSheet = ss.getSheetByName(SHEET_NAME_REPORTS);
-
-    // GET 방식 개별 제보 삭제 (휴지통 이동)
-    if (action === "delete" || action === "move_to_trash") {
-      var rowToDel = parseInt(e.parameter.row || e.parameter.id, 10);
-      var moved = moveReportRowToTrash(ss, rowToDel);
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success",
-        message: moved ? "제보가 휴지통으로 이동되었습니다." : "삭제할 행을 찾을 수 없습니다."
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // GET 방식 전체 제보 비우기 (휴지통 이동)
-    if (action === "clear_all" || action === "move_all_to_trash") {
-      var movedCount = moveAllReportsToTrash(ss);
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success",
-        message: movedCount + "건의 제보가 휴지통으로 이동되었습니다."
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // GET 방식 특정 UID 제보 일괄 휴지통 이동
-    if (action === "delete_by_uid" && e.parameter.uid) {
-      var uidMoved = moveReportsByUidToTrash(ss, e.parameter.uid);
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success",
-        message: "UID [" + e.parameter.uid + "] 제보 " + uidMoved + "건이 휴지통으로 이동되었습니다."
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // GET 방식 휴지통 복원
-    if (action === "restore_trash") {
-      var tRow = parseInt(e.parameter.row || e.parameter.id, 10);
-      var restored = restoreTrashRow(ss, tRow);
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success",
-        message: restored ? "제보가 성공적으로 복구되었습니다." : "복구할 항목을 찾을 수 없습니다."
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // GET 방식 휴지통 개별 영구 삭제
-    if (action === "delete_trash_permanent") {
-      var tpRow = parseInt(e.parameter.row || e.parameter.id, 10);
-      var pDeleted = deleteTrashPermanent(ss, tpRow);
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success",
-        message: pDeleted ? "휴지통에서 영구 삭제되었습니다." : "삭제할 항목을 찾을 수 없습니다."
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // GET 방식 휴지통 전체 영구 비우기
-    if (action === "empty_trash") {
-      var emptied = emptyTrash(ss);
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success",
-        message: "휴지통이 완전히 비워졌습니다. (" + emptied + "건 영구 삭제)"
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // GET 방식 UID 차단/해제
-    if (action === "block_uid") {
-      var uidToBlock = String(e.parameter.uid || "").trim();
-      if (uidToBlock) blockUid(ss, uidToBlock, e.parameter.reason || "관리자 차단");
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success",
-        message: "UID [" + uidToBlock + "] 차단 완료",
-        blockedUids: getBlockedUids(ss)
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    if (action === "unblock_uid") {
-      var uidToUnblock = String(e.parameter.uid || "").trim();
-      if (uidToUnblock) unblockUid(ss, uidToUnblock);
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success",
-        message: "UID [" + uidToUnblock + "] 차단 해제 완료",
-        blockedUids: getBlockedUids(ss)
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-
     var blockedList = getBlockedUids(ss);
 
     // 1) 활성 제보 목록 조회

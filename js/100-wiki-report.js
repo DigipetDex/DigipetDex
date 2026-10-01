@@ -9,6 +9,56 @@
     let currentBlockedUidsCache = [];
     let currentReportsTab = "active"; // "active" (접수된 제보) or "trash" (휴지통)
 
+    // 관리자 토큰 (GAS 스크립트 속성 ADMIN_TOKEN 과 같은 값)
+    // ⚠ project 에 넣으면 project_data.js 로 저장·배포되어 공개되므로 localStorage 에만 둔다.
+    const ADMIN_TOKEN_STORAGE_KEY = "digipet_admin_token";
+
+    function getAdminToken() {
+      try {
+        return localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY) || "";
+      } catch (e) {
+        return "";
+      }
+    }
+
+    function saveAdminToken() {
+      const tokenInput = document.getElementById("report-admin-token-input");
+      if (!tokenInput) return;
+      const token = tokenInput.value.trim();
+      if (token) {
+        localStorage.setItem(ADMIN_TOKEN_STORAGE_KEY, token);
+        showToast("관리자 토큰이 저장되었습니다.");
+      } else {
+        localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY);
+        showToast("관리자 토큰이 삭제되었습니다.");
+      }
+      fetchReportsFromGas();
+    }
+
+    // 관리자 전용 GAS 액션 전송. 토큰이 없거나 틀리면 알림 후 false, 서버 오류는 throw.
+    // (no-cors 가 아니라 응답을 읽어서 거부 여부를 확인한다)
+    async function postAdminToGas(gasUrl, payload) {
+      const token = getAdminToken();
+      if (!token) {
+        alert("관리자 토큰이 설정되지 않았습니다.\n[📬 제보 확인] 창 상단의 '관리자 토큰' 칸에 토큰을 입력하고 저장해 주세요.");
+        return false;
+      }
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ ...payload, adminToken: token })
+      });
+      const data = await res.json();
+      if (data.status === "unauthorized") {
+        alert("관리자 토큰이 일치하지 않아 서버가 요청을 거부했습니다.\n토큰을 확인해 주세요. (변경 사항은 서버에 반영되지 않았습니다)");
+        return false;
+      }
+      if (data.status !== "success") {
+        throw new Error(data.message || "서버 응답 오류");
+      }
+      return true;
+    }
+
     // 클라이언트 지속 UID 생성/조회 (분탕 유저 식별 및 차단용)
     function getClientUid() {
       let uid = localStorage.getItem("digipet_client_uid");
@@ -788,13 +838,7 @@
       // 구글 시트 연동 삭제 전송
       if (gasUrl) {
         try {
-          const url = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=delete_wiki_history&revisionId=${encodeURIComponent(revId)}`;
-          await fetch(url, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify({ action: "delete_wiki_history", revisionId: revId })
-          });
+          await postAdminToGas(gasUrl, { action: "delete_wiki_history", revisionId: revId });
         } catch (e) {
           console.warn("구글 시트 위키 내역 삭제 전송 실패:", e);
         }
@@ -820,13 +864,7 @@
 
       if (gasUrl) {
         try {
-          const url = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=clear_all_wiki_history`;
-          await fetch(url, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify({ action: "clear_all_wiki_history" })
-          });
+          await postAdminToGas(gasUrl, { action: "clear_all_wiki_history" });
         } catch (e) {
           console.warn("구글 시트 위키 내역 전체 비우기 실패:", e);
         }
@@ -1038,6 +1076,10 @@
       if (urlInput) {
         urlInput.value = savedUrl;
       }
+      const tokenInput = document.getElementById("report-admin-token-input");
+      if (tokenInput) {
+        tokenInput.value = getAdminToken();
+      }
 
       switchReportsTab(currentReportsTab || "active");
 
@@ -1097,12 +1139,27 @@
         return;
       }
 
+      const adminToken = getAdminToken();
+      if (!adminToken) {
+        listEl.innerHTML = `
+          <div style="background:rgba(250,204,21,0.12); border:1px solid rgba(250,204,21,0.35); border-radius:8px; padding:16px; color:#FDE68A; font-size:0.85rem; text-align:center;">
+            🔑 관리자 토큰이 설정되지 않았습니다.<br>
+            상단 '관리자 토큰' 칸에 GAS 스크립트 속성 ADMIN_TOKEN 과 같은 값을 입력하고 [저장]을 눌러주세요.
+          </div>
+        `;
+        return;
+      }
+
       listEl.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-sub); font-size:0.85rem;">⏳ 구글 시트에서 제보 내역을 불러오는 중...</div>`;
 
       try {
-        const res = await fetch(gasUrl);
+        const listUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}adminToken=${encodeURIComponent(adminToken)}`;
+        const res = await fetch(listUrl);
         const data = await res.json();
 
+        if (data.status === "unauthorized") {
+          throw new Error("관리자 토큰이 일치하지 않습니다. 토큰을 확인해 주세요.");
+        }
         if (data.status === "success" && Array.isArray(data.reports)) {
           currentReportsCache = data.reports;
           currentTrashCache = Array.isArray(data.trash) ? data.trash : [];
@@ -1204,12 +1261,7 @@
 
       if (gasUrl) {
         try {
-          await fetch(gasUrl, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify({ action: "block_uid", uid: uid, reason: "관리자 차단" })
-          });
+          if (!(await postAdminToGas(gasUrl, { action: "block_uid", uid: uid, reason: "관리자 차단" }))) return;
         } catch (e) {
           console.error("UID 차단 요청 실패:", e);
         }
@@ -1227,12 +1279,7 @@
           renderReportsListUI();
           if (gasUrl) {
             try {
-              await fetch(gasUrl, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify({ action: "delete_by_uid", uid: uid })
-              });
+              await postAdminToGas(gasUrl, { action: "delete_by_uid", uid: uid });
             } catch (e) {
               console.error("UID 제보 일괄 휴지통 이동 요청 실패:", e);
             }
@@ -1257,13 +1304,9 @@
 
       if (gasUrl) {
         try {
-          await fetch(gasUrl, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify({ action: "unblock_uid", uid: uid })
-          });
-          showToast(`[${uid}] 차단이 해제되었습니다.`);
+          if (await postAdminToGas(gasUrl, { action: "unblock_uid", uid: uid })) {
+            showToast(`[${uid}] 차단이 해제되었습니다.`);
+          }
         } catch (e) {
           console.error("UID 차단 해제 요청 실패:", e);
         }
@@ -1491,9 +1534,9 @@
 
       if (gasUrl) {
         try {
-          const delUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=delete&row=${repId}`;
-          await fetch(delUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ action: "delete", row: repId }) });
-          showToast(`시트 #${repId} 제보가 휴지통으로 이동되었습니다.`);
+          if (await postAdminToGas(gasUrl, { action: "delete", row: repId })) {
+            showToast(`시트 #${repId} 제보가 휴지통으로 이동되었습니다.`);
+          }
         } catch (e) {
           console.error("제보 삭제 요청 실패:", e);
         }
@@ -1519,9 +1562,9 @@
 
       if (gasUrl) {
         try {
-          const clearUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=clear_all`;
-          await fetch(clearUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ action: "clear_all" }) });
-          showToast("모든 제보가 휴지통으로 이동되었습니다.");
+          if (await postAdminToGas(gasUrl, { action: "clear_all" })) {
+            showToast("모든 제보가 휴지통으로 이동되었습니다.");
+          }
         } catch (e) {
           console.error("전체 제보 삭제 요청 실패:", e);
         }
@@ -1543,14 +1586,9 @@
 
       if (gasUrl) {
         try {
-          const restoreUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=restore_trash&row=${trashId}`;
-          await fetch(restoreUrl, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify({ action: "restore_trash", row: trashId })
-          });
-          showToast(`휴지통 #${trashId} 제보가 성공적으로 복구되었습니다.`);
+          if (await postAdminToGas(gasUrl, { action: "restore_trash", row: trashId })) {
+            showToast(`휴지통 #${trashId} 제보가 성공적으로 복구되었습니다.`);
+          }
         } catch (e) {
           console.error("휴지통 복구 요청 실패:", e);
         }
@@ -1568,14 +1606,9 @@
 
       if (gasUrl) {
         try {
-          const permUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=delete_trash_permanent&row=${trashId}`;
-          await fetch(permUrl, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify({ action: "delete_trash_permanent", row: trashId })
-          });
-          showToast(`휴지통 #${trashId} 제보가 영구 삭제되었습니다.`);
+          if (await postAdminToGas(gasUrl, { action: "delete_trash_permanent", row: trashId })) {
+            showToast(`휴지통 #${trashId} 제보가 영구 삭제되었습니다.`);
+          }
         } catch (e) {
           console.error("휴지통 영구 삭제 요청 실패:", e);
         }
@@ -1597,14 +1630,9 @@
 
       if (gasUrl) {
         try {
-          const emptyUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=empty_trash`;
-          await fetch(emptyUrl, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify({ action: "empty_trash" })
-          });
-          showToast("휴지통의 모든 제보가 영구 삭제되었습니다.");
+          if (await postAdminToGas(gasUrl, { action: "empty_trash" })) {
+            showToast("휴지통의 모든 제보가 영구 삭제되었습니다.");
+          }
         } catch (e) {
           console.error("휴지통 비우기 요청 실패:", e);
         }
@@ -1886,15 +1914,7 @@
           }
         });
 
-        await fetch(gasUrl, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify({
-            action: "sync_live_conditions",
-            conditions: conditions
-          })
-        });
+        if (!(await postAdminToGas(gasUrl, { action: "sync_live_conditions", conditions: conditions }))) return;
 
         showToast(`🎉 최신 유저 제보를 안전하게 병합한 후, 총 <strong>${conditions.length}개</strong>의 진화 조건이 구글 시트에 실시간 배포되었습니다!<br>이제 뷰어에서 깃 배포 없이 즉시 최신 조건이 표시됩니다.`);
       } catch (err) {
@@ -2118,6 +2138,9 @@
       // URL 저장 및 새로고침 버튼
       const saveGasBtn = document.getElementById("btn-save-gas-url");
       if (saveGasBtn) saveGasBtn.addEventListener("click", saveGasWebhookUrl);
+
+      const saveAdminTokenBtn = document.getElementById("btn-save-admin-token");
+      if (saveAdminTokenBtn) saveAdminTokenBtn.addEventListener("click", saveAdminToken);
 
       const refreshReportsBtn = document.getElementById("btn-refresh-reports");
       if (refreshReportsBtn) refreshReportsBtn.addEventListener("click", fetchReportsFromGas);
