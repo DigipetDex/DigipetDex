@@ -1,9 +1,10 @@
 /* 프로젝트 상태/저장, 세대별 기본 조건, 동명 동기화, 조건 공개 판정, DiM 필터 */
 
-    // project_data.js가 로드되어 있으면 해당 데이터를 우선 사용, 없으면 인라인 defaultProject 사용
-    const activeDefaultData = (typeof window !== "undefined" && window.DIGIPET_DEFAULT_DATA) 
-      ? window.DIGIPET_DEFAULT_DATA 
-      : defaultProject;
+    // project_data.js 의 데이터를 사용. 로드에 실패하면 빈 프로젝트로 시작한다.
+    if (!window.DIGIPET_DEFAULT_DATA) {
+      console.error("project_data.js 를 불러오지 못했습니다. 빈 프로젝트로 시작합니다.");
+    }
+    const activeDefaultData = window.DIGIPET_DEFAULT_DATA || { digimons: {}, evolutions: [], dims: [], dimMeta: {} };
 
     let project = JSON.parse(JSON.stringify(activeDefaultData));
 

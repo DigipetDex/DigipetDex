@@ -1,7 +1,7 @@
 # 📖 DIGIPET 바이탈 링크 — AI 프로젝트 인수인계 문서
 
 > **작성일:** 2026-10-01  
-> **마지막 버전:** v1.3.88 (10.02 01:39)  
+> **마지막 버전:** v1.3.89 (10.02 02:28)  
 > **프로젝트 경로:** `f:\Game\DIGIPET\`  
 > **배포 사이트:** https://digipetdex.github.io/DigipetDex/ (GitHub Pages, 저장소 `DigipetDex/DigipetDex`)
 
@@ -56,7 +56,6 @@ f:\Game\DIGIPET\
 ├── js/                      ← 스크립트 소스 (상세는 ARCHITECTURE.md)
 │   ├── 05-img-fallback.js   ← <head> 에서 가장 먼저 로드 (정적 <img onerror> 용)
 │   ├── 00 ~ 120-*.js        ← 본문 스크립트 (파일명 숫자 = 로드 순서)
-│   └── legacy/default-project.js  ← [레거시] project_data.js 가 없을 때의 폴백 데이터
 ├── index.html / viewer.html ← editor.html 복사본 (make_deploy.py 가 생성. 직접 수정 금지)
 ├── project_data.js          ← 메인 DB (digimons, evolutions, dims, dimMeta). 이미지는 경로만 보유
 ├── images/embedded/         ← project_data.js 에서 분리된 스프라이트 (해시 이름, 자동 생성)

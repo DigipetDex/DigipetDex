@@ -37,6 +37,8 @@ KEY_FUNCS = [
     ("revertWikiRevision", "위키 역사 롤백 (\"restore\" | \"undo\")"),
     ("syncLiveConditionsToGas", "전체 조건 GAS 배포 (Pre-Merge 안전장치 포함)"),
     ("fetchAndApplyLiveConditions", "서버 최신 조건 로드 & 병합"),
+    ("collectConditionStats", "조건 현황판: DiM별 진화 루트 공개/미공개 집계"),
+    ("openStatusBoardModal", "조건 현황판 모달 열기 (헤더 [조건 현황] 버튼)"),
     ("loadImgAsync", "캔버스용 이미지 로더 (crossOrigin=anonymous, 실패 시 null)"),
     ("generatePlannerChainCanvas", "플래너 PNG 캡쳐 렌더링 (Canvas)"),
 ]

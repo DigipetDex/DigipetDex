@@ -142,7 +142,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "-",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "unknownTime": false,
       "partialUnknown": false
@@ -576,7 +577,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "-",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "lineColor": "#22C55E",
       "unknownTime": false,
@@ -1069,7 +1071,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "-",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "unknownTime": false,
       "partialUnknown": false
@@ -1556,7 +1559,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "-",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "lineColor": "#A855F7",
       "unknownTime": false,
@@ -2488,11 +2492,13 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "-",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "lineColor": "#2563EB",
       "unknownTime": false,
-      "partialUnknown": false
+      "partialUnknown": false,
+      "conditionStatus": "known"
     },
     "digi_1790221247996": {
       "id": "digi_1790221247996",
@@ -3403,7 +3409,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "-",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "unknownTime": true,
       "lineColor": "#A855F7",
@@ -4037,7 +4044,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "-",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "unknownTime": false,
       "partialUnknown": false
@@ -4706,7 +4714,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "-",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "lineColor": "#2563EB",
       "unknownTime": true,
@@ -6906,7 +6915,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "lineColor": "#2563EB",
       "unknownTime": true,
@@ -8010,7 +8020,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "unknownTime": true,
       "partialUnknown": false,
@@ -9583,7 +9594,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "lineColor": "#2DD4BF"
     },
@@ -10035,7 +10047,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "lineColor": "#22C55E"
     },
@@ -10059,7 +10072,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "lineColor": "#F97316"
     },
@@ -11830,7 +11844,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "lineColor": "#A855F7",
       "baseHp": 140,
@@ -14183,7 +14198,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "lineColor": "#22C55E"
     },
@@ -14291,7 +14307,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "",
+        "isIdle": true
       },
       "lineColor": "#EF4444"
     },
@@ -14790,7 +14807,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "order": 126,
       "independentReq": true,
       "unknownTime": false,
-      "partialUnknown": false,
+      "partialUnknown": true,
       "req": {
         "time": "24시간",
         "vital": "",
@@ -14802,7 +14819,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "블랙디지트론",
         "note": ""
       },
-      "lineColor": "#EF4444"
+      "lineColor": "#EF4444",
+      "conditionStatus": "partial"
     },
     "digi_1790831583472": {
       "id": "digi_1790831583472",
@@ -16343,7 +16361,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "item": "",
       "note": "",
       "lineColor": "#EF4444",
-      "battle": ""
+      "battle": "",
+      "isIdle": true
     },
     {
       "from": "agumon",
@@ -16837,7 +16856,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "-",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790159506732",
@@ -17308,7 +17328,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "-",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790176522429",
@@ -17663,7 +17684,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "-",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790180895120",
@@ -18637,7 +18659,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "-",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790220975891",
@@ -18679,7 +18702,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "-",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790221188862",
@@ -19627,7 +19651,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "-",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790241947537",
@@ -20085,7 +20110,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "-",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790249001907",
@@ -20827,7 +20853,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "-",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790261866188",
@@ -22954,7 +22981,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790351066177",
@@ -23956,7 +23984,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790393556953",
@@ -25420,7 +25449,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790437571063",
@@ -25854,7 +25884,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790438863024",
@@ -25882,7 +25913,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790439307212",
@@ -27574,7 +27606,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790670887908",
@@ -29695,7 +29728,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790829737497",
@@ -29709,7 +29743,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "",
+      "isIdle": true
     },
     {
       "from": "digi_1790829737497",

@@ -4,21 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="js/05-img-fallback.js?v=v1.3.88"></script>
-  <script src="digimon_db.js?v=v1.3.88"></script>
-  <script src="project_data.js?v=v1.3.88"></script>
+  <script src="js/05-img-fallback.js?v=v1.3.89"></script>
+  <script src="digimon_db.js?v=v1.3.89"></script>
+  <script src="project_data.js?v=v1.3.89"></script>
   <script src="xlsx.full.min.js"></script>
-  <link rel="stylesheet" href="css/editor.css?v=v1.3.88">
+  <link rel="stylesheet" href="css/editor.css?v=v1.3.89">
 </head>
 <body>
 
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.88</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.89</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
+        <button id="btn-open-status-board" style="background:#0F766E; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:0.75rem; border:1px solid #14B8A6;" title="DiM별 조건 공개 현황과 아직 밝혀지지 않은 디지몬 목록을 봅니다.">
+          <span>조건 현황</span>
+        </button>
         <button id="btn-open-wiki-history" style="background:#4F46E5; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:0.75rem; border:1px solid #6366F1;" title="위키 변경 역사 및 최근 편집 내역을 확인하고 이전 상태로 되돌립니다.">
           <span>위키 변경역사</span>
         </button>
@@ -38,6 +41,9 @@
 
     <!-- 모바일 헤더 액션 버튼 (모바일 전용) -->
     <div class="mobile-only" style="display:none; align-items:center; gap:5px;">
+      <button id="btn-mobile-status-board" style="padding:5px 8px; font-size:0.75rem; font-weight:700; background:rgba(20,184,166,0.2); border:1px solid #14B8A6; color:#5EEAD4; border-radius:6px; align-items:center; cursor:pointer;" title="조건 공개 현황">
+        <span>현황</span>
+      </button>
       <button id="btn-mobile-wiki-history" style="padding:5px 8px; font-size:0.75rem; font-weight:700; background:rgba(79,70,229,0.25); border:1px solid #4F46E5; color:#A5B4FC; border-radius:6px; align-items:center; cursor:pointer;" title="위키 변경 역사">
         <span>역사</span>
       </button>
@@ -903,6 +909,20 @@
   </div>
 
   <!-- 1-B. 위키 변경 역사 (Revision History) 모달 -->
+  <!-- 조건 공개 현황판 모달 -->
+  <div class="modal-overlay" id="status-board-modal" style="display:none; z-index:1100;">
+    <div class="modal-box" style="max-width:620px; width:94%; max-height:90vh; display:flex; flex-direction:column; padding:0; overflow:hidden; background:#1E1F22; border:1px solid #33363D; border-radius:10px; box-shadow:0 16px 40px rgba(0,0,0,0.8);">
+      <div style="padding:10px 16px; background:#23272A; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.92rem; color:#FFF; font-weight:700;">조건 공개 현황</span>
+        <button class="modal-close" id="status-board-close" style="font-size:1.1rem; padding:2px 6px; color:#94A3B8; cursor:pointer; background:none; border:none; line-height:1;">✕</button>
+      </div>
+      <div id="status-board-body" style="padding:14px 16px; overflow-y:auto; flex:1;"></div>
+      <div style="padding:8px 16px; background:#23272A; border-top:1px solid rgba(255,255,255,0.06); display:flex; justify-content:flex-end;">
+        <button type="button" id="btn-status-board-close-bottom" style="padding:4px 14px; font-size:0.78rem; font-weight:600; background:#3B4252; border:1px solid #4C566A; color:#ECEFF4; border-radius:4px; cursor:pointer;">닫기</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="wiki-history-modal" style="display:none; z-index:1200;">
     <div class="modal-box" style="max-width: 840px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; background: #1E1F22; border: 1px solid #33363D; border-radius: 12px; box-shadow: 0 16px 45px rgba(0,0,0,0.85);">
       
@@ -1200,22 +1220,22 @@
     </div>
   </div>
 
-  <script src="js/00-config.js?v=v1.3.88"></script>
-  <script src="js/10-search-utils.js?v=v1.3.88"></script>
-  <script src="js/20-mode.js?v=v1.3.88"></script>
-  <script src="js/legacy/default-project.js?v=v1.3.88"></script>
-  <script src="js/30-state-conditions.js?v=v1.3.88"></script>
-  <script src="js/40-render-tree.js?v=v1.3.88"></script>
-  <script src="js/50-node-sidebar.js?v=v1.3.88"></script>
-  <script src="js/60-condition-clipboard.js?v=v1.3.88"></script>
-  <script src="js/70-digimon-crud.js?v=v1.3.88"></script>
-  <script src="js/80-export.js?v=v1.3.88"></script>
-  <script src="js/90-zoom-mobile.js?v=v1.3.88"></script>
-  <script src="js/95-training-calc.js?v=v1.3.88"></script>
-  <script src="js/96-mode-save-deploy.js?v=v1.3.88"></script>
-  <script src="js/100-wiki-report.js?v=v1.3.88"></script>
-  <script src="js/110-planner.js?v=v1.3.88"></script>
-  <script src="js/120-planner-canvas.js?v=v1.3.88"></script>
+  <script src="js/00-config.js?v=v1.3.89"></script>
+  <script src="js/10-search-utils.js?v=v1.3.89"></script>
+  <script src="js/20-mode.js?v=v1.3.89"></script>
+  <script src="js/30-state-conditions.js?v=v1.3.89"></script>
+  <script src="js/40-render-tree.js?v=v1.3.89"></script>
+  <script src="js/50-node-sidebar.js?v=v1.3.89"></script>
+  <script src="js/60-condition-clipboard.js?v=v1.3.89"></script>
+  <script src="js/70-digimon-crud.js?v=v1.3.89"></script>
+  <script src="js/80-export.js?v=v1.3.89"></script>
+  <script src="js/90-zoom-mobile.js?v=v1.3.89"></script>
+  <script src="js/95-training-calc.js?v=v1.3.89"></script>
+  <script src="js/96-mode-save-deploy.js?v=v1.3.89"></script>
+  <script src="js/100-wiki-report.js?v=v1.3.89"></script>
+  <script src="js/105-status-board.js?v=v1.3.89"></script>
+  <script src="js/110-planner.js?v=v1.3.89"></script>
+  <script src="js/120-planner-canvas.js?v=v1.3.89"></script>
 
   <div id="global-toast" class="toast-msg">최신 데이터가 내장된 배포용 'index.html' 파일이 다운로드되었습니다!
   (폴더의 index.html에 덮어쓰거나 그대로 웹에 업로드하시면 됩니다)</div>

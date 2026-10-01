@@ -1575,7 +1575,7 @@
         padding: 4px 6px !important;
       }
       #btn-add-dim, #btn-rename-dim, #btn-delete-dim, #btn-dim-up, #btn-dim-down,
-      #btn-open-wiki-history, #btn-open-evolution-planner, #btn-open-training-calc {
+      #btn-open-wiki-history, #btn-open-evolution-planner, #btn-open-training-calc, #btn-open-status-board {
         display: none !important;
       }
 
@@ -1590,6 +1590,9 @@
         display: inline-flex !important;
       }
       #btn-mobile-training-calc {
+        display: inline-flex !important;
+      }
+      #btn-mobile-status-board {
         display: inline-flex !important;
       }
 
@@ -2392,3 +2395,38 @@
     background: rgba(167, 139, 250, 0.12);
     border-color: rgba(167, 139, 250, 0.28);
   }
+
+/* ===== 조건 공개 현황판 (js/105-status-board.js) ===== */
+.status-summary { background:#2B2D31; border:1px solid #3F4147; border-radius:8px; padding:12px; margin-bottom:12px; }
+.status-summary-head { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; font-size:0.85rem; color:#E2E8F0; margin-bottom:8px; }
+.status-summary-head strong { color:#57F287; font-size:1rem; }
+.status-legend { display:flex; gap:10px; flex-wrap:wrap; font-size:0.74rem; color:#94A3B8; }
+.status-legend .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:4px; vertical-align:middle; }
+.dot.known, .status-bar-known { background:#23A55A; }
+.dot.unknown, .status-bar-unknown { background:#4E5058; }
+.status-hint { margin-top:8px; font-size:0.74rem; color:#94A3B8; }
+.status-bar { display:flex; height:8px; border-radius:4px; overflow:hidden; background:#1E1F22; }
+.status-bar span { display:block; height:100%; }
+.status-dim-list { display:flex; flex-direction:column; gap:6px; }
+.status-dim-row { background:#2B2D31; border:1px solid #3F4147; border-radius:8px; padding:8px 10px 10px; }
+.status-dim-row.open { border-color:#14B8A6; }
+.status-dim-head { width:100%; display:flex; justify-content:space-between; align-items:center; gap:8px; background:none; border:none; padding:0 0 6px; color:#E2E8F0; font-size:0.82rem; cursor:pointer; text-align:left; }
+.status-dim-name { font-weight:700; }
+.status-dim-count { font-size:0.75rem; color:#94A3B8; white-space:nowrap; }
+.status-dim-count strong { color:#E2E8F0; }
+.status-missing-list { display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+.status-missing-item { background:#1E1F22; border-radius:6px; padding:6px 8px; }
+.status-missing-head { display:flex; align-items:center; gap:8px; }
+.status-missing-item img, .status-route-item img { width:32px; height:32px; object-fit:contain; image-rendering:pixelated; flex-shrink:0; }
+.status-missing-info { flex:1; min-width:0; display:flex; flex-direction:column; font-size:0.8rem; color:#E2E8F0; }
+.status-missing-info span { font-size:0.7rem; color:#94A3B8; }
+.status-missing-info span strong { color:#F0B232; }
+.status-route-list { display:flex; flex-direction:column; gap:3px; margin:6px 0 0 16px; padding-left:10px; border-left:2px solid #3F4147; }
+.status-route-item { display:flex; align-items:center; gap:6px; }
+.status-route-item img { width:24px; height:24px; }
+.status-route-name { flex:1; min-width:0; font-size:0.75rem; color:#CBD5E1; }
+.status-route-name b { color:#64748B; font-weight:400; }
+.status-missing-item button { padding:3px 8px; font-size:0.72rem; border-radius:4px; cursor:pointer; white-space:nowrap; }
+.status-btn-goto { background:#2B2D31; border:1px solid #4E5058; color:#E2E8F0; }
+.status-btn-report { background:#0284C7; border:1px solid #0284C7; color:#FFF; font-weight:700; }
+.status-done { font-size:0.8rem; color:#57F287; padding:6px 2px; }
