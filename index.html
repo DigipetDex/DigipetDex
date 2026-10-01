@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="digimon_db.js?v=v1.3.79"></script>
-  <script src="project_data.js?v=v1.3.79"></script>
+  <script src="digimon_db.js?v=v1.3.81"></script>
+  <script src="project_data.js?v=v1.3.81"></script>
   <script src="xlsx.full.min.js"></script>
   <style>
     :root {
@@ -2409,7 +2409,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.79</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.81</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -3577,7 +3577,7 @@
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.79 (10.01 20:28)";
+    const APP_VERSION = "v1.3.81 (10.01 20:40)";
 
     // -------------------------------------------------------------------------
     // 영문-한글 디지몬 도감 매핑 및 바이링구얼(한/영) 검색 유틸리티
@@ -8115,23 +8115,26 @@
         return;
       }
 
+      // 유년기/성장기는 진화 시간(1시간)만 있으면 조건 공개로 처리
+      if (["유년기 I", "유년기 II", "성장기"].includes(digi.stage)) {
+        digi.unknownTime = false;
+        digi.partialUnknown = false;
+        return;
+      }
+
       const incoming = project.evolutions ? project.evolutions.filter(e => e.to === digi.id) : [];
-      if (incoming.length <= 1) {
-        if (incoming.length === 1) {
-          const evo = incoming[0];
-          if (isEvoRevealed(evo, digi.stage)) {
-            digi.unknownTime = false;
-            digi.partialUnknown = false;
-          } else if (digi.unknownTime) {
-            digi.partialUnknown = false;
-          }
-        } else {
-          const hasReq = isEvoRevealed(digi.req, digi.stage);
-          if (hasReq) {
-            digi.unknownTime = false;
-            digi.partialUnknown = false;
-          }
-        }
+      if (incoming.length === 0) {
+        const hasReq = isEvoRevealed(digi.req, digi.stage);
+        digi.unknownTime = !hasReq;
+        digi.partialUnknown = false;
+        return;
+      }
+
+      if (incoming.length === 1) {
+        const evo = incoming[0];
+        const isRev = isEvoRevealed(evo, digi.stage);
+        digi.unknownTime = !isRev;
+        digi.partialUnknown = false;
         return;
       }
 
@@ -8704,6 +8707,7 @@
     }
 
     function renderTree() {
+      recalculateAllDigimonConditionStatuses();
       stagesLayout.innerHTML = "";
       updateDimFilterOptions();
 
