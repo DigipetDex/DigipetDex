@@ -29,7 +29,7 @@ def export_excel_by_dim():
     dims_list = data.get("dims", [])
     
     attr_map = {"vaccine": "백신", "data": "데이터", "virus": "바이러스", "free": "프리", "none": "-"}
-    stage_order = {"디지타마": 0, "유년기1": 1, "유년기2": 2, "성장기": 3, "성숙기": 4, "완전체": 5, "궁극체": 6, "초궁극체": 7}
+    stage_order = {"디지타마": 0, "유년기1": 1, "유년기2": 2, "성장기": 3, "성숙기": 4, "완전체": 5, "궁극체": 6, "궁극체2": 7, "초궁극체": 8}
 
     # DiM별로 진화 데이터 그룹화
     dim_data = defaultdict(list)

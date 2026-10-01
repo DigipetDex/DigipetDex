@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="digimon_db.js?v=v1.3.68"></script>
-  <script src="project_data.js?v=v1.3.68"></script>
+  <script src="digimon_db.js?v=v1.3.76"></script>
+  <script src="project_data.js?v=v1.3.76"></script>
   <script src="xlsx.full.min.js"></script>
   <style>
     :root {
@@ -2409,7 +2409,7 @@
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.68</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.76</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -2545,6 +2545,7 @@
               <option value="성숙기">성숙기</option>
               <option value="완전체">완전체</option>
               <option value="궁극체">궁극체</option>
+              <option value="궁극체2">궁극체2</option>
               <option value="초궁극체">초궁극체</option>
               <option value="초궁극체II">초궁극체II</option>
               <option value="아머체">아머체</option>
@@ -2926,7 +2927,8 @@
       <p id="custom-prompt-desc" style="font-size:0.85rem; color:var(--text-sub); margin-bottom:12px;">
         새 디지몬의 이름을 입력하세요:
       </p>
-      <input type="text" id="custom-prompt-input" class="form-control" style="width:100%; padding:10px 12px; font-size:0.95rem; margin-bottom:8px;" placeholder="예: 아구몬" autocomplete="off">
+      <input type="text" id="custom-prompt-input" class="form-control" style="width:100%; padding:10px 12px; font-size:0.95rem; margin-bottom:8px;" placeholder="예: 아구몬, Agumon" autocomplete="off">
+      <div id="custom-prompt-suggestions" style="display:none; max-height:220px; overflow-y:auto; margin-bottom:8px; border-radius:6px; background:#1E1F22; border:1px solid #3F4248; box-shadow:0 6px 16px rgba(0,0,0,0.5);"></div>
       <div id="custom-prompt-info" style="min-height: 24px; font-size: 0.8rem; margin-bottom: 12px;"></div>
       <div style="display:flex; justify-content:flex-end; gap:8px;">
         <button id="custom-prompt-cancel" style="background:#4E5058; color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">취소</button>
@@ -3514,6 +3516,7 @@
               <button type="button" class="planner-chip" data-stage="성숙기">성숙기</button>
               <button type="button" class="planner-chip" data-stage="완전체">완전체</button>
               <button type="button" class="planner-chip" data-stage="궁극체">궁극체</button>
+              <button type="button" class="planner-chip" data-stage="궁극체2">궁극체2</button>
               <button type="button" class="planner-chip" data-stage="초궁극체">초궁극체</button>
             </div>
           </div>
@@ -3574,15 +3577,230 @@
 
   <script>
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.68 (09.30 23:31)";
+    const APP_VERSION = "v1.3.76 (10.01 15:31)";
 
-    // 브라우저 및 Electron 앱 공용 비동기 입력 대화상자 (도감 검색 및 연동 미리보기 지원)
+    // -------------------------------------------------------------------------
+    // 영문-한글 디지몬 도감 매핑 및 바이링구얼(한/영) 검색 유틸리티
+    // -------------------------------------------------------------------------
+    const COMMON_ENGLISH_DIGI_ALIASES = {
+      "omnimon": "오메가몬",
+      "gallantmon": "듀크몬",
+      "gatomon": "가트몬",
+      "veemon": "브이몬",
+      "vmon": "브이몬",
+      "daemon": "마왕몬",
+      "creepymon": "마왕몬",
+      "beelzemon": "베르제브몬",
+      "malomyotismon": "베리얼묘티스몬",
+      "myotismon": "묘티스몬",
+      "venommyotismon": "베놈묘티스몬",
+      "megagargomon": "세인트가르고몬",
+      "rapidmon": "래피드몬",
+      "terriermon": "테리어몬",
+      "lopmon": "로프몬",
+      "cherubimon": "케루비몬",
+      "kerpymon": "케루비몬",
+      "renamon": "레나몬",
+      "kyubimon": "구미호몬",
+      "taomon": "도사몬",
+      "sakuyamon": "샤크라몬",
+      "kuzuhamon": "쿠즈하몬",
+      "guilmon": "길몬",
+      "growlmon": "그라우몬",
+      "wargrowlmon": "메가로그라우몬",
+      "megidramon": "메기드라몬",
+      "chaosgallantmon": "카오스듀크몬",
+      "patamon": "파타몬",
+      "angemon": "엔젤몬",
+      "magnaangemon": "홀리엔젤몬",
+      "seraphimon": "세라피몬",
+      "gargomon": "가르고몬",
+      "imperialdramon": "황제드라몬"
+    };
+
+    function formatDigiEnglishName(dir) {
+      if (!dir) return "";
+      return dir
+        .replace(/_/g, " ")
+        .split(" ")
+        .map(word => word.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join("-"))
+        .join(" ");
+    }
+
+    // 공식 한국 디지몬 도감(1,310종)에서 한글 및 영문명으로 디지몬 정보 조회
+    function lookupOfficialDigimon(name) {
+      if (!name || typeof OFFICIAL_DIGIMON_DB === "undefined") return null;
+      let clean = String(name).trim();
+      if (!clean) return null;
+
+      // "아구몬 (Agumon)" 같은 괄호 병기 형태 분리
+      if (clean.includes("(") && clean.includes(")")) {
+        const parts = clean.split("(");
+        const p1 = parts[0].trim();
+        const p2 = parts[1].replace(")", "").trim();
+        const r1 = lookupOfficialDigimon(p1);
+        if (r1) return r1;
+        const r2 = lookupOfficialDigimon(p2);
+        if (r2) return r2;
+      }
+
+      // 1. 한국어 정확 일치
+      if (OFFICIAL_DIGIMON_DB[clean]) {
+        const entry = OFFICIAL_DIGIMON_DB[clean];
+        return { name: clean, englishName: formatDigiEnglishName(entry.dir), ...entry };
+      }
+
+      const normalized = clean.toLowerCase().replace(/[\s\-_]/g, "");
+
+      // 2. 한국어 정규화 일치
+      for (const [k, v] of Object.entries(OFFICIAL_DIGIMON_DB)) {
+        if (k.toLowerCase().replace(/[\s\-_]/g, "") === normalized) {
+          return { name: k, englishName: formatDigiEnglishName(v.dir), ...v };
+        }
+      }
+
+      // 3. 영문 별칭 매핑 일치 (예: omnimon -> 오메가몬, veemon -> 브이몬)
+      if (COMMON_ENGLISH_DIGI_ALIASES[normalized]) {
+        const ko = COMMON_ENGLISH_DIGI_ALIASES[normalized];
+        if (OFFICIAL_DIGIMON_DB[ko]) {
+          const entry = OFFICIAL_DIGIMON_DB[ko];
+          return { name: ko, englishName: formatDigiEnglishName(entry.dir), ...entry };
+        }
+      }
+
+      // 4. 영문 dir 정확 일치 또는 정규화 일치 (예: agumon -> 아구몬, wargreymon -> 워그레이몬)
+      for (const [k, v] of Object.entries(OFFICIAL_DIGIMON_DB)) {
+        const dir = String(v.dir || "").toLowerCase();
+        if (dir === clean.toLowerCase() || dir.replace(/[\s\-_]/g, "") === normalized) {
+          return { name: k, englishName: formatDigiEnglishName(v.dir), ...v };
+        }
+      }
+
+      // 5. 영문 dir 접두사 일치
+      for (const [k, v] of Object.entries(OFFICIAL_DIGIMON_DB)) {
+        const dirNorm = String(v.dir || "").toLowerCase().replace(/[\s\-_]/g, "");
+        if (dirNorm.startsWith(normalized)) {
+          return { name: k, englishName: formatDigiEnglishName(v.dir), ...v };
+        }
+      }
+
+      return null;
+    }
+
+    // 프로젝트 내 동일한 이름을 가진 다른 디지몬 찾기 (한/영 호환, 이미지가 등록된 객체 우선)
+    function findExistingDigimonByName(name, excludeId = null) {
+      if (!name || typeof name !== "string") return null;
+      const clean = name.trim().toLowerCase();
+      if (!clean) return null;
+
+      // 영문 입력 시 공식 도감의 한글명으로 매핑 시도
+      const official = typeof lookupOfficialDigimon === "function" ? lookupOfficialDigimon(clean) : null;
+      const targetKo = official ? official.name.trim().toLowerCase() : clean;
+
+      let fallback = null;
+      if (project && project.digimons) {
+        for (const [id, d] of Object.entries(project.digimons)) {
+          if (excludeId && id === excludeId) continue;
+          const dNameLower = (d.name || "").trim().toLowerCase();
+          if (dNameLower === clean || dNameLower === targetKo) {
+            if (d.img && !d.img.includes("sprites/Agumon.gif")) {
+              return d;
+            }
+            if (!fallback) fallback = d;
+          }
+        }
+      }
+      return fallback;
+    }
+
+    // 한글 및 영문 입력에 대해 실시간으로 일치하는 디지몬 목록 검색 (최대 maxCount개)
+    function searchDigimonBilingual(query, maxCount = 15) {
+      if (!query || typeof query !== "string") return [];
+      const q = query.trim().toLowerCase();
+      if (!q) return [];
+      const qNorm = q.replace(/[\s\-_]/g, "");
+
+      const results = [];
+      const seenNames = new Set();
+
+      // 1. 기존 프로젝트 내 디지몬 우선 매칭
+      if (project && project.digimons) {
+        for (const d of Object.values(project.digimons)) {
+          if (!d.name || seenNames.has(d.name)) continue;
+          if (d.stage === "디지타마" || d.name.includes("알")) continue;
+
+          const koNorm = d.name.toLowerCase().replace(/[\s\-_]/g, "");
+          const official = typeof lookupOfficialDigimon === "function" ? lookupOfficialDigimon(d.name) : null;
+          const engName = official?.englishName || formatDigiEnglishName(official?.dir || "");
+          const engNorm = engName.toLowerCase().replace(/[\s\-_]/g, "");
+          const imgNorm = (d.img || "").toLowerCase().replace(/[\s\-_]/g, "");
+
+          let score = 0;
+          if (koNorm === qNorm || engNorm === qNorm) score = 100;
+          else if (koNorm.startsWith(qNorm) || engNorm.startsWith(qNorm)) score = 80;
+          else if (koNorm.includes(qNorm) || engNorm.includes(qNorm) || imgNorm.includes(qNorm)) score = 50;
+
+          if (score > 0) {
+            seenNames.add(d.name);
+            results.push({
+              name: d.name,
+              englishName: engName,
+              stage: d.stage,
+              attr: d.attr,
+              source: "project",
+              score: score + 5
+            });
+          }
+        }
+      }
+
+      // 2. 공식 도감 DB (1,310종) 매칭
+      if (typeof OFFICIAL_DIGIMON_DB !== "undefined") {
+        for (const [k, v] of Object.entries(OFFICIAL_DIGIMON_DB)) {
+          if (seenNames.has(k)) continue;
+          const koNorm = k.toLowerCase().replace(/[\s\-_]/g, "");
+          const engName = formatDigiEnglishName(v.dir || "");
+          const engNorm = engName.toLowerCase().replace(/[\s\-_]/g, "");
+
+          let score = 0;
+          if (koNorm === qNorm || engNorm === qNorm) score = 100;
+          else if (koNorm.startsWith(qNorm) || engNorm.startsWith(qNorm)) score = 80;
+          else if (koNorm.includes(qNorm) || engNorm.includes(qNorm)) score = 50;
+          else {
+            for (const [alias, targetKo] of Object.entries(COMMON_ENGLISH_DIGI_ALIASES)) {
+              if (targetKo === k && (alias.startsWith(qNorm) || alias.includes(qNorm))) {
+                score = 65;
+                break;
+              }
+            }
+          }
+
+          if (score > 0) {
+            seenNames.add(k);
+            results.push({
+              name: k,
+              englishName: engName,
+              stage: v.stage,
+              attr: v.attr,
+              source: "official",
+              score: score
+            });
+          }
+        }
+      }
+
+      results.sort((a, b) => b.score - a.score || a.name.length - b.name.length);
+      return results.slice(0, maxCount);
+    }
+
+    // 브라우저 및 Electron 앱 공용 비동기 입력 대화상자 (영문/한글 실시간 검색 목록 지원)
     function showCustomPrompt(title, desc, defaultValue = "", placeholder = "", datalistId = "", disableDigiCheck = false) {
       return new Promise((resolve) => {
         const modal = document.getElementById("custom-prompt-modal");
         const titleEl = document.getElementById("custom-prompt-title");
         const descEl = document.getElementById("custom-prompt-desc");
         const inputEl = document.getElementById("custom-prompt-input");
+        const suggBox = document.getElementById("custom-prompt-suggestions");
         const infoEl = document.getElementById("custom-prompt-info");
         const btnConfirm = document.getElementById("custom-prompt-confirm");
         const btnCancel = document.getElementById("custom-prompt-cancel");
@@ -3604,6 +3822,104 @@
           inputEl.removeAttribute("list");
         }
 
+        let activeSuggIndex = -1;
+        let currentSuggestions = [];
+
+        function renderSuggestions() {
+          if (!suggBox || disableDigiCheck) return;
+          const query = inputEl.value.trim();
+          if (!query) {
+            suggBox.style.display = "none";
+            suggBox.innerHTML = "";
+            currentSuggestions = [];
+            activeSuggIndex = -1;
+            return;
+          }
+
+          currentSuggestions = searchDigimonBilingual(query, 12);
+          if (currentSuggestions.length === 0) {
+            suggBox.style.display = "none";
+            suggBox.innerHTML = "";
+            activeSuggIndex = -1;
+            return;
+          }
+
+          activeSuggIndex = -1;
+          const attrColorMap = {
+            vaccine: "#38BDF8",
+            data: "#34D399",
+            virus: "#F87171",
+            free: "#FBBF24",
+            none: "#94A3B8"
+          };
+          const attrTextMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
+
+          let html = "";
+          currentSuggestions.forEach((item, idx) => {
+            const attrColor = attrColorMap[item.attr] || "#94A3B8";
+            const attrText = attrTextMap[item.attr] || item.attr || "-";
+            const stageText = item.stage || "성숙기";
+            const engText = item.englishName ? `(${escapeHtml(item.englishName)})` : "";
+            const isOfficial = item.source === "official";
+
+            html += `
+              <div class="custom-prompt-sugg-item" data-idx="${idx}" style="padding:8px 12px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.15s ease;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <strong style="color:#FFF; font-size:0.88rem;">${escapeHtml(item.name)}</strong>
+                  ${engText ? `<span style="color:#38BDF8; font-size:0.78rem; font-family:monospace;">${engText}</span>` : ""}
+                </div>
+                <div style="display:flex; align-items:center; gap:6px; font-size:0.75rem;">
+                  <span style="background:rgba(255,255,255,0.08); color:#CBD5E1; padding:2px 6px; border-radius:4px;">${escapeHtml(stageText)}</span>
+                  <span style="color:${attrColor}; font-weight:600;">${escapeHtml(attrText)}</span>
+                  ${!isOfficial ? `<span style="background:rgba(87,242,135,0.15); color:#57F287; font-size:0.7rem; padding:1px 4px; border-radius:3px;">등록됨</span>` : ""}
+                </div>
+              </div>
+            `;
+          });
+
+          suggBox.innerHTML = html;
+          suggBox.style.display = "block";
+
+          suggBox.querySelectorAll(".custom-prompt-sugg-item").forEach(el => {
+            el.addEventListener("mouseenter", () => {
+              const idx = parseInt(el.dataset.idx, 10);
+              highlightSuggestion(idx);
+            });
+            el.addEventListener("click", () => {
+              const idx = parseInt(el.dataset.idx, 10);
+              selectSuggestion(idx);
+            });
+          });
+        }
+
+        function highlightSuggestion(idx) {
+          const items = suggBox ? suggBox.querySelectorAll(".custom-prompt-sugg-item") : [];
+          items.forEach((item, i) => {
+            if (i === idx) {
+              item.style.background = "rgba(88,101,242,0.3)";
+              item.scrollIntoView({ block: "nearest" });
+            } else {
+              item.style.background = "transparent";
+            }
+          });
+          activeSuggIndex = idx;
+        }
+
+        function selectSuggestion(idx) {
+          if (idx >= 0 && idx < currentSuggestions.length) {
+            const chosen = currentSuggestions[idx];
+            inputEl.value = chosen.name;
+            if (suggBox) {
+              suggBox.style.display = "none";
+              suggBox.innerHTML = "";
+            }
+            currentSuggestions = [];
+            activeSuggIndex = -1;
+            updateLiveInfo();
+            inputEl.focus();
+          }
+        }
+
         function updateLiveInfo() {
           if (!infoEl) return;
           if (disableDigiCheck) {
@@ -3616,23 +3932,31 @@
             return;
           }
 
-          // 1) 기존 프로젝트 내 동일 디지몬 확인
-          const existing = typeof findExistingDigimonByName === "function" ? findExistingDigimonByName(val) : null;
+          // 1) 공식 도감 확인 (영문/한글 모두 지원)
+          const official = lookupOfficialDigimon(val);
+          const targetKoName = official ? official.name : val;
+
+          // 2) 기존 프로젝트 내 동일 디지몬 확인
+          const existing = findExistingDigimonByName(targetKoName);
           if (existing) {
             infoEl.innerHTML = `<span style="color:#57F287; font-weight:600;">✔ 기존 등록 디지몬:</span> [${existing.name}] (${existing.stage} / ${existing.attr || '-'}) 정보 자동 연동`;
             return;
           }
 
-          // 2) 공식 도감 확인
-          const official = typeof lookupOfficialDigimon === "function" ? lookupOfficialDigimon(val) : null;
           if (official) {
             const attrMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
             const attrKo = attrMap[official.attr] || official.attr;
-            infoEl.innerHTML = `<span style="color:#38BDF8; font-weight:600;">📖 공식 도감 일치:</span> [${official.name}] (${official.stage} / ${attrKo}) 정보 자동 적용`;
+            const engNote = official.englishName ? ` <span style="color:#38BDF8; font-size:0.75rem;">(${escapeHtml(official.englishName)})</span>` : "";
+            infoEl.innerHTML = `<span style="color:#38BDF8; font-weight:600;">📖 공식 도감 일치:</span> [${official.name}]${engNote} (${official.stage} / ${attrKo}) 정보 자동 적용`;
             return;
           }
 
           infoEl.innerHTML = `<span style="color:#94A3B8;">✨ 새 고유 디지몬으로 생성됩니다.</span>`;
+        }
+
+        function onInputChange() {
+          updateLiveInfo();
+          renderSuggestions();
         }
 
         if (disableDigiCheck && infoEl) {
@@ -3655,12 +3979,23 @@
           btnClose.removeEventListener("click", onCancel);
           modal.removeEventListener("click", onBackdrop);
           inputEl.removeEventListener("keydown", onKeyDown);
-          inputEl.removeEventListener("input", updateLiveInfo);
+          inputEl.removeEventListener("input", onInputChange);
+          if (suggBox) {
+            suggBox.style.display = "none";
+            suggBox.innerHTML = "";
+          }
           if (infoEl) infoEl.innerHTML = "";
         }
 
         function onConfirm() {
-          const val = inputEl.value;
+          let val = inputEl.value.trim();
+          // 영문명을 입력하고 엔터를 친 경우 공식 도감의 한글 이름으로 자동 변환
+          if (!disableDigiCheck && val) {
+            const official = lookupOfficialDigimon(val);
+            if (official && official.name) {
+              val = official.name;
+            }
+          }
           cleanup();
           resolve(val);
         }
@@ -3675,12 +4010,32 @@
         }
 
         function onKeyDown(e) {
-          if (e.key === "Enter") {
+          if (e.key === "ArrowDown") {
+            if (currentSuggestions.length > 0) {
+              e.preventDefault();
+              activeSuggIndex = (activeSuggIndex + 1) % currentSuggestions.length;
+              highlightSuggestion(activeSuggIndex);
+            }
+          } else if (e.key === "ArrowUp") {
+            if (currentSuggestions.length > 0) {
+              e.preventDefault();
+              activeSuggIndex = (activeSuggIndex - 1 + currentSuggestions.length) % currentSuggestions.length;
+              highlightSuggestion(activeSuggIndex);
+            }
+          } else if (e.key === "Enter") {
             e.preventDefault();
-            onConfirm();
+            if (activeSuggIndex >= 0 && activeSuggIndex < currentSuggestions.length) {
+              selectSuggestion(activeSuggIndex);
+            } else {
+              onConfirm();
+            }
           } else if (e.key === "Escape") {
             e.preventDefault();
-            onCancel();
+            if (suggBox && suggBox.style.display !== "none") {
+              suggBox.style.display = "none";
+            } else {
+              onCancel();
+            }
           }
         }
 
@@ -3690,7 +4045,7 @@
         btnClose.addEventListener("click", onCancel);
         inputEl.addEventListener("keydown", onKeyDown);
         if (!disableDigiCheck) {
-          inputEl.addEventListener("input", updateLiveInfo);
+          inputEl.addEventListener("input", onInputChange);
         }
       });
     }
@@ -7279,7 +7634,7 @@
         defaultTime = "24시간";
       } else if (stage === "완전체") {
         defaultTime = "36시간";
-      } else if (stage === "궁극체") {
+      } else if (stage === "궁극체" || stage === "궁극체2") {
         defaultTime = "48시간";
       } else if (["디지타마", "초궁극체", "초궁극체II"].includes(stage)) {
         defaultTime = "-";
@@ -7357,7 +7712,7 @@
           if (!digi.req.time || digi.req.time === "24시간" || digi.req.time === "12시간" || digi.req.time === "-") {
             digi.req.time = "36시간";
           }
-        } else if (digi.stage === "궁극체") {
+        } else if (digi.stage === "궁극체" || digi.stage === "궁극체2") {
           if (!digi.req.time || digi.req.time === "24시간" || digi.req.time === "36시간" || digi.req.time === "-") {
             digi.req.time = "48시간";
           }
@@ -7451,41 +7806,6 @@
       return null;
     }
 
-    // 프로젝트 내 동일한 이름을 가진 다른 디지몬 찾기 (이미지가 등록된 객체 우선)
-    function findExistingDigimonByName(name, excludeId = null) {
-      if (!name || typeof name !== "string") return null;
-      const clean = name.trim().toLowerCase();
-      if (!clean) return null;
-      let fallback = null;
-      for (const [id, d] of Object.entries(project.digimons)) {
-        if (excludeId && id === excludeId) continue;
-        if (d.name && d.name.trim().toLowerCase() === clean) {
-          if (d.img && !d.img.includes("sprites/Agumon.gif")) {
-            return d;
-          }
-          if (!fallback) fallback = d;
-        }
-      }
-      return fallback;
-    }
-
-    // 공식 한국 디지몬 도감(1,310종)에서 디지몬 정보 조회
-    function lookupOfficialDigimon(name) {
-      if (!name || typeof OFFICIAL_DIGIMON_DB === "undefined") return null;
-      const clean = name.trim();
-      if (!clean) return null;
-      if (OFFICIAL_DIGIMON_DB[clean]) {
-        return { name: clean, ...OFFICIAL_DIGIMON_DB[clean] };
-      }
-      // 공백 무시 및 대소문자 무시 검색
-      const normalized = clean.toLowerCase().replace(/\s+/g, "");
-      for (const [k, v] of Object.entries(OFFICIAL_DIGIMON_DB)) {
-        if (k.toLowerCase().replace(/\s+/g, "") === normalized) {
-          return { name: k, ...v };
-        }
-      }
-      return null;
-    }
 
     // 동일 이름을 가진 디지몬 간 외형 정보(이미지, 속성, 세대) 연동
     // ※ 소속 DiM(페이지), 진화조건(req), 진화선은 각 페이지별로 절대 건드리지 않음!
@@ -7634,7 +7954,7 @@
       }
     }
 
-    // 공식 도감 datalist 초기화 (1,310종)
+    // 공식 도감 datalist 초기화 (1,310종 - 한글 및 영문 병기)
     function initOfficialDatalist() {
       if (typeof OFFICIAL_DIGIMON_DB === "undefined") return;
       const dl = document.getElementById("official-digimon-datalist");
@@ -7648,7 +7968,9 @@
         const opt = document.createElement("option");
         opt.value = name;
         const info = OFFICIAL_DIGIMON_DB[name];
-        opt.label = `${attrMap[info.attr] || info.attr} | ${info.stage}`;
+        const engName = typeof formatDigiEnglishName === "function" ? formatDigiEnglishName(info.dir || "") : (info.dir || "");
+        opt.label = `${engName ? engName + " | " : ""}${attrMap[info.attr] || info.attr} | ${info.stage}`;
+        opt.textContent = `${name} ${engName} ${info.dir || ""}`;
         frag.appendChild(opt);
       });
       dl.appendChild(frag);
@@ -7687,7 +8009,7 @@
       }
     }
 
-    const stageOrder = ["디지타마", "유년기 I", "유년기 II", "성장기", "성숙기", "완전체", "궁극체", "초궁극체", "초궁극체II", "아머체"];
+    const stageOrder = ["디지타마", "유년기 I", "유년기 II", "성장기", "성숙기", "완전체", "궁극체", "궁극체2", "초궁극체", "초궁극체II", "아머체"];
     const attrColors = { vaccine: "#E74C3C", data: "#3498DB", virus: "#9B59B6", free: "#F1C40F", none: "#8E9297" };
 
     const LINE_COLOR_PRESETS = [
@@ -8435,7 +8757,7 @@
 
           digis.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-          if (digis.length === 0 && !["디지타마", "유년기 I", "유년기 II", "성장기", "성숙기", "완전체", "궁극체", "초궁극체"].includes(stageName)) return;
+          if (digis.length === 0 && !["디지타마", "유년기 I", "유년기 II", "성장기", "성숙기", "완전체", "궁극체"].includes(stageName)) return;
 
           const col = createStageColumn(stageName, digis, filterDim);
           rowEl.appendChild(col);
@@ -10093,13 +10415,16 @@
       let currentDim = filterDim || selectedDimContext || (project.dims && project.dims[0]) || "아구몬 EX";
       if (currentDim && currentDim.includes(',')) currentDim = currentDim.split(',')[0].trim();
 
-      // 1순위: 기존 등록된 동일 이름 디지몬의 이미지/속성/세대 연동 (유저가 이미지를 다시 올릴 필요 없도록!)
-      const existing = findExistingDigimonByName(trimmedName);
+      // 1순위: 영문명 입력 시 공식 도감의 한글명으로 자동 변환
       const official = lookupOfficialDigimon(trimmedName);
+      const finalName = official ? official.name : trimmedName;
+
+      // 2순위: 기존 등록된 동일 이름 디지몬의 이미지/속성/세대 연동 (유저가 이미지를 다시 올릴 필요 없도록!)
+      const existing = findExistingDigimonByName(finalName);
 
       const initialStage = existing?.stage || ((official && official.stage && official.stage !== "불명") ? official.stage : "성숙기");
       const initialAttr = existing?.attr || ((official && official.attr && official.attr !== "none") ? official.attr : "vaccine");
-      const initialImg = existing?.img || "sprites/Agumon.gif";
+      const initialImg = existing?.img || (official?.englishName ? `sprites/${official.englishName}.gif` : "sprites/Agumon.gif");
       const initialHp = existing?.baseHp ?? "";
       const initialAp = existing?.baseAp ?? "";
       const initialSpd = existing?.baseSpd ?? "";
@@ -10108,7 +10433,7 @@
       const isEgg = initialStage === "디지타마";
       project.digimons[id] = {
         id: id,
-        name: trimmedName,
+        name: finalName,
         stage: initialStage,
         attr: initialAttr,
         img: initialImg,
@@ -10128,7 +10453,7 @@
       updateDimFilterOptions();
       renderTree();
       updateSidebar();
-      showToast(`'${trimmedName}' 디지몬이 [${currentDim}] 페이지에 추가되었습니다!`, "success");
+      showToast(`'${finalName}' 디지몬이 [${currentDim}] 페이지에 추가되었습니다!`, "success");
     });
 
     document.getElementById("btn-delete-digimon").addEventListener("click", () => {
@@ -10373,7 +10698,7 @@
       }
 
       const wb = XLSX.utils.book_new();
-      const stageOrderMap = { "디지타마": 0, "유년기 I": 1, "유년기 II": 2, "성장기": 3, "성숙기": 4, "완전체": 5, "궁극체": 6, "초궁극체": 7, "초궁극체II": 8, "아머체": 9 };
+      const stageOrderMap = { "디지타마": 0, "유년기 I": 1, "유년기 II": 2, "성장기": 3, "성숙기": 4, "완전체": 5, "궁극체": 6, "궁극체2": 7, "초궁극체": 8, "초궁극체II": 9, "아머체": 10 };
       const attrMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
 
       const activeDims = [];
@@ -11468,6 +11793,12 @@
     }
 
     let currentWikiHistoryCache = [];
+    try {
+      const savedWikiHist = localStorage.getItem("digipet_wiki_history_cache");
+      if (savedWikiHist) currentWikiHistoryCache = JSON.parse(savedWikiHist);
+    } catch (e) {
+      currentWikiHistoryCache = [];
+    }
     let currentWikiHistoryFilter = { to: "", dim: "" };
 
     // Diff 비교 시 빈칸 및 '-'를 동일한 미설정 값으로 정규화하는 헬퍼
@@ -11636,6 +11967,9 @@
       };
 
       currentWikiHistoryCache.unshift(optimisticHistoryItem);
+      try {
+        localStorage.setItem("digipet_wiki_history_cache", JSON.stringify(currentWikiHistoryCache.slice(0, 100)));
+      } catch (e) {}
 
       closeReportModal();
       showToast(`[<strong>${escapeHtml(targetCtx.toName)}</strong>] 정보가 도감에 즉시 반영되었습니다!`);
@@ -11705,12 +12039,11 @@
 
       modal.style.display = "flex";
 
-      // 속도 대폭 개선: 기존 캐시가 있다면 로딩 대기 없이 즉시 화면에 렌더링!
-      if (currentWikiHistoryCache && currentWikiHistoryCache.length > 0) {
-        renderWikiHistoryListUI();
-      }
+      // 속도 극대화: 캐시 데이터를 사용해 즉시 화면 렌더링 (0ms)
+      renderWikiHistoryListUI();
 
-      fetchWikiHistoryFromGas();
+      // 백그라운드에서 최신 역사 비동기 동기화 (화면 깜빡임 없음)
+      fetchWikiHistoryFromGas(true);
     }
 
     function closeWikiHistoryModal() {
@@ -11739,17 +12072,12 @@
 
       // 캐시가 비어있고 silent 모드가 아닐 때만 로딩 문구 표시
       if (!isSilent && (!currentWikiHistoryCache || currentWikiHistoryCache.length === 0)) {
-        listEl.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-sub); font-size:0.85rem;">위키 변경 역사를 불러오는 중...</div>`;
+        listEl.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-sub); font-size:0.85rem;"><span style="display:inline-block; animation: spin 1s linear infinite; margin-right:8px;">⏳</span>위키 변경 역사를 불러오는 중...</div>`;
       }
 
       try {
-        let url = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=get_wiki_history&t=${Date.now()}`;
-        if (currentWikiHistoryFilter.to) {
-          url += `&to=${encodeURIComponent(currentWikiHistoryFilter.to)}`;
-        }
-        if (currentWikiHistoryFilter.dim) {
-          url += `&dim=${encodeURIComponent(currentWikiHistoryFilter.dim)}`;
-        }
+        // limit=60으로 전역 최신 변경 내역만 신속하게 가져옴 (GAS 단일 슬라이스 조회로 0.3초 내 응답)
+        let url = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=get_wiki_history&limit=60&t=${Date.now()}`;
 
         const res = await fetch(url);
         const data = await res.json();
@@ -11787,6 +12115,9 @@
           });
 
           currentWikiHistoryCache = [...pendingLocal, ...data.history];
+          try {
+            localStorage.setItem("digipet_wiki_history_cache", JSON.stringify(currentWikiHistoryCache.slice(0, 100)));
+          } catch (e) {}
           renderWikiHistoryListUI();
         } else {
           throw new Error(data.message || "응답 형식이 올바르지 않습니다.");
@@ -12039,6 +12370,9 @@
 
       // 로컬 캐시 즉시 제거 및 UI 갱신 (0ms 체감)
       currentWikiHistoryCache = currentWikiHistoryCache.filter(h => String(h.revisionId) !== String(revId));
+      try {
+        localStorage.setItem("digipet_wiki_history_cache", JSON.stringify(currentWikiHistoryCache.slice(0, 100)));
+      } catch (e) {}
       renderWikiHistoryListUI();
       showToast(`리비전 [${revId}] 내역이 삭제되었습니다.`);
 
@@ -12069,6 +12403,9 @@
       const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
 
       currentWikiHistoryCache = [];
+      try {
+        localStorage.removeItem("digipet_wiki_history_cache");
+      } catch (e) {}
       renderWikiHistoryListUI();
       showToast("모든 위키 변경 내역이 비워졌습니다.");
 
@@ -12240,6 +12577,9 @@
         comment: `리비전 #${item.revisionId} (${formattedTs}) ${mode === "restore" ? "버전 내용으로 복구" : "편집 직전 상태로 복구"}`
       };
       currentWikiHistoryCache.unshift(revertHistItem);
+      try {
+        localStorage.setItem("digipet_wiki_history_cache", JSON.stringify(currentWikiHistoryCache.slice(0, 100)));
+      } catch (e) {}
       renderWikiHistoryListUI();
 
       // 2. [구글 시트 연동] wiki_revert 전송
@@ -12266,7 +12606,7 @@
             headers: { "Content-Type": "text/plain" },
             body: JSON.stringify(payload)
           });
-          fetchWikiHistoryFromGas();
+          fetchWikiHistoryFromGas(true);
           fetchAndApplyLiveConditions();
         } catch (e) {
           console.warn("구글 시트 롤백 전송 실패:", e);
@@ -13335,7 +13675,8 @@
           const badgeEl = document.getElementById("wiki-history-target-badge");
           if (badgeEl) badgeEl.textContent = "전체 최근 변경 내역";
           filterClearBtn.style.display = "none";
-          fetchWikiHistoryFromGas();
+          renderWikiHistoryListUI();
+          fetchWikiHistoryFromGas(true);
         });
       }
 
@@ -13516,7 +13857,7 @@
           plannerChain = [targetId];
           plannerActiveIndex = 0;
           const digiObj = project.digimons[targetId];
-          if (digiObj && ["완전체", "궁극체", "초궁극체", "초궁극체II"].includes(digiObj.stage)) {
+          if (digiObj && ["완전체", "궁극체", "궁극체2", "초궁극체", "초궁극체II"].includes(digiObj.stage)) {
             plannerBranchDirection = "incoming";
           } else {
             plannerBranchDirection = "outgoing";
@@ -14147,7 +14488,7 @@
       if (!plannerChain || plannerChain.length === 0) {
         plannerChain = [did];
         plannerActiveIndex = 0;
-        if (["완전체", "궁극체", "초궁극체", "초궁극체II"].includes(newDigi.stage)) {
+        if (["완전체", "궁극체", "궁극체2", "초궁극체", "초궁극체II"].includes(newDigi.stage)) {
           plannerBranchDirection = "incoming";
         } else {
           plannerBranchDirection = "outgoing";
@@ -14164,7 +14505,7 @@
       if (plannerChain.length === 1) {
         plannerChain = [did];
         plannerActiveIndex = 0;
-        if (["완전체", "궁극체", "초궁극체", "초궁극체II"].includes(newDigi.stage)) {
+        if (["완전체", "궁극체", "궁극체2", "초궁극체", "초궁극체II"].includes(newDigi.stage)) {
           plannerBranchDirection = "incoming";
         } else {
           plannerBranchDirection = "outgoing";
@@ -14210,7 +14551,7 @@
       // 연관 없는 앞뒤 단계를 모두 제거하고, 선택한 디지몬으로 새 진화 경로 시작
       plannerChain = [did];
       plannerActiveIndex = 0;
-      if (["완전체", "궁극체", "초궁극체", "초궁극체II"].includes(newDigi.stage)) {
+      if (["완전체", "궁극체", "궁극체2", "초궁극체", "초궁극체II"].includes(newDigi.stage)) {
         plannerBranchDirection = "incoming";
       } else {
         plannerBranchDirection = "outgoing";
@@ -14242,12 +14583,19 @@
         const dDims = d.dim ? d.dim.split(",").map(s => s.trim()) : [];
         if (pickerDimFilter !== "ALL" && !dDims.includes(pickerDimFilter)) return;
 
-        // 검색어 필터 (이름, 세대, DiM)
+        // 검색어 필터 (이름, 세대, DiM, 영문명)
         if (query) {
           const matchName = (d.name || "").toLowerCase().includes(query);
           const matchDim = dDims.some(dm => dm.toLowerCase().includes(query));
           const matchStage = (d.stage || "").toLowerCase().includes(query);
-          if (!matchName && !matchDim && !matchStage) return;
+          const official = typeof lookupOfficialDigimon === "function" ? lookupOfficialDigimon(d.name) : null;
+          const qClean = query.replace(/[\s\-_]/g, '');
+          const matchEng = official && (
+            (official.englishName && official.englishName.toLowerCase().replace(/[\s\-_]/g, '').includes(qClean)) ||
+            (official.dir && String(official.dir).toLowerCase().replace(/[\s\-_]/g, '').includes(qClean))
+          );
+          const matchImg = (d.img || "").toLowerCase().includes(query);
+          if (!matchName && !matchDim && !matchStage && !matchEng && !matchImg) return;
         }
 
         if (!nameGroupMap.has(d.name)) {
@@ -14264,7 +14612,7 @@
       const list = Array.from(nameGroupMap.values());
       const stageOrderMap = {
         "유년기 I": 1, "유년기 II": 2, "성장기": 3, "성숙기": 4,
-        "완전체": 5, "궁극체": 6, "초궁극체": 7, "초궁극체II": 8
+        "완전체": 5, "궁극체": 6, "궁극체2": 7, "초궁극체": 8, "초궁극체II": 9
       };
 
       const prevId = (pickerTargetSlot > 0 && plannerChain && plannerChain[pickerTargetSlot - 1]) ? plannerChain[pickerTargetSlot - 1] : null;
@@ -14579,19 +14927,19 @@
         items.push({ label: "아이템", val: req.item, color: "#FCD34D" });
       }
       if (req.time && req.time !== "-") {
-        items.push({ label: "시간", val: req.time, color: "#FBBF24" });
+        items.push({ label: "시간", val: req.time, color: "#FBBF24", iconKey: "time", text: req.time });
       }
       if (req.vital !== "" && req.vital !== undefined && req.vital !== null && req.vital !== "-") {
-        items.push({ label: "바이탈", val: Number(req.vital).toLocaleString() + "V", color: "#34D399" });
+        items.push({ label: "바이탈", val: Number(req.vital).toLocaleString() + "V", color: "#34D399", iconKey: "vital", text: Number(req.vital).toLocaleString() + "V" });
       }
       if (req.pp !== "" && req.pp !== undefined && req.pp !== null && req.pp !== "-") {
-        items.push({ label: "PP", val: "PP " + req.pp, color: "#38BDF8" });
+        items.push({ label: "PP", val: "PP " + req.pp, color: "#38BDF8", iconKey: "pp", text: "PP " + req.pp });
       }
       if (req.battle || req.winRate) {
         const b = req.battle ? `${req.battle}회` : '';
         const w = req.winRate ? `${req.winRate}%` : '';
         const str = [b, w].filter(Boolean).join(' · ');
-        if (str) items.push({ label: "배틀", val: str, color: "#F87171" });
+        if (str) items.push({ label: "배틀", val: str, color: "#F87171", iconKey: "battle", text: str });
       }
       if (req.dungeon && req.dungeon !== "-" && req.dungeon !== "없음") {
         const dStr = req.dungeon.startsWith("던전") ? req.dungeon : `던전 ${req.dungeon}`;
@@ -14636,6 +14984,50 @@
       if (digis.length === 0) return null;
 
       const attrKoMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
+
+      // 아이콘 이미지 사전 로드
+      const iconSrcs = { time: "진화시간.webp", vital: "바이탈.webp", pp: "PP.webp", battle: "승률.webp" };
+      const iconImgs = {};
+      await Promise.all(Object.entries(iconSrcs).map(async ([key, src]) => {
+        iconImgs[key] = await loadImgAsync(src);
+      }));
+
+      // 아이콘+텍스트 한 줄 그리기 헬퍼: 아이콘이 있으면 왼쪽에 그리고 텍스트 오른쪽 정렬
+      function drawCondRow(ctx, items, cx, cy, fontSize) {
+        if (items.length === 0) return;
+        const iconSize = fontSize + 1;
+        const gap = 3;
+
+        // 전체 너비 계산
+        ctx.font = `bold ${fontSize}px 'Pretendard', sans-serif`;
+        let totalW = 0;
+        items.forEach((it, idx) => {
+          if (idx > 0) totalW += ctx.measureText(" · ").width;
+          if (iconImgs[it.iconKey]) totalW += iconSize + gap;
+          totalW += ctx.measureText(it.text).width;
+        });
+
+        let curX = cx - totalW / 2;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+
+        items.forEach((it, idx) => {
+          if (idx > 0) {
+            ctx.fillStyle = "#64748B";
+            ctx.fillText(" · ", curX, cy);
+            curX += ctx.measureText(" · ").width;
+          }
+          if (iconImgs[it.iconKey]) {
+            ctx.drawImage(iconImgs[it.iconKey], curX, cy - iconSize / 2, iconSize, iconSize);
+            curX += iconSize + gap;
+          }
+          ctx.fillStyle = it.color;
+          ctx.fillText(it.text, curX, cy);
+          curX += ctx.measureText(it.text).width;
+        });
+
+        ctx.textAlign = "center";
+      }
 
       // 이미지 사전 로드
       const loadedImages = await Promise.all(digis.map(d => loadImgAsync(d.img)));
@@ -14715,7 +15107,20 @@
           const connX = x - connW;
           const connY = y;
           const bubbleW = connW - 14;
-          const bubbleH = 50;
+          // 조건 계산 먼저
+          const cond = getEvoCondSummary(prevDigi, d);
+
+          // 조건 분류
+          const jogressItem = cond.items.find(it => it.label === "조그레스");
+          const specialItem = cond.items.find(it => it.label === "아이템");
+          const iconItems = cond.items.filter(it => it.iconKey);
+          const iconRowCount = Math.ceil(iconItems.length / 2);
+
+          // 버블 높이 동적 계산 (행당 13px + 상하 패딩 16px)
+          let contentRows = iconRowCount;
+          if (jogressItem) contentRows += 2; // 라벨 1줄 + 파트너명 1줄
+          else if (specialItem) contentRows += 2;
+          const bubbleH = Math.max(44, contentRows * 14 + 16);
           const bx = connX + 7;
           const by = connY + 6;
 
@@ -14728,7 +15133,6 @@
           ctx.stroke();
 
           // 조건 텍스트 렌더링
-          const cond = getEvoCondSummary(prevDigi, d);
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
 
@@ -14745,25 +15149,49 @@
             ctx.fillStyle = "#64748B";
             ctx.fillText("조건 없음", bx + bubbleW / 2, by + bubbleH / 2);
           } else {
-            // 최대 2행으로 분할
-            const row1Items = cond.items.slice(0, 2);
-            const row2Items = cond.items.slice(2, 4);
+            let curY = by + 10;
 
-            const r1Str = row1Items.map(it => it.label === "시간" ? it.val : (it.label === "바이탈" ? it.val : `${it.label} ${it.val}`)).join(" · ");
-            const r2Str = row2Items.map(it => it.label === "조그레스" ? `조그레스: ${it.val}` : `${it.label} ${it.val}`).join(" · ");
-
-            if (row2Items.length > 0) {
-              ctx.font = "bold 9.5px 'Pretendard', sans-serif";
-              ctx.fillStyle = row1Items[0]?.color || "#F2F3F5";
-              ctx.fillText(r1Str, bx + bubbleW / 2, by + 16);
-
+            // 1. 조그레스 / 아이템: 라벨 + 파트너명 분리 표시
+            if (jogressItem) {
               ctx.font = "bold 9px 'Pretendard', sans-serif";
-              ctx.fillStyle = row2Items[0]?.color || "#C084FC";
-              ctx.fillText(r2Str, bx + bubbleW / 2, by + 34);
-            } else {
-              ctx.font = "bold 10px 'Pretendard', sans-serif";
-              ctx.fillStyle = row1Items[0]?.color || "#38BDF8";
-              ctx.fillText(r1Str, bx + bubbleW / 2, by + bubbleH / 2);
+              ctx.fillStyle = "#C084FC";
+              ctx.fillText("조그레스", bx + bubbleW / 2, curY);
+              curY += 13;
+              // 파트너명: 너무 길면 말줄임
+              ctx.font = "8px 'Pretendard', sans-serif";
+              ctx.fillStyle = "#D8B4FE";
+              let partnerStr = jogressItem.val;
+              while (ctx.measureText(partnerStr).width > bubbleW - 8 && partnerStr.length > 3) {
+                partnerStr = partnerStr.slice(0, -1);
+              }
+              if (partnerStr !== jogressItem.val) partnerStr += "…";
+              ctx.fillText(partnerStr, bx + bubbleW / 2, curY);
+              curY += 13;
+            } else if (specialItem) {
+              ctx.font = "bold 9px 'Pretendard', sans-serif";
+              ctx.fillStyle = "#FCD34D";
+              ctx.fillText("아이템", bx + bubbleW / 2, curY);
+              curY += 13;
+              ctx.font = "8px 'Pretendard', sans-serif";
+              ctx.fillStyle = "#FDE68A";
+              let itemStr = specialItem.val;
+              while (ctx.measureText(itemStr).width > bubbleW - 8 && itemStr.length > 3) {
+                itemStr = itemStr.slice(0, -1);
+              }
+              if (itemStr !== specialItem.val) itemStr += "…";
+              ctx.fillText(itemStr, bx + bubbleW / 2, curY);
+              curY += 13;
+            }
+
+            // 2. 아이콘 조건 (time, vital, pp, battle) - 2개씩 행으로
+            for (let i = 0; i < iconItems.length; i += 2) {
+              const rowSlice = iconItems.slice(i, i + 2).map(it => ({
+                iconKey: it.iconKey,
+                text: it.text || it.val,
+                color: it.color
+              }));
+              drawCondRow(ctx, rowSlice, bx + bubbleW / 2, curY, 9.5);
+              curY += 13;
             }
           }
 
@@ -15097,6 +15525,7 @@
         drawConnections();
       }, 100);
       fetchAndApplyLiveConditions();
+      fetchWikiHistoryFromGas(true);
     });
   </script>
 

@@ -11,7 +11,13 @@ def get_page_html(url):
     with urllib.request.urlopen(req) as resp:
         return resp.read().decode("utf-8", errors="ignore")
 
-def download_sprites_from_url(input_url, output_dir=r"f:\Game\DIGIPET\sprites"):
+def download_sprites_from_url(input_url, output_dir=None):
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    if not output_dir:
+        output_dir = os.path.join(base_dir, "sprites")
+    elif not os.path.isabs(output_dir):
+        output_dir = os.path.join(base_dir, output_dir)
+        
     os.makedirs(output_dir, exist_ok=True)
     
     # URL과 앵커(#) 분리
@@ -26,24 +32,21 @@ def download_sprites_from_url(input_url, output_dir=r"f:\Game\DIGIPET\sprites"):
         html = get_page_html(page_url)
     except Exception as e:
         print(f"[오류] 웹페이지를 불러오지 못했습니다: {e}")
-        return
+        return False
 
     # 특정 앵커(#anchor)가 있으면 해당 섹션만 추출
     if target_anchor:
         print(f"[2/3] 특정 차트 탐색 중: #{target_anchor}")
-        # 상단 네비게이션 점퍼의 href를 피하기 위해 id="..." 또는 name="..." 우선 탐색
         start_idx = html.find(f'id="{target_anchor}"')
         if start_idx == -1:
             start_idx = html.find(f'name="{target_anchor}"')
         if start_idx == -1:
-            # 앵커 네비게이션 점퍼 뒤에 나오는 본문 앵커 검색
             p1 = html.find(target_anchor)
             if p1 != -1:
                 p2 = html.find(target_anchor, p1 + len(target_anchor) + 10)
                 start_idx = p2 if p2 != -1 else p1
 
         if start_idx != -1:
-            # 다음 앵커(차트) 시작 전까지 자르기
             next_anchor = html.find('class="anchor', start_idx + 50)
             if next_anchor != -1:
                 html = html[start_idx:next_anchor]
@@ -55,7 +58,6 @@ def download_sprites_from_url(input_url, output_dir=r"f:\Game\DIGIPET\sprites"):
         print("[2/3] 페이지 전체 디지몬 탐색 중...")
 
     # 디지몬 이미지 추출 정규식
-    # humulos 패턴: vbdm뿐만 아니라 vbbe, vpet 등 다양한 서브 디렉토리(/dot/카테고리/) 모두 지원
     pattern = r'data-src=["\'](?:(?:https?:)?//humulos\.com)?/digimon/images/dot/([^/]+)/(?:frame2/)?([^"\'/]+)\.gif["\'][^>]+title=["\']([^"\']+)["\']'
     matches = re.findall(pattern, html)
     
@@ -78,10 +80,10 @@ def download_sprites_from_url(input_url, output_dir=r"f:\Game\DIGIPET\sprites"):
         digimons.append((cat, code, name))
 
     if not digimons:
-        print("[결과] 다운로드할 디지몬 이미지를 찾지 못했습니다. URL을 확인해 주세요.")
-        return
+        print("[결과] 다운로드할 디지몬 이미지를 찾지 못했습니다. URL 및 차트 이름을 확인해 주세요.")
+        return False
 
-    print(f"\n[3/3] 총 {len(digimons)}마리의 디지몬을 발견했습니다! 애니메이션 GIF 변환 시작...\n")
+    print(f"\n[3/3] 총 {len(digimons)}마리의 디지몬을 발견했습니다! Animated GIF 다운로드 및 변환 시작...\n")
     headers = {"User-Agent": "Mozilla/5.0"}
     
     success_count = 0
@@ -120,27 +122,87 @@ def download_sprites_from_url(input_url, output_dir=r"f:\Game\DIGIPET\sprites"):
         except Exception as e:
             print(f"[{idx}/{len(digimons)}] 다운로드 실패 ({name}): {e}")
 
-    print(f"\n★ 완료! 총 {success_count}개의 움직이는 GIF가 저장되었습니다.")
-    print(f"저장 폴더: {output_dir}\n")
+    print(f"\n★ 완료! 총 {success_count}개의 움직이는 GIF가 성공적으로 저장되었습니다.")
+    print(f"📁 저장된 폴더: {output_dir}")
+    return True
 
-if __name__ == "__main__":
-    print("=" * 60)
-    print("  디지몬 humulos 도트 스프라이트 자동 다운로더 (Animated GIF 변환)")
-    print("=" * 60)
+def main():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    default_dir = os.path.join(base_dir, "sprites")
     
+    print("=" * 66)
+    print("   디지몬 humulos 도트 스프라이트 자동 다운로더 (Animated GIF)")
+    print("=" * 66)
+    
+    # CLI 인자가 전달된 경우 (예: python download_humulos_gifs.py <URL> [FOLDER])
     if len(sys.argv) > 1:
         target_url = sys.argv[1]
-    else:
-        print("\nhumulos 웹페이지 주소를 입력하거나 엔터를 치세요.")
-        print("예시: https://humulos.com/digimon/vbbe/anime/#gamma_anchor (감마몬 BE)")
-        print("예시: https://humulos.com/digimon/vbdm/ex/#gabu_ex_anchor (파피몬 EX)")
-        print("예시: https://humulos.com/digimon/vbdm/vol/#vbe_anchor (볼캐닉 비트)")
-        print("예시: https://humulos.com/digimon/vbbe/anime/ (페이지 전체 BE 디지몬)")
-        print("-" * 60)
-        target_url = input("주소(URL) 입력 [엔터 = 감마몬 BE 다운로드]: ").strip()
+        out_folder = sys.argv[2] if len(sys.argv) > 2 else default_dir
+        download_sprites_from_url(target_url, out_folder)
+        print("\n" + "=" * 66)
+        print("작업이 완료되었습니다.")
+        input("프로그램을 종료하려면 [Enter] 키를 누르세요...")
+        return
+
+    current_folder = "sprites"
+    
+    # 다운로드 완료 후에도 창이 꺼지지 않고 반복해서 다운로드할 수 있는 대화형 루프
+    while True:
+        print("\n" + "-" * 66)
+        print("【 humulos 웹페이지 주소(URL) 또는 번호를 입력하세요 】")
+        print("  1) 감마몬 BE     : https://humulos.com/digimon/vbbe/anime/#gamma_anchor")
+        print("  2) 아구몬 EX     : https://humulos.com/digimon/vbdm/ex/#agu_ex_anchor")
+        print("  3) 파피몬 EX     : https://humulos.com/digimon/vbdm/ex/#gabu_ex_anchor")
+        print("  4) 볼캐닉 비트   : https://humulos.com/digimon/vbdm/vol/#vbe_anchor")
+        print("  5) 앙고라몬 BE   : https://humulos.com/digimon/vbbe/anime/#angora_anchor")
+        print("  6) 젤리몬 BE     : https://humulos.com/digimon/vbbe/anime/#jelly_anchor")
+        print("  [q] 프로그램 종료")
+        print("-" * 66)
         
-        if not target_url:
-            # 기본값: 감마몬 BE
-            target_url = "https://humulos.com/digimon/vbbe/anime/#gamma_anchor"
+        target_input = input("주소(URL) 또는 번호 입력 [기본값: 1번 감마몬 BE]: ").strip()
+        
+        if target_input.lower() in ('q', 'quit', 'exit'):
+            print("\n프로그램을 종료합니다.")
+            break
             
-    download_sprites_from_url(target_url)
+        url_map = {
+            "1": "https://humulos.com/digimon/vbbe/anime/#gamma_anchor",
+            "2": "https://humulos.com/digimon/vbdm/ex/#agu_ex_anchor",
+            "3": "https://humulos.com/digimon/vbdm/ex/#gabu_ex_anchor",
+            "4": "https://humulos.com/digimon/vbdm/vol/#vbe_anchor",
+            "5": "https://humulos.com/digimon/vbbe/anime/#angora_anchor",
+            "6": "https://humulos.com/digimon/vbbe/anime/#jelly_anchor",
+        }
+        
+        if not target_input:
+            target_url = url_map["1"]
+            print("-> 기본값: 감마몬 BE 선택됨")
+        elif target_input in url_map:
+            target_url = url_map[target_input]
+        else:
+            target_url = target_input
+            
+        # 저장 폴더 이름 지정
+        print(f"\n[저장 폴더 지정]")
+        dest_display = os.path.abspath(os.path.join(base_dir, current_folder)) if not os.path.isabs(current_folder) else current_folder
+        print(f"현재 설정된 폴더: {current_folder} ({dest_display})")
+        folder_in = input(f"저장할 폴더 이름 입력 [엔터 = '{current_folder}' 유지]: ").strip()
+        if folder_in:
+            current_folder = folder_in
+            
+        dest_dir = os.path.abspath(os.path.join(base_dir, current_folder)) if not os.path.isabs(current_folder) else current_folder
+        print(f"-> 최종 저장 위치: {dest_dir}")
+        
+        download_sprites_from_url(target_url, dest_dir)
+        
+        print("\n" + "=" * 66)
+        cont = input("계속해서 다른 주소나 DiM을 추가로 다운로드하시겠습니까? (Y/n): ").strip().lower()
+        if cont in ('n', 'no', 'q', 'quit', 'exit'):
+            print("\n다운로더를 종료합니다.")
+            break
+
+    print("-" * 66)
+    input("프로그램을 완전히 종료하려면 [Enter] 키를 누르세요...")
+
+if __name__ == "__main__":
+    main()
