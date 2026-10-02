@@ -8893,7 +8893,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "id": "digi_1790435447575",
       "name": "크리사리몬",
       "stage": "성숙기",
-      "attr": "vaccine",
+      "attr": "unknown",
       "img": "images/embedded/fc2c59e45109d66b.jpg",
       "dim": "디아블로몬 EX",
       "order": 77,
