@@ -420,7 +420,7 @@
         return;
       }
 
-      const attrKoMap = { vaccine: "백신 (Vaccine)", data: "데이터 (Data)", virus: "바이러스 (Virus)", free: "프리 (Free)", none: "-" };
+      const attrKoMap = { vaccine: "백신 (Vaccine)", data: "데이터 (Data)", virus: "바이러스 (Virus)", free: "프리 (Free)", none: "-", unknown: "불명" };
       const attrKo = attrKoMap[digi.attr] || digi.attr || "-";
 
       // 공식 도감 링크
@@ -814,6 +814,7 @@
     document.getElementById("edit-stage").addEventListener("change", (e) => {
       if (project.digimons[selectedDigiId]) {
         project.digimons[selectedDigiId].stage = e.target.value;
+        if (NO_ATTR_STAGES.includes(e.target.value)) project.digimons[selectedDigiId].attr = "none";
         syncSameNameDigimons(project.digimons[selectedDigiId]);
         saveState();
         renderTree();

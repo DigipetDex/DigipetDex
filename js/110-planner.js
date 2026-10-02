@@ -324,7 +324,7 @@
       if (plannerActiveIndex < 0) plannerActiveIndex = 0;
 
       const activeDigi = project.digimons[plannerChain[plannerActiveIndex]];
-      const attrKoMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
+      const attrKoMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-", unknown: "불명" };
 
       // 2. 트리에서 보기 버튼 바인딩
       if (btnViewTree && activeDigi) {
@@ -867,7 +867,7 @@
 
       if (countEl) countEl.textContent = `${list.length}종`;
 
-      const attrKoMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
+      const attrKoMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-", unknown: "불명" };
 
       if (list.length === 0) {
         grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color:#949BA4; padding:30px 0; font-size:0.85rem;">검색 조건에 맞는 디지몬이 없습니다.</div>';

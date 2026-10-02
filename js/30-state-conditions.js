@@ -223,6 +223,27 @@
     }
 
 
+    // 디지타마~유년기 II 는 속성이 없으므로 "-"(none)로 고정. 바꾼 개수를 반환.
+    // (예전에 새 디지몬 기본값이 백신이라 백신으로 잘못 들어간 경우가 많았고, 시트 병합/동명 동기화로도 되살아날 수 있어 여러 곳에서 호출)
+    const NO_ATTR_STAGES = ["디지타마", "유년기 I", "유년기 II"];
+    // 공식 도감의 attr "none" 은 유년기에서는 "속성 없음(-)", 그 외 세대에서는 "불명" 속성(예: 벰몬, 아바도몬)
+    function officialAttrForStage(officialAttr, stage) {
+      if (!officialAttr) return "";
+      if (NO_ATTR_STAGES.includes(stage)) return "none";
+      return officialAttr === "none" ? "unknown" : officialAttr;
+    }
+
+    function enforceEarlyStageAttr() {
+      let count = 0;
+      Object.values(project.digimons || {}).forEach(d => {
+        if (NO_ATTR_STAGES.includes(d.stage) && d.attr !== "none") {
+          d.attr = "none";
+          count++;
+        }
+      });
+      return count;
+    }
+
     // 동일 이름을 가진 디지몬 간 외형 정보(이미지, 속성, 세대) 연동
     // ※ 소속 DiM(페이지), 진화조건(req), 진화선은 각 페이지별로 절대 건드리지 않음!
     function syncSameNameDigimons(sourceDigi) {
@@ -290,6 +311,7 @@
           }
         });
       });
+      if (enforceEarlyStageAttr() > 0) updated = true;
       if (updated) {
         saveState();
       }
@@ -322,8 +344,8 @@
       if (official) {
         noticeEl.className = "ref-badge ref-badge-official";
         noticeEl.style.display = "block";
-        const attrMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
-        const attrKo = attrMap[official.attr] || official.attr;
+        const attrMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-", unknown: "불명" };
+        const attrKo = attrMap[officialAttrForStage(official.attr, official.stage)] || official.attr;
         const link = official.dir ? `<a href="https://digimon.net/reference_ko/detail.php?directory_name=${official.dir}" target="_blank" rel="noopener">도감 보기 ↗</a>` : "";
         noticeEl.innerHTML = `<strong>공식 도감:</strong> ${attrKo} / ${official.stage} ${link}`;
         return;
@@ -359,8 +381,8 @@
       // 2순위: 공식 도감에서 속성/세대 조회
       const official = lookupOfficialDigimon(cleanName);
       if (official) {
-        if (official.attr && official.attr !== "none") digi.attr = official.attr;
         if (official.stage && official.stage !== "불명" && digi.stage !== "디지타마") digi.stage = official.stage;
+        if (official.attr) digi.attr = officialAttrForStage(official.attr, digi.stage);
         syncSameNameDigimons(digi);
         saveState();
         renderTree();
@@ -378,7 +400,7 @@
 
       const names = Object.keys(OFFICIAL_DIGIMON_DB).sort((a, b) => a.localeCompare(b, "ko"));
       const frag = document.createDocumentFragment();
-      const attrMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
+      const attrMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-", unknown: "불명" };
 
       names.forEach(name => {
         const opt = document.createElement("option");
@@ -426,7 +448,7 @@
     }
 
     const stageOrder = ["디지타마", "유년기 I", "유년기 II", "성장기", "성숙기", "완전체", "궁극체", "궁극체2", "초궁극체", "초궁극체II", "아머체"];
-    const attrColors = { vaccine: "#E74C3C", data: "#3498DB", virus: "#9B59B6", free: "#F1C40F", none: "#8E9297" };
+    const attrColors = { vaccine: "#E74C3C", data: "#3498DB", virus: "#9B59B6", free: "#F1C40F", none: "#8E9297", unknown: "#E5E7EB" };
 
     const LINE_COLOR_PRESETS = [
       { id: "default", name: "기본(속성색)", color: null, dotBg: "linear-gradient(135deg, #E74C3C 25%, #3498DB 25% 50%, #9B59B6 50% 75%, #F1C40F 75%)" },
@@ -896,6 +918,7 @@
       // 세대 변경
       if (draggedDigi.stage !== targetStage) {
         draggedDigi.stage = targetStage;
+        if (NO_ATTR_STAGES.includes(targetStage)) draggedDigi.attr = "none";
         const defaultReq = getDefaultReqForStage(targetStage);
         if (!draggedDigi.req) draggedDigi.req = {};
         draggedDigi.req.time = defaultReq.time;

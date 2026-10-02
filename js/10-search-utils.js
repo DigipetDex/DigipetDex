@@ -270,9 +270,10 @@
             data: "#34D399",
             virus: "#F87171",
             free: "#FBBF24",
-            none: "#94A3B8"
+            none: "#94A3B8",
+            unknown: "#E5E7EB"
           };
-          const attrTextMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
+          const attrTextMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-", unknown: "불명" };
 
           let html = "";
           currentSuggestions.forEach((item, idx) => {
@@ -364,7 +365,7 @@
           }
 
           if (official) {
-            const attrMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
+            const attrMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-", unknown: "불명" };
             const attrKo = attrMap[official.attr] || official.attr;
             const engNote = official.englishName ? ` <span style="color:#38BDF8; font-size:0.75rem;">(${escapeHtml(official.englishName)})</span>` : "";
             infoEl.innerHTML = `<span style="color:#38BDF8; font-weight:600;">📖 공식 도감 일치:</span> [${official.name}]${engNote} (${official.stage} / ${attrKo}) 정보 자동 적용`;

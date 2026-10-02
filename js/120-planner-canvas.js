@@ -84,7 +84,7 @@
       const digis = plannerChain.map(id => project.digimons[id]).filter(Boolean);
       if (digis.length === 0) return null;
 
-      const attrKoMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
+      const attrKoMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-", unknown: "불명" };
 
       // 아이콘 이미지 사전 로드
       const iconSrcs = { time: "진화시간.webp", vital: "바이탈.webp", pp: "PP.webp", battle: "승률.webp" };

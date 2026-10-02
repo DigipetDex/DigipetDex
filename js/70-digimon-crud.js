@@ -24,7 +24,8 @@
       const existing = findExistingDigimonByName(finalName);
 
       const initialStage = existing?.stage || ((official && official.stage && official.stage !== "불명") ? official.stage : "성숙기");
-      const initialAttr = existing?.attr || ((official && official.attr && official.attr !== "none") ? official.attr : "vaccine");
+      const initialAttr = NO_ATTR_STAGES.includes(initialStage) ? "none"
+        : (existing?.attr || (official && official.attr ? officialAttrForStage(official.attr, initialStage) : "vaccine"));
       const initialImg = existing?.img || (official?.englishName ? `sprites/${official.englishName}.gif` : "sprites/Agumon.gif");
       const initialHp = existing?.baseHp ?? "";
       const initialAp = existing?.baseAp ?? "";

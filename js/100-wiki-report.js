@@ -1961,15 +1961,23 @@
       } catch (e) {}
     }
 
+    // 키별 현재 값의 서명: 진화선/req 는 조건 필드들, attr|<id> 는 속성 값
+    function liveTargetSignature(key, obj) {
+      return key.startsWith("attr|") ? String((obj && obj.attr) || "") : conditionSignature(obj);
+    }
+
     function forEachLiveConditionTarget(fn) {
       (project.evolutions || []).forEach(ev => fn(`${ev.from}|${ev.to}`, ev));
-      Object.values(project.digimons || {}).forEach(d => fn(`req|${d.id}`, d.req));
+      Object.values(project.digimons || {}).forEach(d => {
+        fn(`req|${d.id}`, d.req);
+        fn(`attr|${d.id}`, d);
+      });
     }
 
     // 실시간 배포 성공 후: 지금 값이 곧 시트 값이므로 기준값으로 저장
     function resetLiveBaselineToLocal() {
       const baseline = {};
-      forEachLiveConditionTarget((key, obj) => { baseline[key] = conditionSignature(obj); });
+      forEachLiveConditionTarget((key, obj) => { baseline[key] = liveTargetSignature(key, obj); });
       saveLiveBaseline(baseline);
     }
 
@@ -1991,7 +1999,7 @@
           const locallyEdited = new Set();
           if (protectEdits) {
             forEachLiveConditionTarget((key, obj) => {
-              if (baseline[key] !== undefined && baseline[key] !== conditionSignature(obj)) locallyEdited.add(key);
+              if (baseline[key] !== undefined && baseline[key] !== liveTargetSignature(key, obj)) locallyEdited.add(key);
             });
           }
 
@@ -2035,8 +2043,8 @@
               if (d.name.trim().toLowerCase() === toNameLower) {
                 if (cDim && !isDigimonVisibleInDim(d, cDim)) return;
 
-                // 속성(attr) 갱신
-                if (c.attr && c.attr.trim()) {
+                // 속성(attr) 갱신 (에디터에서 바꾼 속성은 유지)
+                if (c.attr && c.attr.trim() && !locallyEdited.has(`attr|${d.id}`)) {
                   const cleanAttr = c.attr.trim().toLowerCase();
                   if (d.attr !== cleanAttr) {
                     d.attr = cleanAttr;
@@ -2108,7 +2116,7 @@
           if (protectEdits) {
             const newBaseline = {};
             forEachLiveConditionTarget((key, obj) => {
-              newBaseline[key] = locallyEdited.has(key) ? baseline[key] : conditionSignature(obj);
+              newBaseline[key] = locallyEdited.has(key) ? baseline[key] : liveTargetSignature(key, obj);
             });
             saveLiveBaseline(newBaseline);
             if (locallyEdited.size > 0) {
@@ -2123,6 +2131,8 @@
             console.log(`[라이브 조건 동기화] 시트의 1200/8 더미값 ${dummyCleared}건 정리`);
             updatedCount += dummyCleared;
           }
+          // 시트에 디지타마~유년기 II 속성이 백신 등으로 남아 있어도 "-" 로 되돌림
+          updatedCount += enforceEarlyStageAttr();
 
           if (updatedCount > 0) {
             renderTree();

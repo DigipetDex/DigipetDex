@@ -138,7 +138,7 @@
 
       const wb = XLSX.utils.book_new();
       const stageOrderMap = { "디지타마": 0, "유년기 I": 1, "유년기 II": 2, "성장기": 3, "성숙기": 4, "완전체": 5, "궁극체": 6, "궁극체2": 7, "초궁극체": 8, "초궁극체II": 9, "아머체": 10 };
-      const attrMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-" };
+      const attrMap = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", none: "-", unknown: "불명" };
 
       const activeDims = [];
       const dimDigiMap = {};

@@ -15,6 +15,7 @@
       --attr-data: #3498DB;
       --attr-virus: #9B59B6;
       --attr-free: #F1C40F;
+      --attr-unknown: #E5E7EB;
     }
 
     * {
@@ -639,6 +640,7 @@
     .attr-virus   { border-color: var(--attr-virus); }
     .attr-free    { border-color: var(--attr-free); }
     .attr-none    { border-color: #8E9297; }
+    .attr-unknown { border-color: var(--attr-unknown); }
 
     /* 우측 편집 패널 */
     .sidebar-panel {
