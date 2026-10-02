@@ -1547,12 +1547,24 @@
         display: none !important;
       }
 
-      /* 헤더 바 */
+      /* 헤더 바: 1줄 = 제목 + DiM 드롭다운, 2줄 = 기능 버튼 (같은 너비로) */
       header {
-        padding: 6px 12px;
+        padding: 6px 10px;
         min-height: 50px;
-        gap: 8px;
+        gap: 6px;
         justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .mobile-header-actions {
+        width: 100%;
+        gap: 4px !important;
+      }
+      .mobile-header-actions button {
+        flex: 1 1 0;
+        min-width: 0;
+        justify-content: center;
+        padding: 6px 2px !important;
+        white-space: nowrap;
       }
       .logo-area {
         gap: 6px;
@@ -1565,16 +1577,24 @@
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      .logo-area h1 span.badge {
+      .logo-area h1 span.badge,
+      #app-version-tag,
+      .dim-selector-label {
         display: none !important;
+      }
+      .logo-area h1 {
+        flex-shrink: 0;
       }
       .dim-selector-group {
         margin-left: 6px !important;
+        flex: 1;
+        min-width: 0;
       }
       #filter-dim {
-        width: 110px !important;
-        font-size: 0.78rem !important;
-        padding: 4px 6px !important;
+        width: 100% !important;
+        min-width: 0;
+        font-size: 0.8rem !important;
+        padding: 5px 6px !important;
       }
       #btn-add-dim, #btn-rename-dim, #btn-delete-dim, #btn-dim-up, #btn-dim-down,
       #btn-open-wiki-history, #btn-open-evolution-planner, #btn-open-training-calc, #btn-open-status-board, #btn-open-attr-chart {
@@ -1603,7 +1623,9 @@
 
       /* 메인 워크스페이스 (100% 캔버스 전체 화면) */
       .workspace {
-        height: calc(100vh - 50px);
+        height: auto;
+        flex: 1;
+        min-height: 0;
       }
       .canvas-container {
         width: 100vw;

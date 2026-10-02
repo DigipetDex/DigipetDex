@@ -1,6 +1,6 @@
 # 🗺️ ARCHITECTURE — 파일 구성 & 핵심 함수 맵
 
-> **마지막 업데이트:** 2026-10-02 (v1.3.93)  
+> **마지막 업데이트:** 2026-10-02 (v1.3.94)  
 > 아래 두 표(`AUTO:FILES`, `AUTO:FUNCS`)는 `tools/gen_docs.py` 가 배포 때마다 다시 씁니다. 손으로 고치지 마세요. 핵심 함수 목록/역할은 `tools/gen_docs.py` 의 `KEY_FUNCS` 에서 관리합니다.
 
 ---
@@ -13,7 +13,7 @@
 | 파일 | 줄 수 | 내용 |
 |---|---:|---|
 | `editor.html` | 1,271 | HTML 셸 (마크업 + `<script>` 로드 순서) |
-| `css/editor.css` | 2,502 | 전체 스타일 (다크 테마, 모바일 대응) |
+| `css/editor.css` | 2,524 | 전체 스타일 (다크 테마, 모바일 대응) |
 | `js/05-img-fallback.js` | 35 | 이미지 로드 실패 폴백(handleDigiImgError) — head 태그에서 가장 먼저 로드 |
 | `js/00-config.js` | 4 | 앱 설정 상수 (STORAGE_KEY, APP_VERSION — make_deploy.py가 APP_VERSION을 갱신) |
 | `js/10-search-utils.js` | 473 | 영문-한글 디지몬 이름 매핑 및 바이링구얼 검색 유틸 |
