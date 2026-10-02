@@ -142,7 +142,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "-",
         "jogress": "",
         "item": "",
-        "note": "",
+        "note": "방치 진화",
         "isIdle": true
       },
       "unknownTime": false,
@@ -378,7 +378,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 20,
         "battle": 200,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -577,7 +577,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "-",
         "jogress": "",
         "item": "",
-        "note": "",
+        "note": "방치 진화",
         "isIdle": true
       },
       "lineColor": "#22C55E",
@@ -812,7 +812,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 15,
         "battle": 120,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -1071,7 +1071,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "-",
         "jogress": "",
         "item": "",
-        "note": "",
+        "note": "방치 진화",
         "isIdle": true
       },
       "unknownTime": false,
@@ -1283,7 +1283,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 20,
         "battle": 200,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -1326,8 +1326,8 @@ window.DIGIPET_DEFAULT_DATA = {
         "vital": 4500,
         "pp": 15,
         "battle": 120,
-        "winRate": 120,
-        "dungeon": "-",
+        "winRate": "70",
+        "dungeon": "",
         "jogress": "",
         "item": "",
         "note": ""
@@ -1559,7 +1559,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "-",
         "jogress": "",
         "item": "",
-        "note": "",
+        "note": "방치 진화",
         "isIdle": true
       },
       "lineColor": "#A855F7",
@@ -1742,7 +1742,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 20,
         "battle": 200,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -2537,7 +2537,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 25,
         "battle": 240,
         "winRate": 70,
-        "dungeon": "던전★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "빨간색 디지바이스 버스트",
         "note": ""
@@ -2650,7 +2650,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 20,
         "battle": 200,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -3263,7 +3263,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 25,
         "battle": 240,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -3973,7 +3973,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 20,
         "battle": 200,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -4526,7 +4526,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 25,
         "battle": 240,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -4937,17 +4937,20 @@ window.DIGIPET_DEFAULT_DATA = {
       "order": 38,
       "req": {
         "time": "48시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
-        "winRate": "",
+        "vital": 4500,
+        "pp": 15,
+        "battle": 120,
+        "winRate": 70,
         "dungeon": "-",
         "jogress": "",
         "item": "",
         "note": ""
       },
-      "unknownTime": true,
-      "partialUnknown": false
+      "unknownTime": false,
+      "partialUnknown": false,
+      "baseHp": 275,
+      "baseAp": 105,
+      "baseSpd": 120
     },
     "digi_1790262308008": {
       "id": "digi_1790262308008",
@@ -4985,13 +4988,13 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": "",
         "battle": "",
         "winRate": "",
-        "dungeon": "-",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
       },
-      "unknownTime": true,
-      "partialUnknown": false
+      "unknownTime": false,
+      "partialUnknown": true
     },
     "digi_1790262384952": {
       "id": "digi_1790262384952",
@@ -5374,7 +5377,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 30,
         "battle": 320,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "도미니몬,샹펑몬",
         "item": "",
         "note": ""
@@ -6657,7 +6660,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 20,
         "battle": 200,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -6915,12 +6918,13 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": "",
+        "note": "방치 진화",
         "isIdle": true
       },
       "lineColor": "#2563EB",
-      "unknownTime": true,
-      "partialUnknown": false
+      "unknownTime": false,
+      "partialUnknown": false,
+      "conditionStatus": "known"
     },
     "digi_1790352796310": {
       "id": "digi_1790352796310",
@@ -7005,16 +7009,17 @@ window.DIGIPET_DEFAULT_DATA = {
         "vital": "",
         "pp": "",
         "battle": "",
-        "winRate": 50,
+        "winRate": "",
         "dungeon": "-",
         "jogress": "",
         "item": "",
         "note": ""
       },
       "independentReq": true,
-      "unknownTime": false,
+      "unknownTime": true,
       "partialUnknown": false,
-      "lineColor": "#F97316"
+      "lineColor": "#F97316",
+      "conditionStatus": "unknown"
     },
     "digi_1790353494535": {
       "id": "digi_1790353494535",
@@ -7187,7 +7192,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 30,
         "battle": 240,
         "winRate": "",
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "주황색 디지바이스 버스트",
         "note": "우호도 90 이상"
@@ -7209,7 +7214,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 25,
         "battle": 240,
         "winRate": "",
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "주황색 디지바이스 버스트",
         "note": "우호도 50 이하"
@@ -7842,7 +7847,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 25,
         "battle": 240,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -7868,7 +7873,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 25,
         "battle": 240,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -7899,9 +7904,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "lineColor": "#38BDF8",
       "unknownTime": false,
       "partialUnknown": false,
-      "baseHp": "",
-      "baseAp": "",
-      "baseSpd": ""
+      "baseHp": 70,
+      "baseAp": 5,
+      "baseSpd": 10
     },
     "digi_1790393508856": {
       "id": "digi_1790393508856",
@@ -8020,10 +8025,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": "",
+        "note": "방치 진화",
         "isIdle": true
       },
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "lineColor": "#22C55E"
     },
@@ -8234,7 +8239,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 20,
         "battle": 200,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "엔젤우몬,레이디데블몬",
         "item": "",
         "note": ""
@@ -8350,7 +8355,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 25,
         "battle": 240,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -8804,7 +8809,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 20,
         "battle": 200,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "엔젤우몬,레이디데블몬",
         "item": "",
         "note": ""
@@ -9594,7 +9599,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": "",
+        "note": "방치 진화",
         "isIdle": true
       },
       "lineColor": "#2DD4BF"
@@ -10036,7 +10041,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "그로울링 하울(볼프몬)🚧",
       "order": 87,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "24시간",
@@ -10047,7 +10052,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": "",
+        "note": "방치 진화",
         "isIdle": true
       },
       "lineColor": "#22C55E"
@@ -10061,7 +10066,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "그로울링 하울(볼프몬)🚧",
       "order": 89,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "24시간",
@@ -10072,7 +10077,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": "",
+        "note": "방치 진화",
         "isIdle": true
       },
       "lineColor": "#F97316"
@@ -10264,7 +10269,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 25,
         "battle": 240,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "파란색 디지바이스 버스트",
         "note": ""
@@ -11836,7 +11841,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "누 메탈 엠파이어(톱니몬)🚧",
       "order": 103,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "24시간",
@@ -11847,7 +11852,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": "",
+        "note": "방치 진화",
         "isIdle": true
       },
       "lineColor": "#A855F7",
@@ -12093,7 +12098,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 20,
         "battle": 2000,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -12166,7 +12171,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": 25,
         "battle": 240,
         "winRate": 70,
-        "dungeon": "던전 ★★★",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
@@ -12630,9 +12635,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 I",
       "attr": "vaccine",
       "img": "images/embedded/908f025e22804949.gif",
-      "baseHp": "",
-      "baseAp": "",
-      "baseSpd": "",
+      "baseHp": 70,
+      "baseAp": 5,
+      "baseSpd": 10,
       "dim": "블리자드 팽(블루코몬)🚧",
       "order": 999,
       "independentReq": true,
@@ -12819,19 +12824,19 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "virus",
       "img": "images/embedded/44f62a34ac664792.gif",
-      "baseHp": "",
-      "baseAp": "",
-      "baseSpd": "",
+      "baseHp": 165,
+      "baseAp": 40,
+      "baseSpd": 70,
       "dim": "블리자드 팽(블루코몬)🚧",
       "order": 113,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "24시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
+        "vital": 600,
+        "pp": 5,
+        "battle": 18,
         "winRate": "",
         "dungeon": "",
         "jogress": "",
@@ -12980,20 +12985,20 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "data",
       "img": "images/embedded/bcbff2f3eec03a27.gif",
-      "baseHp": "",
-      "baseAp": "",
-      "baseSpd": "",
+      "baseHp": 205,
+      "baseAp": 75,
+      "baseSpd": 110,
       "dim": "블리자드 팽(블루코몬)🚧",
       "order": 162,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "36시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
-        "winRate": "",
+        "vital": 2500,
+        "pp": 10,
+        "battle": 80,
+        "winRate": 50,
         "dungeon": "",
         "jogress": "",
         "item": "",
@@ -13112,9 +13117,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 I",
       "attr": "vaccine",
       "img": "images/embedded/908f025e22804949.gif",
-      "baseHp": "",
-      "baseAp": "",
-      "baseSpd": "",
+      "baseHp": 70,
+      "baseAp": 5,
+      "baseSpd": 10,
       "dim": "챠크몬 EX🚧",
       "order": 999,
       "independentReq": true,
@@ -14833,19 +14838,19 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "vaccine",
       "img": "images/embedded/d3165a39ecf1cfff.gif",
-      "baseHp": "",
-      "baseAp": "",
-      "baseSpd": "",
+      "baseHp": 160,
+      "baseAp": 45,
+      "baseSpd": 70,
       "dim": "테리어몬 EX🚧",
       "order": 127,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "24시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
+        "vital": 1300,
+        "pp": 10,
+        "battle": "48+",
         "winRate": "",
         "dungeon": "",
         "jogress": "",
@@ -15367,9 +15372,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성장기",
       "attr": "virus",
       "img": "images/embedded/5b5b06116a1d722e.gif",
-      "baseHp": "",
-      "baseAp": "",
-      "baseSpd": "",
+      "baseHp": 100,
+      "baseAp": 25,
+      "baseSpd": 40,
       "dim": "페어리몬 EX🚧",
       "order": 999,
       "independentReq": true,
@@ -15427,7 +15432,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "페어리몬 EX🚧",
       "order": 133,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "24시간",
@@ -15438,7 +15443,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "dungeon": "",
         "jogress": "",
         "item": "",
-        "note": ""
+        "note": "방치 진화"
       },
       "lineColor": "#A855F7"
     },
@@ -15454,13 +15459,13 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "페어리몬 EX🚧",
       "order": 131,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "24시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
+        "vital": 1300,
+        "pp": 10,
+        "battle": 48,
         "winRate": "",
         "dungeon": "",
         "jogress": "",
@@ -15535,14 +15540,14 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "페어리몬 EX🚧",
       "order": 187,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "36시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
-        "winRate": "",
+        "vital": 3000,
+        "pp": 12,
+        "battle": 120,
+        "winRate": 70,
         "dungeon": "",
         "jogress": "",
         "item": "",
@@ -15589,8 +15594,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "페어리몬 EX🚧",
       "order": 999,
       "independentReq": true,
-      "unknownTime": true,
-      "partialUnknown": false,
+      "unknownTime": false,
+      "partialUnknown": true,
       "req": {
         "time": "36시간",
         "vital": "",
@@ -16364,7 +16369,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "-",
       "jogress": "",
       "item": "",
-      "note": "",
+      "note": "방치 진화",
       "lineColor": "#EF4444",
       "battle": "",
       "isIdle": true
@@ -16583,7 +16588,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "vital": 7000,
       "pp": 20,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": "",
@@ -16611,7 +16616,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "vital": 7000,
       "pp": 20,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": "",
@@ -16665,7 +16670,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "vital": 7000,
       "pp": 20,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": "",
@@ -16861,7 +16866,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "-",
       "jogress": "",
       "item": "",
-      "note": "",
+      "note": "방치 진화",
       "isIdle": true
     },
     {
@@ -17176,7 +17181,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 15,
       "battle": 120,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -17190,7 +17195,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 15,
       "battle": 120,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -17218,7 +17223,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 15,
       "battle": 120,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -17333,7 +17338,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "-",
       "jogress": "",
       "item": "",
-      "note": "",
+      "note": "방치 진화",
       "isIdle": true
     },
     {
@@ -17483,7 +17488,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -17522,8 +17527,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "vital": 4500,
       "pp": 15,
       "battle": 120,
-      "winRate": 120,
-      "dungeon": "70",
+      "winRate": "70",
+      "dungeon": "",
       "jogress": "",
       "item": "",
       "note": ""
@@ -17537,7 +17542,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -17549,8 +17554,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "vital": 4500,
       "pp": 15,
       "battle": 120,
-      "winRate": 120,
-      "dungeon": "70",
+      "winRate": "70",
+      "dungeon": "",
       "jogress": "",
       "item": "",
       "note": ""
@@ -17689,7 +17694,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "-",
       "jogress": "",
       "item": "",
-      "note": "",
+      "note": "방치 진화",
       "isIdle": true
     },
     {
@@ -17950,7 +17955,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -18034,7 +18039,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -18985,7 +18990,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 25,
       "battle": 240,
       "winRate": 70,
-      "dungeon": "던전★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "빨간색 디지바이스 버스트",
       "note": ""
@@ -19081,7 +19086,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -19109,7 +19114,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -19137,7 +19142,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -19487,7 +19492,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 25,
       "battle": 240,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -19543,7 +19548,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 150,
       "winRate": 70,
-      "dungeon": "던전 ★★☆",
+      "dungeon": "★★",
       "jogress": "",
       "item": "기적의 캡슐",
       "note": ""
@@ -19934,7 +19939,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 15,
       "battle": 120,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -19976,7 +19981,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 15,
       "battle": 120,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -20004,7 +20009,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 15,
       "battle": 120,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -20323,7 +20328,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -20364,7 +20369,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -20519,7 +20524,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 25,
       "battle": 240,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -21048,11 +21053,11 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790262346289",
       "lineColor": "#EF4444",
       "time": "48시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
-      "dungeon": "-",
+      "vital": 7000,
+      "pp": 20,
+      "battle": 200,
+      "winRate": 70,
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -21062,10 +21067,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790262285138",
       "lineColor": "#EF4444",
       "time": "48시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 4500,
+      "pp": 15,
+      "battle": 120,
+      "winRate": 70,
       "dungeon": "-",
       "jogress": "",
       "item": "",
@@ -21625,7 +21630,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 30,
       "battle": 320,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "도미니몬,샹펑몬",
       "item": "",
       "note": ""
@@ -22017,7 +22022,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -22703,7 +22708,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -22731,7 +22736,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -22759,7 +22764,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -22986,7 +22991,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": "",
+      "note": "방치 진화",
       "isIdle": true
     },
     {
@@ -23039,7 +23044,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "vital": "",
       "pp": "",
       "battle": "",
-      "winRate": 50,
+      "winRate": "",
       "dungeon": "",
       "jogress": "",
       "item": "",
@@ -23081,7 +23086,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "vital": "",
       "pp": "",
       "battle": "",
-      "winRate": 50,
+      "winRate": "",
       "dungeon": "",
       "jogress": "",
       "item": "",
@@ -23151,7 +23156,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 30,
       "battle": 240,
       "winRate": "",
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "주황색 디지바이스 버스트",
       "note": "우호도 90 이상"
@@ -23164,7 +23169,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 25,
       "battle": 240,
       "winRate": "",
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "주황색 디지바이스 버스트",
       "note": "우호도 50 이하"
@@ -23304,7 +23309,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -23706,7 +23711,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -23748,7 +23753,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -23804,7 +23809,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -23832,7 +23837,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -23902,7 +23907,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 25,
       "battle": 240,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -23916,7 +23921,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 25,
       "battle": 240,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -23989,7 +23994,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": "",
+      "note": "방치 진화",
       "isIdle": true
     },
     {
@@ -24197,7 +24202,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "엔젤우몬,레이디데블몬",
       "item": "",
       "note": ""
@@ -24323,7 +24328,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 25,
       "battle": 240,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -24729,7 +24734,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -24771,7 +24776,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -24799,7 +24804,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "엔젤우몬,레이디데블몬",
       "item": "",
       "note": ""
@@ -24813,7 +24818,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -25454,7 +25459,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": "",
+      "note": "방치 진화",
       "isIdle": true
     },
     {
@@ -25746,7 +25751,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -25774,7 +25779,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -25788,7 +25793,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 200,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -25889,7 +25894,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": "",
+      "note": "방치 진화",
       "isIdle": true
     },
     {
@@ -25918,7 +25923,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": "",
+      "note": "방치 진화",
       "isIdle": true
     },
     {
@@ -26266,7 +26271,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 25,
       "battle": 240,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "파란색 디지바이스 버스트",
       "note": ""
@@ -27611,7 +27616,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": "",
+      "note": "방치 진화",
       "isIdle": true
     },
     {
@@ -27859,7 +27864,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 2000,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -27887,7 +27892,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 2000,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -27915,7 +27920,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 2000,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -27957,7 +27962,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 20,
       "battle": 2000,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -27971,7 +27976,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "pp": 25,
       "battle": 240,
       "winRate": 70,
-      "dungeon": "던전 ★★★",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
@@ -28508,9 +28513,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790821117816",
       "lineColor": "#22C55E",
       "time": "24시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
+      "vital": 600,
+      "pp": 5,
+      "battle": 18,
       "winRate": "",
       "dungeon": "",
       "jogress": "",
@@ -28620,10 +28625,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790821248862",
       "lineColor": "#22C55E",
       "time": "36시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 2500,
+      "pp": 10,
+      "battle": 80,
+      "winRate": 50,
       "dungeon": "",
       "jogress": "",
       "item": "",
@@ -28662,10 +28667,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790821248862",
       "lineColor": "#A855F7",
       "time": "36시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 2500,
+      "pp": 10,
+      "battle": 80,
+      "winRate": 50,
       "dungeon": "",
       "jogress": "",
       "item": "",
@@ -30120,9 +30125,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790831583472",
       "lineColor": "#EF4444",
       "time": "24시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
+      "vital": 1300,
+      "pp": 10,
+      "battle": "48+",
       "winRate": "",
       "dungeon": "",
       "jogress": "",
@@ -30470,9 +30475,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790832505266",
       "lineColor": "#A855F7",
       "time": "24시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
+      "vital": 1300,
+      "pp": 10,
+      "battle": 48,
       "winRate": "",
       "dungeon": "",
       "jogress": "",
@@ -30491,7 +30496,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dungeon": "",
       "jogress": "",
       "item": "",
-      "note": ""
+      "note": "방치 진화"
     },
     {
       "from": "digi_1790832477847",
@@ -30526,10 +30531,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790832576037",
       "lineColor": "#38BDF8",
       "time": "36시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 3000,
+      "pp": 12,
+      "battle": 120,
+      "winRate": 70,
       "dungeon": "",
       "jogress": "",
       "item": "",
@@ -30540,10 +30545,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790832597577",
       "lineColor": "#38BDF8",
       "time": "36시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 2500,
+      "pp": 10,
+      "battle": 80,
+      "winRate": 50,
       "dungeon": "",
       "jogress": "",
       "item": "",

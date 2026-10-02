@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="js/05-img-fallback.js?v=v1.3.90"></script>
-  <script src="digimon_db.js?v=v1.3.90"></script>
-  <script src="project_data.js?v=v1.3.90"></script>
+  <script src="js/05-img-fallback.js?v=v1.3.91"></script>
+  <script src="digimon_db.js?v=v1.3.91"></script>
+  <script src="project_data.js?v=v1.3.91"></script>
   <script src="xlsx.full.min.js"></script>
-  <link rel="stylesheet" href="css/editor.css?v=v1.3.90">
+  <link rel="stylesheet" href="css/editor.css?v=v1.3.91">
 </head>
 <body>
 
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.90</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.91</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -361,7 +361,12 @@
             </div>
             <div class="form-group">
               <label>던전 조건</label>
-              <input type="text" id="req-dungeon" class="form-control req-input" data-field="dungeon" placeholder="-" style="opacity: 0.35;" readonly="">
+              <select id="req-dungeon" class="form-control req-input" data-field="dungeon" style="opacity: 0.35;" disabled>
+                <option value="">없음</option>
+                <option value="★">★</option>
+                <option value="★★">★★</option>
+                <option value="★★★">★★★</option>
+              </select>
             </div>
             <div class="form-group">
               <label>조그레스</label>
@@ -1220,22 +1225,22 @@
     </div>
   </div>
 
-  <script src="js/00-config.js?v=v1.3.90"></script>
-  <script src="js/10-search-utils.js?v=v1.3.90"></script>
-  <script src="js/20-mode.js?v=v1.3.90"></script>
-  <script src="js/30-state-conditions.js?v=v1.3.90"></script>
-  <script src="js/40-render-tree.js?v=v1.3.90"></script>
-  <script src="js/50-node-sidebar.js?v=v1.3.90"></script>
-  <script src="js/60-condition-clipboard.js?v=v1.3.90"></script>
-  <script src="js/70-digimon-crud.js?v=v1.3.90"></script>
-  <script src="js/80-export.js?v=v1.3.90"></script>
-  <script src="js/90-zoom-mobile.js?v=v1.3.90"></script>
-  <script src="js/95-training-calc.js?v=v1.3.90"></script>
-  <script src="js/96-mode-save-deploy.js?v=v1.3.90"></script>
-  <script src="js/100-wiki-report.js?v=v1.3.90"></script>
-  <script src="js/105-status-board.js?v=v1.3.90"></script>
-  <script src="js/110-planner.js?v=v1.3.90"></script>
-  <script src="js/120-planner-canvas.js?v=v1.3.90"></script>
+  <script src="js/00-config.js?v=v1.3.91"></script>
+  <script src="js/10-search-utils.js?v=v1.3.91"></script>
+  <script src="js/20-mode.js?v=v1.3.91"></script>
+  <script src="js/30-state-conditions.js?v=v1.3.91"></script>
+  <script src="js/40-render-tree.js?v=v1.3.91"></script>
+  <script src="js/50-node-sidebar.js?v=v1.3.91"></script>
+  <script src="js/60-condition-clipboard.js?v=v1.3.91"></script>
+  <script src="js/70-digimon-crud.js?v=v1.3.91"></script>
+  <script src="js/80-export.js?v=v1.3.91"></script>
+  <script src="js/90-zoom-mobile.js?v=v1.3.91"></script>
+  <script src="js/95-training-calc.js?v=v1.3.91"></script>
+  <script src="js/96-mode-save-deploy.js?v=v1.3.91"></script>
+  <script src="js/100-wiki-report.js?v=v1.3.91"></script>
+  <script src="js/105-status-board.js?v=v1.3.91"></script>
+  <script src="js/110-planner.js?v=v1.3.91"></script>
+  <script src="js/120-planner-canvas.js?v=v1.3.91"></script>
 
   <div id="global-toast" class="toast-msg">최신 데이터가 내장된 배포용 'index.html' 파일이 다운로드되었습니다!
   (폴더의 index.html에 덮어쓰거나 그대로 웹에 업로드하시면 됩니다)</div>

@@ -277,9 +277,19 @@
 
       const elDungeon = document.getElementById("req-dungeon");
       if (elDungeon) {
-        elDungeon.value = isBabyStage ? "-" : (curReq.dungeon && curReq.dungeon !== "-" ? curReq.dungeon : "");
-        elDungeon.placeholder = "-";
-        elDungeon.readOnly = isBabyStage;
+        const rawDungeon = isBabyStage ? "" : normalizeDungeonValue(curReq.dungeon);
+        const dungeonVal = (!rawDungeon || rawDungeon === "-" || rawDungeon === "없음") ? "" : String(rawDungeon);
+        // 별점 형식이 아닌 예전 값(예: "70")은 지우지 않고 그대로 보이도록 임시 항목으로 추가
+        elDungeon.querySelectorAll("option[data-legacy]").forEach(o => o.remove());
+        if (dungeonVal && !Array.from(elDungeon.options).some(o => o.value === dungeonVal)) {
+          const legacyOpt = document.createElement("option");
+          legacyOpt.value = dungeonVal;
+          legacyOpt.textContent = `${dungeonVal} (예전 값)`;
+          legacyOpt.dataset.legacy = "1";
+          elDungeon.appendChild(legacyOpt);
+        }
+        elDungeon.value = dungeonVal;
+        elDungeon.disabled = isBabyStage;
         elDungeon.style.opacity = isBabyStage ? "0.35" : "1";
       }
 

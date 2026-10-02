@@ -87,6 +87,21 @@
       return false;
     }
 
+    // 던전 조건을 별점 형식("★", "★★", "★★★")으로 통일. "던전 ★★★", "던전★★★", "★★☆" 등을 변환.
+    // 별이 없는 값("-", "없음", "")과 별점이 아닌 예전 값은 그대로 둔다.
+    function normalizeDungeonValue(val) {
+      if (val === undefined || val === null) return val;
+      const str = String(val).trim();
+      const stars = (str.match(/★/g) || []).length;
+      if (stars >= 1 && stars <= 3) return "★".repeat(stars);
+      return val;
+    }
+
+    function normalizeAllDungeonValues() {
+      (project.evolutions || []).forEach(e => { e.dungeon = normalizeDungeonValue(e.dungeon); });
+      Object.values(project.digimons || {}).forEach(d => { if (d.req) d.req.dungeon = normalizeDungeonValue(d.req.dungeon); });
+    }
+
     // 전체 진화선/디지몬의 1200/8 더미값 정리. 정리한 개수를 반환.
     // 구글 시트(실시간 조건)에도 같은 더미값이 남아 있어서, 시트 병합 뒤에도 다시 호출해야 한다.
     function clearAllLegacyDummyValues() {
@@ -172,6 +187,7 @@
     }
 
     ensureDigimonRequirements();
+    normalizeAllDungeonValues();
 
     function escapeHtml(str) {
       if (!str) return "";
