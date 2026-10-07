@@ -147,12 +147,82 @@ function jsonOut(obj) {
 /**
  * 배포(sync_live_conditions)로 덮어쓰기 전에 실시간_진화조건 시트를 백업 탭으로 복사 (최근 1개 유지)
  */
+var CONDITION_BACKUP_KEEP = 10; // 날짜별 백업 탭을 최근 몇 개까지 남길지
+
 function backupConditionSheet(ss, condSheet) {
   if (condSheet.getLastRow() <= 1) return;
-  var backupName = SHEET_NAME_CONDITIONS + "_백업";
-  var oldBackup = ss.getSheetByName(backupName);
-  if (oldBackup) ss.deleteSheet(oldBackup);
+  var prefix = SHEET_NAME_CONDITIONS + "_백업_";
+  var tz = Session.getScriptTimeZone() || "Asia/Seoul";
+  var backupName = prefix + Utilities.formatDate(new Date(), tz, "yyMMdd_HHmmss");
+  var dup = ss.getSheetByName(backupName);
+  if (dup) ss.deleteSheet(dup);
   condSheet.copyTo(ss).setName(backupName);
+
+  // 오래된 백업 정리 (이름이 날짜순이므로 정렬해서 앞쪽부터 삭제). 예전 단일 백업 탭도 함께 정리
+  var legacy = ss.getSheetByName(SHEET_NAME_CONDITIONS + "_백업");
+  if (legacy) ss.deleteSheet(legacy);
+  var backups = ss.getSheets().map(function(sh) { return sh.getName(); })
+    .filter(function(n) { return n.indexOf(prefix) === 0; }).sort();
+  while (backups.length > CONDITION_BACKUP_KEEP) {
+    var oldName = backups.shift();
+    var oldSheet = ss.getSheetByName(oldName);
+    if (oldSheet) ss.deleteSheet(oldSheet);
+  }
+}
+
+/**
+ * 실시간 배포로 값이 바뀌는 진화선을 위키_변경역사에 기록한다 (관리자 배포도 되돌릴 수 있도록).
+ * oldVals: 덮어쓰기 전 시트 값(헤더 포함), newRows: 새로 쓸 행들. 기록한 건수 반환.
+ */
+var AUDIT_FIELDS = [
+  ["진화 시간", "time", "진화시간"], ["필요 바이탈", "vital", "바이탈"], ["필요 PP", "pp", "PP"],
+  ["배틀 횟수", "battle", "배틀"], ["필요 승률(%)", "winRate", "승률"], ["조그레스 파트너", "jogress", "조그레스"],
+  ["필요 아이템", "item", "아이템"], ["비고/메모", "note", "비고"], ["던전 조건", "dungeon", "던전"],
+  ["체력(HP)", "baseHp", "체력"], ["전투력(AP)", "baseAp", "전투력"], ["속도(SPD)", "baseSpd", "속도"]
+];
+
+function auditNorm(field, v) {
+  if (field === "winRate") return cleanWinRate(v);
+  if (v === undefined || v === null) return "";
+  var t = String(v).trim();
+  return (t === "-" || t === "null" || t === "undefined") ? "" : t;
+}
+
+function recordSyncHistory(ss, oldVals, newRows, nowStr) {
+  if (!oldVals || oldVals.length <= 1) return 0;
+  var head = oldVals[0], col = {};
+  for (var i = 0; i < head.length; i++) col[String(head[i]).trim()] = i;
+  var newCol = {};
+  for (var j = 0; j < CONDITION_HEADERS.length; j++) newCol[CONDITION_HEADERS[j]] = j;
+
+  var keyOf = function(dim, from, to) { return dimKey(dim) + "|" + String(from || "").trim() + "|" + String(to || "").trim(); };
+  var oldMap = {};
+  for (var r = 1; r < oldVals.length; r++) {
+    var row = oldVals[r];
+    oldMap[keyOf(row[col["DiM"]], row[col["출발 디지몬"]], row[col["진화 디지몬"]])] = row;
+  }
+
+  var histSheet = getHistorySheet(ss);
+  var nextNum = histSheet.getLastRow();
+  var histRows = [];
+  newRows.forEach(function(nr) {
+    var dim = nr[newCol["DiM"]], from = nr[newCol["출발 디지몬"]], to = nr[newCol["진화 디지몬"]];
+    var or = oldMap[keyOf(dim, from, to)];
+    if (!or) return; // 새로 생긴 진화선은 기록하지 않음
+    var prev = { dim: dim, from: from, to: to }, next = { dim: dim, from: from, to: to }, diffs = [];
+    AUDIT_FIELDS.forEach(function(f) {
+      var oldV = col[f[0]] !== undefined ? auditNorm(f[1], or[col[f[0]]]) : "";
+      var newV = auditNorm(f[1], nr[newCol[f[0]]]);
+      prev[f[1]] = oldV; next[f[1]] = newV;
+      if (col[f[0]] !== undefined && oldV !== newV) diffs.push(f[2] + ": " + (oldV || "-") + " → " + (newV || "-"));
+    });
+    if (diffs.length === 0) return;
+    histRows.push(["R" + (nextNum++), nowStr, dim, from, to, diffs.join(", "), JSON.stringify(prev), JSON.stringify(next), "관리자 배포", "실시간 배포로 변경"]);
+  });
+  if (histRows.length > 0) {
+    histSheet.getRange(histSheet.getLastRow() + 1, 1, histRows.length, HISTORY_HEADERS.length).setValues(histRows);
+  }
+  return histRows.length;
 }
 
 /**
@@ -204,6 +274,9 @@ function handlePost(data) {
       if (!condSheet) {
         condSheet = ss.insertSheet(SHEET_NAME_CONDITIONS);
       }
+      var oldVals = condSheet.getLastRow() > 1
+        ? condSheet.getRange(1, 1, condSheet.getLastRow(), Math.max(condSheet.getLastColumn(), 1)).getValues()
+        : null;
       backupConditionSheet(ss, condSheet);
       condSheet.clear();
       condSheet.appendRow(CONDITION_HEADERS);
@@ -239,11 +312,13 @@ function handlePost(data) {
         condSheet.getRange(2, 1, rows.length, CONDITION_HEADERS.length).setValues(rows);
       }
       initConditionSheetHeaders(condSheet);
+      var changedCount = recordSyncHistory(ss, oldVals, rows, nowStr);
 
       return ContentService.createTextOutput(JSON.stringify({
         status: "success",
-        message: rows.length + "개의 실시간 진화 조건이 성공적으로 저장되었습니다.",
+        message: rows.length + "개의 실시간 진화 조건이 성공적으로 저장되었습니다. (변경 " + changedCount + "건 위키 역사에 기록)",
         count: rows.length,
+        changedCount: changedCount,
         updatedAt: nowStr
       })).setMimeType(ContentService.MimeType.JSON);
     }

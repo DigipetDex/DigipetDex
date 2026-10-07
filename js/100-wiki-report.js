@@ -803,7 +803,9 @@
                 </button>
                 ${idx === 0 ? `<button type="button" class="btn-wiki-revert-action" data-rev-id="${escapeHtml(item.revisionId)}" style="padding: 4px 9px; font-size: 0.73rem; background: #2B2D31; color: #FCA5A5; border: 1px solid rgba(220,38,38,0.4); border-radius: 4px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 3px;" title="가장 최근 편집이 발생하기 전 상태로 되돌립니다.">
                   <span>↩ 최근 편집 취소</span>
-                </button>` : ''}
+                </button>` : (String(item.uid || '') === '관리자 배포' ? `<button type="button" class="btn-wiki-revert-action editor-only" data-rev-id="${escapeHtml(item.revisionId)}" style="padding: 4px 9px; font-size: 0.73rem; background: #2B2D31; color: #FCD34D; border: 1px solid rgba(245,158,11,0.5); border-radius: 4px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 3px;" title="이 실시간 배포가 바꾸기 전 값으로 되돌립니다.">
+                  <span>↩ 배포 전 값으로</span>
+                </button>` : '')}
               </div>
             </div>
 
@@ -1893,6 +1895,13 @@
           alert("구글 시트에서 최신 유저 편집을 불러오지 못해 실시간 배포를 중단했습니다.\n(그대로 배포하면 유저 편집이 지워질 수 있습니다)\n잠시 후 다시 시도해 주세요.");
           return;
         }
+        if (lastMergeSkippedUserEdits.length > 0) {
+          const list = lastMergeSkippedUserEdits.slice(0, 10).map(e => `· ${e.from} → ${e.to} (${e.dim}) — ${e.editor}`).join("\n");
+          const more = lastMergeSkippedUserEdits.length > 10 ? `\n… 외 ${lastMergeSkippedUserEdits.length - 10}건` : "";
+          if (!confirm(`⚠️ 에디터에서 직접 고친 값이 유저 위키 편집 ${lastMergeSkippedUserEdits.length}건을 덮어씁니다.\n\n${list}${more}\n\n에디터 값으로 배포할까요? (취소하면 배포하지 않습니다)\n덮어쓴 내용은 위키 역사에 '관리자 배포'로 기록되어 되돌릴 수 있습니다.`)) {
+            return;
+          }
+        }
         recalculateAllDigimonConditionStatuses();
 
         if (syncBtn) {
@@ -2034,6 +2043,8 @@
     //  - 탭을 보고 있는 동안 5분마다
     //  입력 중이거나 창(모달)이 열려 있으면 화면이 바뀌지 않도록 건너뛴다.
     // -------------------------------------------------------------
+    // 마지막 병합에서 에디터 수정 보호 때문에 반영하지 않은 '유저' 편집 (실시간 배포 전 경고용)
+    let lastMergeSkippedUserEdits = [];
     let lastLiveFetchAt = 0;
     let liveFetchInFlight = false;
     const LIVE_REFRESH_ON_RETURN_MS = 60 * 1000;
@@ -2070,6 +2081,7 @@
 
         if (data.status === "success" && Array.isArray(data.conditions) && data.conditions.length > 0) {
           let updatedCount = 0;
+          lastMergeSkippedUserEdits = [];
 
           // 에디터에서 고친(기준값과 달라진) 진화선/조건 키. 뷰어는 보호하지 않고 항상 시트 값을 따른다.
           const protectEdits = !isViewerMode;
@@ -2103,7 +2115,13 @@
               });
 
               matchedEvos.forEach(ev => {
-                if (locallyEdited.has(`${ev.from}|${ev.to}`)) return;
+                if (locallyEdited.has(`${ev.from}|${ev.to}`)) {
+                  const byUser = c.lastEditor && !/관리자/.test(String(c.lastEditor));
+                  if (byUser && conditionSignature(c) !== conditionSignature(ev)) {
+                    lastMergeSkippedUserEdits.push({ dim: c.dim, from: c.from, to: c.to, editor: c.lastEditor });
+                  }
+                  return;
+                }
                 if (c.time !== undefined && c.time !== "") ev.time = c.time;
                 if (c.vital !== undefined) ev.vital = (c.vital === "" || c.vital === "-") ? "" : Number(c.vital);
                 if (c.pp !== undefined) ev.pp = (c.pp === "" || c.pp === "-") ? "" : Number(c.pp);

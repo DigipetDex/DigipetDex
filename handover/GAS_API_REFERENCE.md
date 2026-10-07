@@ -30,7 +30,9 @@
 
 🔒 관리자 토큰 필요: `sync_live_conditions`, `delete`/`move_to_trash`, `clear_all`/`move_all_to_trash`, `delete_by_uid`, `restore_trash`, `delete_trash_permanent`, `empty_trash`, `block_uid`, `unblock_uid`, `delete_wiki_history`, `clear_all_wiki_history`.
 
-`sync_live_conditions` 는 덮어쓰기 전에 `실시간_진화조건` 을 `실시간_진화조건_백업` 탭으로 복사(최근 1개)하고, 빈 목록은 거부합니다. 서버는 `JSON.parse(e.postData.contents)` 로 파싱합니다.
+`sync_live_conditions` 는 덮어쓰기 전에 `실시간_진화조건` 을 날짜별 탭 `실시간_진화조건_백업_yyMMdd_HHmmss` 로 복사(최근 10개 보관)하고, 빈 목록은 거부합니다. 덮어쓴 뒤에는 값이 바뀐 진화선마다 `위키_변경역사` 에 편집자 "관리자 배포" 로 기록합니다(응답의 `changedCount`). 그래서 관리자 배포로 지워진 값도 위키 역사에서 되돌릴 수 있습니다.
+
+`실시간_진화조건` 맨 끝 열은 "던전 조건" 입니다(없으면 위키 편집/되돌리기 때 헤더를 자동 보정). 위키 편집/되돌리기는 행을 **DiM + 출발 + 진화** 로 찾습니다(`findConditionRowIndex`). 서버는 `JSON.parse(e.postData.contents)` 로 파싱합니다.
 
 | action | 필수 필드 | 설명 |
 |---|---|---|
