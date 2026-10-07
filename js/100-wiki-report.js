@@ -226,6 +226,7 @@
       if (inputJogress) inputJogress.value = (req.jogress && req.jogress !== "-" && req.jogress !== "없음") ? req.jogress : "";
       if (inputItem) inputItem.value = (req.item && req.item !== "-") ? req.item : "";
       if (inputNote) inputNote.value = req.note || "";
+      setReportDungeonSelect(req.dungeon);
 
       const inputIdle = document.getElementById("report-input-idle");
       if (inputIdle) {
@@ -237,6 +238,29 @@
       getClientMaskedIp().then(() => updateClientUidDisplays());
 
       modal.style.display = "flex";
+    }
+
+    // 던전 값을 화면/비교용으로: "-", "없음", "" → "" / "던전 ★★★" → "★★★"
+    function dungeonDisplayValue(val) {
+      const v = normalizeDungeonValue(val);
+      const str = v === undefined || v === null ? "" : String(v).trim();
+      return (str === "-" || str === "없음") ? "" : str;
+    }
+
+    // 위키 편집 창의 던전 드롭다운에 현재 값 표시 (별점이 아닌 예전 값은 임시 항목으로)
+    function setReportDungeonSelect(val) {
+      const sel = document.getElementById("report-input-dungeon");
+      if (!sel) return;
+      const cur = dungeonDisplayValue(val);
+      sel.querySelectorAll("option[data-legacy]").forEach(o => o.remove());
+      if (cur && !Array.from(sel.options).some(o => o.value === cur)) {
+        const opt = document.createElement("option");
+        opt.value = cur;
+        opt.textContent = `${cur} (예전 값)`;
+        opt.dataset.legacy = "1";
+        sel.appendChild(opt);
+      }
+      sel.value = cur || "-";
     }
 
     function closeReportModal() {
@@ -280,20 +304,25 @@
       let inputNote = document.getElementById("report-input-note")?.value.trim() || "";
       const inputComment = document.getElementById("report-input-comment")?.value.trim() || "";
       const inputIdle = document.getElementById("report-input-idle")?.checked || false;
+      // 드롭다운 값: "-" = 없음. 시트에는 "-" 로 보내야 "없음으로 바꿈"이 전달된다 (빈칸은 '이전 값 유지')
+      const inputDungeonRaw = document.getElementById("report-input-dungeon")?.value || "-";
+      const inputDungeon = inputDungeonRaw === "-" ? "" : inputDungeonRaw;
 
       if (inputIdle && !inputNote) {
         inputNote = "방치 진화";
-      }
-
-      if (!inputTime && !inputVital && !inputPp && !inputBattle && !inputWinrate && !inputJogress && !inputItem && !inputNote && !inputHp && !inputAp && !inputSpd && !inputIdle) {
-        alert("최소 하나 이상의 진화 조건, 기본 스탯, 또는 비고 내용을 입력해 주세요.");
-        return;
       }
 
       const toDigi = activeReportContext.toDigi;
       const fromDigi = activeReportContext.fromDigi;
       const activeEvo = getActiveIncomingEvo(toDigi.id, activeIncomingFromId);
       const req = getEvoRequirements(activeEvo, toDigi);
+      const prevDungeon = dungeonDisplayValue(req.dungeon);
+      const dungeonChanged = inputDungeon !== prevDungeon;
+
+      if (!inputTime && !inputVital && !inputPp && !inputBattle && !inputWinrate && !inputJogress && !inputItem && !inputNote && !inputHp && !inputAp && !inputSpd && !inputIdle && !dungeonChanged) {
+        alert("최소 하나 이상의 진화 조건, 기본 스탯, 또는 비고 내용을 입력해 주세요.");
+        return;
+      }
 
       // 1. 이전 상태 스냅샷 저장 (위키 롤백 및 diff 생성용)
       const prevSnapshot = {
@@ -310,7 +339,8 @@
         baseSpd: toDigi.baseSpd !== undefined && toDigi.baseSpd !== null ? toDigi.baseSpd : "",
         jogress: req.jogress || "",
         item: req.item || "",
-        note: req.note || ""
+        note: req.note || "",
+        dungeon: prevDungeon
       };
 
       // 2. [즉시 반영] 로컬 인메모리 도감 및 에디터에 변경사항 실시간 적용
@@ -338,6 +368,7 @@
         if (inputItem !== "") activeEvo.item = inputItem;
         if (inputNote !== "") activeEvo.note = inputNote;
         if (inputIdle) activeEvo.isIdle = true;
+        if (dungeonChanged) activeEvo.dungeon = inputDungeon;
       } else {
         if (!toDigi.req) toDigi.req = getDefaultReqForStage(toDigi.stage);
         if (inputTime !== "") toDigi.req.time = inputTime;
@@ -348,6 +379,7 @@
         if (inputJogress !== "") toDigi.req.jogress = inputJogress;
         if (inputItem !== "") toDigi.req.item = inputItem;
         if (inputNote !== "") toDigi.req.note = inputNote;
+        if (dungeonChanged) toDigi.req.dungeon = inputDungeon;
       }
 
       // 모든 incoming 루트를 재평가하여 공개/일부불명/조건불명 상태 정확히 산출
@@ -376,6 +408,7 @@
         baseHp: "체력",
         baseAp: "전투력",
         baseSpd: "속도",
+        dungeon: "던전",
         jogress: "조그레스",
         item: "아이템",
         note: "비고"
@@ -395,7 +428,8 @@
         baseSpd: inputSpd !== "" ? Number(inputSpd) : prevSnapshot.baseSpd,
         jogress: inputJogress !== "" ? inputJogress : prevSnapshot.jogress,
         item: inputItem !== "" ? inputItem : prevSnapshot.item,
-        note: inputNote !== "" ? inputNote : prevSnapshot.note
+        note: inputNote !== "" ? inputNote : prevSnapshot.note,
+        dungeon: inputDungeon
       };
 
       for (const k in fieldNameMap) {
@@ -435,7 +469,8 @@
 
       // 3. [구글 시트 연동] 비동기로 위키 변경 역사 및 실시간 조건 시트에 저장
       if (gasUrl) {
-        getClientMaskedIp().then(() => {
+        const ipWait = new Promise(resolve => setTimeout(resolve, 500));
+        Promise.race([getClientMaskedIp(), ipWait]).then(() => {
           const payload = {
             action: "wiki_edit",
             uid: getClientFullIdentifier(),
@@ -455,6 +490,7 @@
             jogress: newSnapshot.jogress,
             item: newSnapshot.item,
             note: newSnapshot.note,
+            dungeon: inputDungeonRaw,
             comment: inputComment,
             diffSummary: localDiffSummary,
             prevData: prevSnapshot
@@ -466,8 +502,8 @@
             headers: { "Content-Type": "text/plain" },
             body: JSON.stringify(payload)
           }).then(() => {
-            // 백그라운드에서 최신 역사 동기화
-            setTimeout(() => fetchWikiHistoryFromGas(true), 3000);
+            // 응답이 왔다 = 서버 저장 완료. 바로 최신 역사 동기화
+            fetchWikiHistoryFromGas(true);
           }).catch(err => {
             console.warn("위키 구글 시트 저장 실패:", err);
           });
@@ -970,6 +1006,7 @@
       const restoredJogress = dataToApply.jogress !== undefined ? normalizeVal(dataToApply.jogress) : (targetDigi.req?.jogress || "");
       const restoredItem = dataToApply.item !== undefined ? normalizeVal(dataToApply.item) : (targetDigi.req?.item || "");
       const restoredNote = dataToApply.note !== undefined ? dataToApply.note : (targetDigi.req?.note || "");
+      const restoredDungeon = dataToApply.dungeon !== undefined ? dungeonDisplayValue(dataToApply.dungeon) : null;
 
       matchedEvos.forEach(ev => {
         ev.time = restoredTime;
@@ -980,6 +1017,7 @@
         ev.jogress = restoredJogress;
         ev.item = restoredItem;
         ev.note = restoredNote;
+        if (restoredDungeon !== null) ev.dungeon = restoredDungeon;
       });
 
       targetDigis.forEach(d => {
@@ -992,6 +1030,7 @@
         d.req.jogress = restoredJogress;
         d.req.item = restoredItem;
         d.req.note = restoredNote;
+        if (restoredDungeon !== null) d.req.dungeon = restoredDungeon;
       });
 
       // 복원된 디지몬의 DiM으로 전환 및 디지몬 자동 선택하여 사이드바에 즉각 반영
@@ -1882,7 +1921,8 @@
             baseSpd: toD.baseSpd !== undefined && toD.baseSpd !== null ? toD.baseSpd : "",
             jogress: req.jogress || "",
             item: req.item || "",
-            note: req.note || ""
+            note: req.note || "",
+            dungeon: dungeonDisplayValue(req.dungeon)
           });
         });
 
@@ -1936,8 +1976,9 @@
     // 에디터에서 고친 것으로 보고 시트 값을 적용하지 않는다. [실시간 배포]에 성공하면 기준값을 현재 값으로 맞춘다.
     // -------------------------------------------------------------
     // v2: 성장기 조건 강제 삭제 버그 수정 때 키를 바꿔, 그 버그로 지워진 값이 "에디터 수정"으로 보호되지 않게 초기화
-    const LIVE_BASELINE_STORAGE_KEY = "digipet_live_baseline_v2";
-    const LIVE_CONDITION_FIELDS = ["time", "vital", "pp", "battle", "winRate", "jogress", "item", "note"];
+    // v3: 던전 필드 추가로 서명 형식이 바뀌어 초기화
+    const LIVE_BASELINE_STORAGE_KEY = "digipet_live_baseline_v3";
+    const LIVE_CONDITION_FIELDS = ["time", "vital", "pp", "battle", "winRate", "jogress", "item", "note", "dungeon"];
 
     function conditionSignature(obj) {
       return LIVE_CONDITION_FIELDS.map(f => {
@@ -1981,9 +2022,40 @@
       saveLiveBaseline(baseline);
     }
 
+    // -------------------------------------------------------------
+    // 최신 조건 자동 갱신: 다른 유저의 위키 편집이 새로고침 없이 보이도록
+    //  - 탭으로 돌아왔을 때 마지막 갱신 후 1분 이상 지났으면
+    //  - 탭을 보고 있는 동안 5분마다
+    //  입력 중이거나 창(모달)이 열려 있으면 화면이 바뀌지 않도록 건너뛴다.
+    // -------------------------------------------------------------
+    let lastLiveFetchAt = 0;
+    let liveFetchInFlight = false;
+    const LIVE_REFRESH_ON_RETURN_MS = 60 * 1000;
+    const LIVE_REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+
+    function isUserBusyForLiveRefresh() {
+      const el = document.activeElement;
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT" || el.isContentEditable)) return true;
+      return Array.from(document.querySelectorAll(".modal-overlay")).some(m => m.style.display === "flex");
+    }
+
+    function refreshLiveConditionsIfStale(maxAgeMs) {
+      if (document.hidden || liveFetchInFlight) return;
+      if (Date.now() - lastLiveFetchAt < maxAgeMs) return;
+      if (isUserBusyForLiveRefresh()) return;
+      fetchAndApplyLiveConditions();
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) refreshLiveConditionsIfStale(LIVE_REFRESH_ON_RETURN_MS);
+    });
+    setInterval(() => refreshLiveConditionsIfStale(LIVE_REFRESH_INTERVAL_MS), 30 * 1000);
+
     async function fetchAndApplyLiveConditions() {
       const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
       if (!gasUrl) return;
+      lastLiveFetchAt = Date.now();
+      liveFetchInFlight = true;
 
       try {
         const fetchUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=get_live_conditions&t=${Date.now()}`;
@@ -2033,6 +2105,7 @@
                 if (c.winRate !== undefined) ev.winRate = c.winRate === "-" ? "" : c.winRate;
                 if (c.jogress !== undefined) ev.jogress = c.jogress === "-" ? "" : c.jogress;
                 if (c.item !== undefined) ev.item = c.item === "-" ? "" : c.item;
+                if (c.dungeon !== undefined) ev.dungeon = dungeonDisplayValue(c.dungeon);
                 if (c.note !== undefined) ev.note = c.note;
                 updatedCount++;
               });
@@ -2083,6 +2156,7 @@
                   if (c.winRate !== undefined) d.req.winRate = c.winRate === "-" ? "" : c.winRate;
                   if (c.jogress !== undefined) d.req.jogress = c.jogress === "-" ? "" : c.jogress;
                   if (c.item !== undefined) d.req.item = c.item === "-" ? "" : c.item;
+                  if (c.dungeon !== undefined) d.req.dungeon = dungeonDisplayValue(c.dungeon);
                   if (c.note !== undefined) d.req.note = c.note;
                 }
 
@@ -2143,6 +2217,8 @@
         }
       } catch (err) {
         console.warn("실시간 조건 동기화 스킵 (로컬 데이터 사용):", err);
+      } finally {
+        liveFetchInFlight = false;
       }
     }
 

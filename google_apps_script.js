@@ -88,7 +88,8 @@ var CONDITION_HEADERS = [
   "체력(HP)",
   "전투력(AP)",
   "속도(SPD)",
-  "마지막 편집자"
+  "마지막 편집자",
+  "던전 조건"
 ];
 
 var HISTORY_HEADERS = [
@@ -229,7 +230,8 @@ function handlePost(data) {
           c.baseHp !== undefined && c.baseHp !== null ? c.baseHp : "",
           c.baseAp !== undefined && c.baseAp !== null ? c.baseAp : "",
           c.baseSpd !== undefined && c.baseSpd !== null ? c.baseSpd : "",
-          c.editor || "관리자 배포"
+          c.editor || "관리자 배포",
+          c.dungeon || ""
         ];
       });
 
@@ -544,6 +546,7 @@ function doGet(e) {
       var apIdx = colMap["전투력(AP)"] !== undefined ? colMap["전투력(AP)"] : colMap["AP"];
       var spdIdx = colMap["속도(SPD)"] !== undefined ? colMap["속도(SPD)"] : colMap["SPD"];
       var editorIdx = colMap["마지막 편집자"] !== undefined ? colMap["마지막 편집자"] : colMap["편집자"];
+      var dungeonIdx = colMap["던전 조건"];
 
       var condList = [];
       for (var ci = 1; ci < allValues.length; ci++) {
@@ -570,7 +573,8 @@ function doGet(e) {
           baseHp: hpIdx !== undefined && cr[hpIdx] !== undefined ? String(cr[hpIdx]).trim() : "",
           baseAp: apIdx !== undefined && cr[apIdx] !== undefined ? String(cr[apIdx]).trim() : "",
           baseSpd: spdIdx !== undefined && cr[spdIdx] !== undefined ? String(cr[spdIdx]).trim() : "",
-          lastEditor: editorIdx !== undefined && cr[editorIdx] !== undefined ? String(cr[editorIdx]).trim() : ""
+          lastEditor: editorIdx !== undefined && cr[editorIdx] !== undefined ? String(cr[editorIdx]).trim() : "",
+          dungeon: dungeonIdx !== undefined && cr[dungeonIdx] !== undefined ? String(cr[dungeonIdx]).trim() : undefined
         });
       }
 
@@ -1143,12 +1147,59 @@ function getHistorySheet(ss) {
 /**
  * 위키 편집 처리 (실시간_진화조건 즉시 갱신 + 위키_변경역사 리비전 생성)
  */
+/**
+ * DiM 이름 비교용 키 (대소문자/공백/상태 아이콘 🚧❌⚠️ 무시, 클라이언트 isDigimonVisibleInDim 과 같은 기준)
+ */
+function dimKey(dim) {
+  return String(dim || "").toLowerCase().replace(/[🚧❌⚠️]/g, "").replace(/\s+/g, "");
+}
+
+/**
+ * 실시간_진화조건 시트에서 (DiM, 출발, 진화) 가 맞는 행 번호(1부터, 헤더=1) 를 찾는다. 없으면 -1.
+ * 같은 출발→진화 이름이 여러 DiM 에 있으므로 DiM 도 반드시 비교한다 (예전에는 이름만 비교해 다른 DiM 행을 덮어썼음).
+ */
+function findConditionRowIndex(allVals, colMap, targetDim, targetFrom, targetTo) {
+  var toIdx = colMap["진화 디지몬"] !== undefined ? colMap["진화 디지몬"] : 2;
+  var fromIdx = colMap["출발 디지몬"] !== undefined ? colMap["출발 디지몬"] : 1;
+  var dimIdx = colMap["DiM"] !== undefined ? colMap["DiM"] : 0;
+  var tTo = String(targetTo || "").trim().toLowerCase();
+  var tFrom = String(targetFrom || "").trim().toLowerCase();
+  var tDim = dimKey(targetDim);
+  for (var ri = 1; ri < allVals.length; ri++) {
+    var row = allVals[ri];
+    if (String(row[toIdx] || "").trim().toLowerCase() !== tTo) continue;
+    var rFrom = String(row[fromIdx] || "").trim().toLowerCase();
+    if (tFrom && rFrom && rFrom !== tFrom) continue;
+    if (tDim) {
+      var rowDims = String(row[dimIdx] || "").split(",").map(dimKey);
+      if (rowDims.indexOf(tDim) === -1) continue;
+    }
+    return ri + 1;
+  }
+  return -1;
+}
+
+/**
+ * 실시간_진화조건 헤더에 새 열(예: 던전 조건)이 없으면 채워 넣는다.
+ */
+function ensureConditionHeaders(condSheet) {
+  var lastCol = condSheet.getLastColumn();
+  if (lastCol >= CONDITION_HEADERS.length) {
+    var cur = condSheet.getRange(1, 1, 1, CONDITION_HEADERS.length).getValues()[0];
+    if (String(cur[CONDITION_HEADERS.length - 1]).trim() === CONDITION_HEADERS[CONDITION_HEADERS.length - 1]) return;
+  }
+  condSheet.getRange(1, 1, 1, CONDITION_HEADERS.length).setValues([CONDITION_HEADERS]);
+  initConditionSheetHeaders(condSheet);
+}
+
 function handleWikiEdit(ss, data) {
   var condSheet = ss.getSheetByName(SHEET_NAME_CONDITIONS);
   if (!condSheet) {
     condSheet = ss.insertSheet(SHEET_NAME_CONDITIONS);
     initConditionSheetHeaders(condSheet);
   }
+
+  ensureConditionHeaders(condSheet);
 
   var timeZone = Session.getScriptTimeZone() || "Asia/Seoul";
   var nowStr = Utilities.formatDate(new Date(), timeZone, "yyyy-MM-dd HH:mm:ss");
@@ -1178,15 +1229,14 @@ function handleWikiEdit(ss, data) {
     var fromIdx = colMap["출발 디지몬"] !== undefined ? colMap["출발 디지몬"] : 1;
     var dimIdx = colMap["DiM"] !== undefined ? colMap["DiM"] : 0;
 
-    for (var ri = 1; ri < allVals.length; ri++) {
-      var row = allVals[ri];
+    matchedRowIdx = findConditionRowIndex(allVals, colMap, targetDim, targetFrom, targetTo);
+    if (matchedRowIdx > 1) {
+      var row = allVals[matchedRowIdx - 1];
       var rTo = String(row[toIdx] || "").trim();
       var rFrom = String(row[fromIdx] || "").trim();
       var rDim = String(row[dimIdx] || "").trim();
-
-      if (rTo.toLowerCase() === targetTo.toLowerCase()) {
-        if (!targetFrom || !rFrom || rFrom.toLowerCase() === targetFrom.toLowerCase()) {
-          matchedRowIdx = ri + 1;
+      {
+        {
           if (!data.prevData || Object.keys(data.prevData).length === 0) {
             prevSnapshot = {
               dim: rDim,
@@ -1204,10 +1254,10 @@ function handleWikiEdit(ss, data) {
               note: colMap["비고/메모"] !== undefined ? row[colMap["비고/메모"]] : "",
               baseHp: colMap["체력(HP)"] !== undefined ? row[colMap["체력(HP)"]] : "",
               baseAp: colMap["전투력(AP)"] !== undefined ? row[colMap["전투력(AP)"]] : "",
-              baseSpd: colMap["속도(SPD)"] !== undefined ? row[colMap["속도(SPD)"]] : ""
+              baseSpd: colMap["속도(SPD)"] !== undefined ? row[colMap["속도(SPD)"]] : "",
+              dungeon: colMap["던전 조건"] !== undefined ? row[colMap["던전 조건"]] : ""
             };
           }
-          break;
         }
       }
     }
@@ -1241,7 +1291,9 @@ function handleWikiEdit(ss, data) {
     note: hasVal(data.note) ? data.note : (prevSnapshot.note || ""),
     baseHp: hasVal(data.baseHp) ? data.baseHp : (prevSnapshot.baseHp !== undefined && prevSnapshot.baseHp !== null ? prevSnapshot.baseHp : ""),
     baseAp: hasVal(data.baseAp) ? data.baseAp : (prevSnapshot.baseAp !== undefined && prevSnapshot.baseAp !== null ? prevSnapshot.baseAp : ""),
-    baseSpd: hasVal(data.baseSpd) ? data.baseSpd : (prevSnapshot.baseSpd !== undefined && prevSnapshot.baseSpd !== null ? prevSnapshot.baseSpd : "")
+    baseSpd: hasVal(data.baseSpd) ? data.baseSpd : (prevSnapshot.baseSpd !== undefined && prevSnapshot.baseSpd !== null ? prevSnapshot.baseSpd : ""),
+    // 던전은 "-" 로 "없음"을 보낼 수 있다 (빈칸이면 이전 값 유지)
+    dungeon: hasVal(data.dungeon) ? data.dungeon : (prevSnapshot.dungeon || "")
   };
 
   // human-readable diff 요약 생성
@@ -1255,6 +1307,7 @@ function handleWikiEdit(ss, data) {
     baseHp: "체력",
     baseAp: "전투력",
     baseSpd: "속도",
+    dungeon: "던전",
     jogress: "조그레스",
     item: "아이템",
     note: "비고"
@@ -1288,7 +1341,8 @@ function handleWikiEdit(ss, data) {
     newSnapshot.baseHp,
     newSnapshot.baseAp,
     newSnapshot.baseSpd,
-    editorUid
+    editorUid,
+    newSnapshot.dungeon
   ];
 
   if (matchedRowIdx > 1) {
@@ -1331,6 +1385,7 @@ function handleWikiRevert(ss, data) {
   if (!condSheet) {
     return { status: "error", message: "진화 조건 시트를 찾을 수 없습니다." };
   }
+  ensureConditionHeaders(condSheet);
 
   var targetTo = String(data.toName || data.to || "").trim();
   var targetFrom = String(data.fromName || data.from || "").trim();
@@ -1360,14 +1415,13 @@ function handleWikiRevert(ss, data) {
     var toIdx = colMap["진화 디지몬"] !== undefined ? colMap["진화 디지몬"] : 2;
     var fromIdx = colMap["출발 디지몬"] !== undefined ? colMap["출발 디지몬"] : 1;
 
-    for (var ri = 1; ri < allVals.length; ri++) {
-      var row = allVals[ri];
+    matchedRowIdx = findConditionRowIndex(allVals, colMap, targetData.dim || targetDim, targetFrom, targetTo);
+    if (matchedRowIdx > 1) {
+      var row = allVals[matchedRowIdx - 1];
       var rTo = String(row[toIdx] || "").trim();
       var rFrom = String(row[fromIdx] || "").trim();
-
-      if (rTo.toLowerCase() === targetTo.toLowerCase()) {
-        if (!targetFrom || !rFrom || rFrom.toLowerCase() === targetFrom.toLowerCase()) {
-          matchedRowIdx = ri + 1;
+      {
+        {
           currentSnapshot = {
             dim: row[colMap["DiM"] !== undefined ? colMap["DiM"] : 0] || "",
             from: rFrom,
@@ -1384,9 +1438,9 @@ function handleWikiRevert(ss, data) {
             note: colMap["비고/메모"] !== undefined ? row[colMap["비고/메모"]] : "",
             baseHp: colMap["체력(HP)"] !== undefined ? row[colMap["체력(HP)"]] : "",
             baseAp: colMap["전투력(AP)"] !== undefined ? row[colMap["전투력(AP)"]] : "",
-            baseSpd: colMap["속도(SPD)"] !== undefined ? row[colMap["속도(SPD)"]] : ""
+            baseSpd: colMap["속도(SPD)"] !== undefined ? row[colMap["속도(SPD)"]] : "",
+            dungeon: colMap["던전 조건"] !== undefined ? row[colMap["던전 조건"]] : ""
           };
-          break;
         }
       }
     }
@@ -1410,7 +1464,8 @@ function handleWikiRevert(ss, data) {
     targetData.baseHp !== undefined && targetData.baseHp !== null ? targetData.baseHp : "",
     targetData.baseAp !== undefined && targetData.baseAp !== null ? targetData.baseAp : "",
     targetData.baseSpd !== undefined && targetData.baseSpd !== null ? targetData.baseSpd : "",
-    editorUid + " [되돌림]"
+    editorUid + " [되돌림]",
+    targetData.dungeon !== undefined && targetData.dungeon !== null ? targetData.dungeon : (currentSnapshot.dungeon || "")
   ];
 
   if (matchedRowIdx > 1) {

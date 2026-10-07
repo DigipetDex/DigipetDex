@@ -1,7 +1,7 @@
 # 📖 DIGIPET 바이탈 링크 — AI 프로젝트 인수인계 문서
 
 > **작성일:** 2026-10-01  
-> **마지막 버전:** v1.3.94 (10.02 16:46)  
+> **마지막 버전:** v1.3.95 (10.07 12:54)  
 > **프로젝트 경로:** `f:\Game\DIGIPET\`  
 > **배포 사이트:** https://digipetdex.github.io/DigipetDex/ (GitHub Pages, 저장소 `DigipetDex/DigipetDex`)
 
