@@ -222,7 +222,7 @@ function handlePost(data) {
           c.vital !== undefined && c.vital !== null ? c.vital : "",
           c.pp !== undefined && c.pp !== null ? c.pp : "",
           c.battle !== undefined && c.battle !== null ? c.battle : "",
-          c.winRate !== undefined && c.winRate !== null ? c.winRate : "",
+          cleanWinRate(c.winRate),
           c.jogress || "",
           c.item || "",
           c.note || "",
@@ -565,7 +565,7 @@ function doGet(e) {
           vital: vitalIdx !== undefined ? cr[vitalIdx] : "",
           pp: ppIdx !== undefined ? cr[ppIdx] : "",
           battle: battleIdx !== undefined ? cr[battleIdx] : "",
-          winRate: winRateIdx !== undefined ? cr[winRateIdx] : "",
+          winRate: winRateIdx !== undefined ? cleanWinRate(cr[winRateIdx]) : "",
           jogress: jogressIdx !== undefined ? cr[jogressIdx] : "",
           item: itemIdx !== undefined ? cr[itemIdx] : "",
           note: noteIdx !== undefined ? cr[noteIdx] : "",
@@ -1148,6 +1148,16 @@ function getHistorySheet(ss) {
  * 위키 편집 처리 (실시간_진화조건 즉시 갱신 + 위키_변경역사 리비전 생성)
  */
 /**
+ * 승률 값 정리: "50%" → "50". 시트에 "50%" 를 그대로 쓰면 숫자 0.5(백분율)로 바뀌어 화면에 0.5% 로 보인다.
+ * 이미 0.5 처럼 소수로 바뀐 값은 50 으로 되돌린다.
+ */
+function cleanWinRate(v) {
+  if (v === undefined || v === null) return "";
+  if (typeof v === "number") return (v > 0 && v <= 1) ? String(Math.round(v * 100)) : String(v);
+  return String(v).replace(/%/g, "").trim();
+}
+
+/**
  * DiM 이름 비교용 키 (대소문자/공백/상태 아이콘 🚧❌⚠️ 무시, 클라이언트 isDigimonVisibleInDim 과 같은 기준)
  */
 function dimKey(dim) {
@@ -1285,7 +1295,7 @@ function handleWikiEdit(ss, data) {
     vital: hasVal(data.vital) ? data.vital : (prevSnapshot.vital !== undefined && prevSnapshot.vital !== null ? prevSnapshot.vital : ""),
     pp: hasVal(data.pp) ? data.pp : (prevSnapshot.pp !== undefined && prevSnapshot.pp !== null ? prevSnapshot.pp : ""),
     battle: hasVal(data.battle) ? data.battle : (prevSnapshot.battle !== undefined && prevSnapshot.battle !== null ? prevSnapshot.battle : ""),
-    winRate: hasVal(data.winRate) ? data.winRate : (prevSnapshot.winRate !== undefined && prevSnapshot.winRate !== null ? prevSnapshot.winRate : ""),
+    winRate: cleanWinRate(hasVal(data.winRate) ? data.winRate : (prevSnapshot.winRate !== undefined && prevSnapshot.winRate !== null ? prevSnapshot.winRate : "")),
     jogress: hasVal(data.jogress) ? data.jogress : (prevSnapshot.jogress || ""),
     item: hasVal(data.item) ? data.item : (prevSnapshot.item || ""),
     note: hasVal(data.note) ? data.note : (prevSnapshot.note || ""),
@@ -1456,7 +1466,7 @@ function handleWikiRevert(ss, data) {
     targetData.vital !== undefined && targetData.vital !== null ? targetData.vital : "",
     targetData.pp !== undefined && targetData.pp !== null ? targetData.pp : "",
     targetData.battle !== undefined && targetData.battle !== null ? targetData.battle : "",
-    targetData.winRate !== undefined && targetData.winRate !== null ? targetData.winRate : "",
+    cleanWinRate(targetData.winRate),
     targetData.jogress || "",
     targetData.item || "",
     targetData.note || "",

@@ -1888,7 +1888,11 @@
 
       try {
         // [안전장치] 배포 전 서버의 최신 유저 제보/수정 내역을 먼저 가져와 로컬 데이터에 안전하게 병합
-        await fetchAndApplyLiveConditions();
+        const merged = await fetchAndApplyLiveConditions();
+        if (!merged) {
+          alert("구글 시트에서 최신 유저 편집을 불러오지 못해 실시간 배포를 중단했습니다.\n(그대로 배포하면 유저 편집이 지워질 수 있습니다)\n잠시 후 다시 시도해 주세요.");
+          return;
+        }
         recalculateAllDigimonConditionStatuses();
 
         if (syncBtn) {
@@ -1977,7 +1981,8 @@
     // -------------------------------------------------------------
     // v2: 성장기 조건 강제 삭제 버그 수정 때 키를 바꿔, 그 버그로 지워진 값이 "에디터 수정"으로 보호되지 않게 초기화
     // v3: 던전 필드 추가로 서명 형식이 바뀌어 초기화
-    const LIVE_BASELINE_STORAGE_KEY = "digipet_live_baseline_v3";
+    // v4: 병합 후 project 를 저장하지 않고 기준값만 저장하던 버그(유저 편집이 '관리자 수정'으로 오인되어 배포 때 지워짐) 수정 → 잘못된 기준값 폐기
+    const LIVE_BASELINE_STORAGE_KEY = "digipet_live_baseline_v4";
     const LIVE_CONDITION_FIELDS = ["time", "vital", "pp", "battle", "winRate", "jogress", "item", "note", "dungeon"];
 
     function conditionSignature(obj) {
@@ -2017,6 +2022,7 @@
 
     // 실시간 배포 성공 후: 지금 값이 곧 시트 값이므로 기준값으로 저장
     function resetLiveBaselineToLocal() {
+      if (!saveState()) return;
       const baseline = {};
       forEachLiveConditionTarget((key, obj) => { baseline[key] = liveTargetSignature(key, obj); });
       saveLiveBaseline(baseline);
@@ -2192,19 +2198,13 @@
             forEachLiveConditionTarget((key, obj) => {
               newBaseline[key] = locallyEdited.has(key) ? baseline[key] : liveTargetSignature(key, obj);
             });
-            saveLiveBaseline(newBaseline);
+            // 반드시 project 를 먼저 저장하고, 성공했을 때만 기준값을 저장 (둘이 항상 같은 시점이어야 함)
+            if (saveState()) saveLiveBaseline(newBaseline);
             if (locallyEdited.size > 0) {
               console.log(`[라이브 조건 동기화] 에디터에서 수정한 ${locallyEdited.size}건은 시트 값으로 덮어쓰지 않았습니다 (실시간 배포 시 시트에 반영).`);
             }
           }
 
-          // 시트에 남아 있는 1200/8 더미값이 병합으로 되살아나지 않도록 다시 정리
-          // (기준값 저장 뒤에 정리하므로 에디터 수정으로 취급되어, 다음 실시간 배포 때 시트에서도 지워진다)
-          const dummyCleared = clearAllLegacyDummyValues();
-          if (dummyCleared > 0) {
-            console.log(`[라이브 조건 동기화] 시트의 1200/8 더미값 ${dummyCleared}건 정리`);
-            updatedCount += dummyCleared;
-          }
           // 시트에 디지타마~유년기 II 속성이 백신 등으로 남아 있어도 "-" 로 되돌림
           updatedCount += enforceEarlyStageAttr();
 
@@ -2214,9 +2214,13 @@
             if (selectedDigiId) updateSidebar();
             console.log(`[라이브 조건 동기화] ${updatedCount}개 조건 갱신 완료.`);
           }
+          return true;
         }
+        console.warn("실시간 조건 동기화 스킵: 서버 응답이 비어 있거나 실패", data && data.message);
+        return false;
       } catch (err) {
         console.warn("실시간 조건 동기화 스킵 (로컬 데이터 사용):", err);
+        return false;
       } finally {
         liveFetchInFlight = false;
       }

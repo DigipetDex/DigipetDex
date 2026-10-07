@@ -20,7 +20,7 @@ KEY_FUNCS = [
     ("applyViewerModeUI", "뷰어/에디터 모드에 맞춰 UI·제목·배지 갱신"),
     ("saveState", "project 를 localStorage 에 자동 저장"),
     ("getDefaultReqForStage", "세대별 기본 요건 반환 (시간만, 나머지 빈칸)"),
-    ("ensureDigimonRequirements", "로드 시 기본값 정리 (구형 더미값 1200/8 제거 등)"),
+    ("ensureDigimonRequirements", "로드 시 기본값 정리 (세대별 진화 시간 등)"),
     ("handleDigiImgError", "이미지 로드 실패 시 폴백 경로 탐색 (js/05 — <head>에서 가장 먼저 로드)"),
     ("syncSameNameDigimons", "동명 디지몬 간 img/attr/stage/baseHp·Ap·Spd 동기화"),
     ("isEvoRevealed", "단일 진화선 공개 여부 판별"),

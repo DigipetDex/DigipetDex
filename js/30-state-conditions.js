@@ -26,6 +26,7 @@
       }
     }
 
+    // project 를 localStorage 에 저장. 성공하면 true (저장 공간 부족 등으로 실패하면 false)
     function saveState() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(project));
@@ -34,8 +35,10 @@
           const nowStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
           statusEl.innerHTML = `<span style="display:inline-block; width:8px; height:8px; background:#23A55A; border-radius:50%; box-shadow:0 0 6px #23A55A;"></span> 저장됨 (${nowStr})`;
         }
+        return true;
       } catch (e) {
         console.error("자동 저장 실패:", e);
+        return false;
       }
     }
 
@@ -72,21 +75,6 @@
       };
     }
 
-    // 과거 템플릿 기본값(바이탈 1200, PP 8)이 다른 조건 없이 남아 있으면 빈칸으로 정리. 정리했으면 true.
-    // (진화선 evo 와 디지몬 req 둘 다 같은 필드 이름을 쓴다)
-    function clearLegacyDummyReq(req) {
-      if (!req) return false;
-      const v = String(req.vital || "").trim();
-      const p = String(req.pp || "").trim();
-      const hasOther = Boolean(req.battle || req.winRate || (req.jogress && req.jogress !== "-" && req.jogress !== "없음") || (req.item && req.item !== "-" && req.item !== "없음") || (req.dungeon && req.dungeon !== "-" && req.dungeon !== "없음"));
-      if ((v === "1200" || v === "1,200") && p === "8" && !hasOther) {
-        req.vital = "";
-        req.pp = "";
-        return true;
-      }
-      return false;
-    }
-
     // 던전 조건을 별점 형식("★", "★★", "★★★")으로 통일. "던전 ★★★", "던전★★★", "★★☆" 등을 변환.
     // 별이 없는 값("-", "없음", "")과 별점이 아닌 예전 값은 그대로 둔다.
     function normalizeDungeonValue(val) {
@@ -100,15 +88,6 @@
     function normalizeAllDungeonValues() {
       (project.evolutions || []).forEach(e => { e.dungeon = normalizeDungeonValue(e.dungeon); });
       Object.values(project.digimons || {}).forEach(d => { if (d.req) d.req.dungeon = normalizeDungeonValue(d.req.dungeon); });
-    }
-
-    // 전체 진화선/디지몬의 1200/8 더미값 정리. 정리한 개수를 반환.
-    // 구글 시트(실시간 조건)에도 같은 더미값이 남아 있어서, 시트 병합 뒤에도 다시 호출해야 한다.
-    function clearAllLegacyDummyValues() {
-      let count = 0;
-      (project.evolutions || []).forEach(e => { if (clearLegacyDummyReq(e)) count++; });
-      Object.values(project.digimons || {}).forEach(d => { if (clearLegacyDummyReq(d.req)) count++; });
-      return count;
     }
 
     function ensureDigimonRequirements() {
@@ -174,14 +153,12 @@
           }
         }
 
-        clearLegacyDummyReq(digi.req);
 
         // 해당 디지몬으로 향하는 모든 진화선에 시간과 유년기/성장기 조건 반영 (루트별 고유 시간이 이미 있으면 유지)
         project.evolutions.filter(e => e.to === digi.id).forEach(e => {
           if (!e.time) {
             e.time = digi.req.time;
           }
-          clearLegacyDummyReq(e);
         });
       });
     }
