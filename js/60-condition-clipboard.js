@@ -186,8 +186,13 @@
       if (inpAp) inpAp.value = (digi.baseAp !== undefined && digi.baseAp !== null) ? digi.baseAp : "";
       const inpSpd = document.getElementById("edit-base-spd");
       if (inpSpd) inpSpd.value = (digi.baseSpd !== undefined && digi.baseSpd !== null) ? digi.baseSpd : "";
-      // 진화 조건 공개 상태 라디오 버튼 갱신
-      const curStatus = digi.partialUnknown ? "partial" : (digi.unknownTime ? "unknown" : "known");
+      // 진화 조건 공개 상태 버튼 갱신: 수동 지정(conditionStatus)이 있으면 그 버튼, 없으면 [자동 판정]
+      const curStatus = ["known", "partial", "unknown"].includes(digi.conditionStatus) ? digi.conditionStatus : "auto";
+      const autoResultEl = document.getElementById("condition-status-auto-result");
+      if (autoResultEl) {
+        const autoLabel = digi.partialUnknown ? "일부 불명" : (digi.unknownTime ? "전체 불명" : "공개");
+        autoResultEl.textContent = curStatus === "auto" ? ` · 지금: ${autoLabel}` : " (수동 지정 해제)";
+      }
       document.querySelectorAll("#condition-status-selector .status-btn-opt").forEach(btn => {
         const val = btn.dataset.status;
         const input = btn.querySelector("input");
@@ -883,9 +888,14 @@
         const digi = project.digimons[selectedDigiId];
         if (!digi) return;
         const status = btn.dataset.status;
-        digi.conditionStatus = status;
-        digi.unknownTime = (status === "unknown");
-        digi.partialUnknown = (status === "partial");
+        if (status === "auto") {
+          delete digi.conditionStatus;
+          updateDigimonConditionStatus(digi);
+        } else {
+          digi.conditionStatus = status;
+          digi.unknownTime = (status === "unknown");
+          digi.partialUnknown = (status === "partial");
+        }
         syncSameNameDigimons(digi);
         saveState();
         renderTree();

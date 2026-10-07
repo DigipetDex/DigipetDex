@@ -89,7 +89,8 @@ var CONDITION_HEADERS = [
   "전투력(AP)",
   "속도(SPD)",
   "마지막 편집자",
-  "던전 조건"
+  "던전 조건",
+  "상태 고정"
 ];
 
 var HISTORY_HEADERS = [
@@ -178,7 +179,8 @@ var AUDIT_FIELDS = [
   ["진화 시간", "time", "진화시간"], ["필요 바이탈", "vital", "바이탈"], ["필요 PP", "pp", "PP"],
   ["배틀 횟수", "battle", "배틀"], ["필요 승률(%)", "winRate", "승률"], ["조그레스 파트너", "jogress", "조그레스"],
   ["필요 아이템", "item", "아이템"], ["비고/메모", "note", "비고"], ["던전 조건", "dungeon", "던전"],
-  ["체력(HP)", "baseHp", "체력"], ["전투력(AP)", "baseAp", "전투력"], ["속도(SPD)", "baseSpd", "속도"]
+  ["체력(HP)", "baseHp", "체력"], ["전투력(AP)", "baseAp", "전투력"], ["속도(SPD)", "baseSpd", "속도"],
+  ["상태 고정", "statusLock", "상태 고정"]
 ];
 
 function auditNorm(field, v) {
@@ -304,7 +306,8 @@ function handlePost(data) {
           c.baseAp !== undefined && c.baseAp !== null ? c.baseAp : "",
           c.baseSpd !== undefined && c.baseSpd !== null ? c.baseSpd : "",
           c.editor || "관리자 배포",
-          c.dungeon || ""
+          c.dungeon || "",
+          c.statusLock || ""
         ];
       });
 
@@ -622,6 +625,7 @@ function doGet(e) {
       var spdIdx = colMap["속도(SPD)"] !== undefined ? colMap["속도(SPD)"] : colMap["SPD"];
       var editorIdx = colMap["마지막 편집자"] !== undefined ? colMap["마지막 편집자"] : colMap["편집자"];
       var dungeonIdx = colMap["던전 조건"];
+      var lockIdx = colMap["상태 고정"];
 
       var condList = [];
       for (var ci = 1; ci < allValues.length; ci++) {
@@ -649,7 +653,8 @@ function doGet(e) {
           baseAp: apIdx !== undefined && cr[apIdx] !== undefined ? String(cr[apIdx]).trim() : "",
           baseSpd: spdIdx !== undefined && cr[spdIdx] !== undefined ? String(cr[spdIdx]).trim() : "",
           lastEditor: editorIdx !== undefined && cr[editorIdx] !== undefined ? String(cr[editorIdx]).trim() : "",
-          dungeon: dungeonIdx !== undefined && cr[dungeonIdx] !== undefined ? String(cr[dungeonIdx]).trim() : undefined
+          dungeon: dungeonIdx !== undefined && cr[dungeonIdx] !== undefined ? String(cr[dungeonIdx]).trim() : undefined,
+          statusLock: lockIdx !== undefined && cr[lockIdx] !== undefined ? String(cr[lockIdx]).trim() : undefined
         });
       }
 
@@ -1340,7 +1345,8 @@ function handleWikiEdit(ss, data) {
               baseHp: colMap["체력(HP)"] !== undefined ? row[colMap["체력(HP)"]] : "",
               baseAp: colMap["전투력(AP)"] !== undefined ? row[colMap["전투력(AP)"]] : "",
               baseSpd: colMap["속도(SPD)"] !== undefined ? row[colMap["속도(SPD)"]] : "",
-              dungeon: colMap["던전 조건"] !== undefined ? row[colMap["던전 조건"]] : ""
+              dungeon: colMap["던전 조건"] !== undefined ? row[colMap["던전 조건"]] : "",
+              statusLock: colMap["상태 고정"] !== undefined ? row[colMap["상태 고정"]] : ""
             };
           }
         }
@@ -1378,7 +1384,9 @@ function handleWikiEdit(ss, data) {
     baseAp: hasVal(data.baseAp) ? data.baseAp : (prevSnapshot.baseAp !== undefined && prevSnapshot.baseAp !== null ? prevSnapshot.baseAp : ""),
     baseSpd: hasVal(data.baseSpd) ? data.baseSpd : (prevSnapshot.baseSpd !== undefined && prevSnapshot.baseSpd !== null ? prevSnapshot.baseSpd : ""),
     // 던전은 "-" 로 "없음"을 보낼 수 있다 (빈칸이면 이전 값 유지)
-    dungeon: hasVal(data.dungeon) ? data.dungeon : (prevSnapshot.dungeon || "")
+    dungeon: hasVal(data.dungeon) ? data.dungeon : (prevSnapshot.dungeon || ""),
+    // 조건 공개 상태 고정: auto / known / partial / unknown (빈칸이면 이전 값 유지)
+    statusLock: hasVal(data.statusLock) ? data.statusLock : (prevSnapshot.statusLock || "")
   };
 
   // human-readable diff 요약 생성
@@ -1393,6 +1401,7 @@ function handleWikiEdit(ss, data) {
     baseAp: "전투력",
     baseSpd: "속도",
     dungeon: "던전",
+    statusLock: "상태 고정",
     jogress: "조그레스",
     item: "아이템",
     note: "비고"
@@ -1427,7 +1436,8 @@ function handleWikiEdit(ss, data) {
     newSnapshot.baseAp,
     newSnapshot.baseSpd,
     editorUid,
-    newSnapshot.dungeon
+    newSnapshot.dungeon,
+    newSnapshot.statusLock
   ];
 
   if (matchedRowIdx > 1) {
@@ -1524,7 +1534,8 @@ function handleWikiRevert(ss, data) {
             baseHp: colMap["체력(HP)"] !== undefined ? row[colMap["체력(HP)"]] : "",
             baseAp: colMap["전투력(AP)"] !== undefined ? row[colMap["전투력(AP)"]] : "",
             baseSpd: colMap["속도(SPD)"] !== undefined ? row[colMap["속도(SPD)"]] : "",
-            dungeon: colMap["던전 조건"] !== undefined ? row[colMap["던전 조건"]] : ""
+            dungeon: colMap["던전 조건"] !== undefined ? row[colMap["던전 조건"]] : "",
+            statusLock: colMap["상태 고정"] !== undefined ? row[colMap["상태 고정"]] : ""
           };
         }
       }
@@ -1550,7 +1561,8 @@ function handleWikiRevert(ss, data) {
     targetData.baseAp !== undefined && targetData.baseAp !== null ? targetData.baseAp : "",
     targetData.baseSpd !== undefined && targetData.baseSpd !== null ? targetData.baseSpd : "",
     editorUid + " [되돌림]",
-    targetData.dungeon !== undefined && targetData.dungeon !== null ? targetData.dungeon : (currentSnapshot.dungeon || "")
+    targetData.dungeon !== undefined && targetData.dungeon !== null ? targetData.dungeon : (currentSnapshot.dungeon || ""),
+    targetData.statusLock !== undefined && targetData.statusLock !== null ? targetData.statusLock : (currentSnapshot.statusLock || "")
   ];
 
   if (matchedRowIdx > 1) {

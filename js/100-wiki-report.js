@@ -227,6 +227,7 @@
       if (inputItem) inputItem.value = (req.item && req.item !== "-") ? req.item : "";
       if (inputNote) inputNote.value = req.note || "";
       setReportDungeonSelect(req.dungeon);
+      setReportStatusLock(digi);
 
       const inputIdle = document.getElementById("report-input-idle");
       if (inputIdle) {
@@ -261,6 +262,48 @@
         sel.appendChild(opt);
       }
       sel.value = cur || "-";
+    }
+
+    // 조건 공개 상태 고정 값: "auto" | "known" | "partial" | "unknown"
+    const STATUS_LOCK_LABELS = { auto: "자동", known: "공개", partial: "일부 불명", unknown: "불명" };
+    function statusLockOf(digi) {
+      return digi && ["known", "partial", "unknown"].includes(digi.conditionStatus) ? digi.conditionStatus : "auto";
+    }
+
+    function selectReportStatusLock(lock) {
+      document.querySelectorAll("#report-status-lock .report-lock-opt").forEach(opt => {
+        const on = opt.dataset.lock === lock;
+        opt.classList.toggle("active", on);
+        const input = opt.querySelector("input");
+        if (input) input.checked = on;
+      });
+    }
+
+    function setReportStatusLock(digi) {
+      selectReportStatusLock(statusLockOf(digi));
+      const hint = document.getElementById("report-status-lock-hint");
+      if (hint) {
+        const autoLabel = digi.partialUnknown ? "일부 불명" : (digi.unknownTime ? "불명" : "공개");
+        hint.textContent = statusLockOf(digi) === "auto"
+          ? `지금 자동 판정 결과: ${autoLabel} · 실제와 다르면 상태를 직접 골라 고정할 수 있어요.`
+          : `지금 '${STATUS_LOCK_LABELS[statusLockOf(digi)]}'(으)로 고정되어 있어요. [🤖 자동]을 고르면 고정이 풀려요.`;
+      }
+    }
+
+    function getReportStatusLock() {
+      const active = document.querySelector("#report-status-lock .report-lock-opt.active");
+      return active ? active.dataset.lock : "auto";
+    }
+
+    // 디지몬에 상태 고정 적용 ("auto" 면 고정 해제 후 자동 판정)
+    function applyStatusLock(digi, lock) {
+      if (!digi) return;
+      if (lock === "known" || lock === "partial" || lock === "unknown") {
+        digi.conditionStatus = lock;
+      } else {
+        delete digi.conditionStatus;
+      }
+      updateDigimonConditionStatus(digi);
     }
 
     function closeReportModal() {
@@ -318,8 +361,11 @@
       const req = getEvoRequirements(activeEvo, toDigi);
       const prevDungeon = dungeonDisplayValue(req.dungeon);
       const dungeonChanged = inputDungeon !== prevDungeon;
+      const prevStatusLock = statusLockOf(toDigi);
+      const inputStatusLock = getReportStatusLock();
+      const statusLockChanged = inputStatusLock !== prevStatusLock;
 
-      if (!inputTime && !inputVital && !inputPp && !inputBattle && !inputWinrate && !inputJogress && !inputItem && !inputNote && !inputHp && !inputAp && !inputSpd && !inputIdle && !dungeonChanged) {
+      if (!inputTime && !inputVital && !inputPp && !inputBattle && !inputWinrate && !inputJogress && !inputItem && !inputNote && !inputHp && !inputAp && !inputSpd && !inputIdle && !dungeonChanged && !statusLockChanged) {
         alert("최소 하나 이상의 진화 조건, 기본 스탯, 또는 비고 내용을 입력해 주세요.");
         return;
       }
@@ -340,7 +386,8 @@
         jogress: req.jogress || "",
         item: req.item || "",
         note: req.note || "",
-        dungeon: prevDungeon
+        dungeon: prevDungeon,
+        statusLock: prevStatusLock
       };
 
       // 2. [즉시 반영] 로컬 인메모리 도감 및 에디터에 변경사항 실시간 적용
@@ -383,7 +430,8 @@
       }
 
       // 모든 incoming 루트를 재평가하여 공개/일부불명/조건불명 상태 정확히 산출
-      // (한 루트만 밝혀져도 전체 공개로 뜨는 버그 방지)
+      // (한 루트만 밝혀져도 전체 공개로 뜨는 버그 방지). 상태 고정을 바꿨으면 함께 적용
+      if (statusLockChanged) applyStatusLock(toDigi, inputStatusLock);
       updateDigimonConditionStatus(toDigi);
 
       saveState();
@@ -409,6 +457,7 @@
         baseAp: "전투력",
         baseSpd: "속도",
         dungeon: "던전",
+        statusLock: "상태 고정",
         jogress: "조그레스",
         item: "아이템",
         note: "비고"
@@ -429,7 +478,8 @@
         jogress: inputJogress !== "" ? inputJogress : prevSnapshot.jogress,
         item: inputItem !== "" ? inputItem : prevSnapshot.item,
         note: inputNote !== "" ? inputNote : prevSnapshot.note,
-        dungeon: inputDungeon
+        dungeon: inputDungeon,
+        statusLock: inputStatusLock
       };
 
       for (const k in fieldNameMap) {
@@ -491,6 +541,7 @@
             item: newSnapshot.item,
             note: newSnapshot.note,
             dungeon: inputDungeonRaw,
+            statusLock: inputStatusLock,
             comment: inputComment,
             diffSummary: localDiffSummary,
             prevData: prevSnapshot
@@ -938,9 +989,15 @@
         return;
       }
 
-      const targetDigi = findDigimonByNameOrId(item.toName);
+      // 같은 이름의 디지몬이 여러 DiM 에 있을 수 있음: 스탯만 공통이고 진화선/조건/상태는 DiM 마다 다르다.
+      // 그래서 조건 복원은 기록의 DiM 에 있는 디지몬에만 적용한다.
+      const sameNameDigis = Object.values(project.digimons).filter(d => d.name && d.name.trim().toLowerCase() === String(item.toName || "").trim().toLowerCase());
+      let dimDigis = item.dim ? sameNameDigis.filter(d => isDigimonVisibleInDim(d, item.dim)) : [];
+      if (dimDigis.length === 0 && sameNameDigis.length === 1) dimDigis = sameNameDigis;
+      if (dimDigis.length === 0 && filterDim) dimDigis = sameNameDigis.filter(d => isDigimonVisibleInDim(d, filterDim));
+      const targetDigi = dimDigis[0];
       if (!targetDigi) {
-        alert(`도감에서 [${item.toName}] 디지몬을 찾을 수 없습니다.`);
+        alert(`도감에서 [${item.dim || "?"}] DiM 의 [${item.toName}] 디지몬을 찾을 수 없습니다.`);
         return;
       }
 
@@ -960,7 +1017,6 @@
       if (!confirm(confirmMsg)) return;
 
       // 1. [로컬 즉시 복원]
-      const targetNameLower = (item.toName || "").trim().toLowerCase();
       const normalizeStat = (v) => {
         if (v === undefined || v === null) return "";
         const s = String(v).trim();
@@ -972,8 +1028,7 @@
       const restoredSpd = dataToApply.baseSpd !== undefined ? normalizeStat(dataToApply.baseSpd) : (targetDigi.baseSpd !== undefined ? targetDigi.baseSpd : "");
 
       // 동명 디지몬 전체 스탯 복원 및 동기화 (autoSyncAllSameNameDigimons의 donor 덮어쓰기 방지)
-      const targetDigis = Object.values(project.digimons).filter(d => d.name && d.name.trim().toLowerCase() === targetNameLower);
-      targetDigis.forEach(d => {
+      sameNameDigis.forEach(d => {
         d.baseHp = restoredHp;
         d.baseAp = restoredAp;
         d.baseSpd = restoredSpd;
@@ -986,7 +1041,7 @@
       };
 
       // 매칭되는 진화선 찾기
-      const targetDigiIds = new Set(targetDigis.map(d => d.id));
+      const targetDigiIds = new Set(dimDigis.map(d => d.id));
       let matchedEvos = [];
       if (item.fromName) {
         const fromLower = item.fromName.trim().toLowerCase();
@@ -1009,6 +1064,7 @@
       const restoredItem = dataToApply.item !== undefined ? normalizeVal(dataToApply.item) : (targetDigi.req?.item || "");
       const restoredNote = dataToApply.note !== undefined ? dataToApply.note : (targetDigi.req?.note || "");
       const restoredDungeon = dataToApply.dungeon !== undefined ? dungeonDisplayValue(dataToApply.dungeon) : null;
+      const restoredLock = dataToApply.statusLock !== undefined && dataToApply.statusLock !== "" ? String(dataToApply.statusLock) : null;
 
       matchedEvos.forEach(ev => {
         ev.time = restoredTime;
@@ -1022,7 +1078,7 @@
         if (restoredDungeon !== null) ev.dungeon = restoredDungeon;
       });
 
-      targetDigis.forEach(d => {
+      dimDigis.forEach(d => {
         if (!d.req) d.req = getDefaultReqForStage(d.stage);
         d.req.time = restoredTime;
         d.req.vital = restoredVital !== "" ? Number(restoredVital) : "";
@@ -1033,6 +1089,7 @@
         d.req.item = restoredItem;
         d.req.note = restoredNote;
         if (restoredDungeon !== null) d.req.dungeon = restoredDungeon;
+        if (restoredLock !== null) applyStatusLock(d, restoredLock);
       });
 
       // 복원된 디지몬의 DiM으로 전환 및 디지몬 자동 선택하여 사이드바에 즉각 반영
@@ -1708,8 +1765,8 @@
         }
       }
 
-      // 2순위: 현재 에디터 화면에 열려있는 filterDim 안에서 탐색
-      if (!toDigi && filterDim) {
+      // 2순위: (제보에 DiM 이 없을 때만) 현재 에디터 화면에 열려있는 filterDim 안에서 탐색
+      if (!toDigi && !repDimClean && filterDim) {
         const curDimClean = cleanDim(filterDim);
         toDigi = Object.values(project.digimons).find(d => {
           if (!d.name || d.name.trim().toLowerCase() !== toNameClean) return false;
@@ -1723,8 +1780,8 @@
         }
       }
 
-      // 3순위: 전체 디지몬 목록에서 매칭 (동일 DiM을 가진 쌍 우선)
-      if (!toDigi) {
+      // 3순위: (제보에 DiM 이 없을 때만) 전체 디지몬 목록에서 매칭
+      if (!toDigi && !repDimClean) {
         const toCandidates = Object.values(project.digimons).filter(d => d.name && d.name.trim().toLowerCase() === toNameClean);
         if (toCandidates.length === 1) {
           toDigi = toCandidates[0];
@@ -1736,7 +1793,7 @@
       if (!fromDigi && fromNameClean) {
         const targetDimClean = toDigi ? cleanDim(toDigi.dim) : repDimClean;
         const fromCandidates = Object.values(project.digimons).filter(d => d.name && d.name.trim().toLowerCase() === fromNameClean);
-        fromDigi = fromCandidates.find(d => cleanDim(d.dim) === targetDimClean) || fromCandidates[0];
+        fromDigi = fromCandidates.find(d => cleanDim(d.dim) === targetDimClean) || (fromCandidates.length === 1 ? fromCandidates[0] : null);
       }
 
       if (!toDigi) {
@@ -1935,7 +1992,8 @@
             jogress: req.jogress || "",
             item: req.item || "",
             note: req.note || "",
-            dungeon: dungeonDisplayValue(req.dungeon)
+            dungeon: dungeonDisplayValue(req.dungeon),
+            statusLock: statusLockOf(toD)
           });
         });
 
@@ -2018,7 +2076,9 @@
 
     // 키별 현재 값의 서명: 진화선/req 는 조건 필드들, attr|<id> 는 속성 값
     function liveTargetSignature(key, obj) {
-      return key.startsWith("attr|") ? String((obj && obj.attr) || "") : conditionSignature(obj);
+      if (key.startsWith("attr|")) return String((obj && obj.attr) || "");
+      if (key.startsWith("lock|")) return statusLockOf(obj);
+      return conditionSignature(obj);
     }
 
     function forEachLiveConditionTarget(fn) {
@@ -2026,6 +2086,7 @@
       Object.values(project.digimons || {}).forEach(d => {
         fn(`req|${d.id}`, d.req);
         fn(`attr|${d.id}`, d);
+        fn(`lock|${d.id}`, d);
       });
     }
 
@@ -2210,6 +2271,27 @@
             });
           });
 
+          // 상태 고정: 디지몬마다 가장 최근에 갱신된 행의 값을 적용 (열이 없는 예전 시트면 건너뜀)
+          const lockByDigi = {};
+          data.conditions.forEach(c => {
+            if (c.statusLock === undefined || !c.to) return;
+            const key = `${String(c.dim || "").trim()}|${c.to.trim().toLowerCase()}`;
+            const t = String(c.updatedAt || "");
+            if (!lockByDigi[key] || t > lockByDigi[key].t) lockByDigi[key] = { t, lock: c.statusLock, dim: c.dim, to: c.to };
+          });
+          Object.values(lockByDigi).forEach(({ lock, dim, to }) => {
+            Object.values(project.digimons || {}).forEach(d => {
+              if (d.name.trim().toLowerCase() !== to.trim().toLowerCase()) return;
+              if (dim && !isDigimonVisibleInDim(d, dim)) return;
+              if (locallyEdited.has(`lock|${d.id}`)) return;
+              const want = ["known", "partial", "unknown"].includes(lock) ? lock : "auto";
+              if (statusLockOf(d) !== want) {
+                applyStatusLock(d, want);
+                updatedCount++;
+              }
+            });
+          });
+
           // 시트에서 받은 값을 새 기준값으로 기억 (에디터에서 고친 항목은 이전 기준값 유지 → 계속 보호)
           if (protectEdits) {
             const newBaseline = {};
@@ -2251,6 +2333,14 @@
       const cancelReportBtn = document.getElementById("btn-report-cancel");
       if (closeReportBtn) closeReportBtn.addEventListener("click", closeReportModal);
       if (cancelReportBtn) cancelReportBtn.addEventListener("click", closeReportModal);
+
+      // 조건 공개 상태 버튼 (자동 / 공개 / 일부 불명 / 불명)
+      document.querySelectorAll("#report-status-lock .report-lock-opt").forEach(opt => {
+        opt.addEventListener("click", (e) => {
+          e.preventDefault();
+          selectReportStatusLock(opt.dataset.lock);
+        });
+      });
 
       // 시간 프리셋 칩 클릭
       document.querySelectorAll(".btn-report-time-preset").forEach(chip => {

@@ -489,6 +489,20 @@
       background: rgba(255, 255, 255, 0.09);
       color: #fff;
     }
+    .status-btn-opt.status-opt-auto {
+      grid-column: 1 / -1;
+    }
+    .status-btn-opt.status-opt-auto em {
+      font-style: normal;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+    .status-btn-opt.active.status-opt-auto {
+      background: rgba(245, 158, 11, 0.16);
+      border-color: #F59E0B;
+      color: #FCD34D;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.35);
+    }
     .status-btn-opt.active.status-opt-known {
       background: rgba(35, 165, 90, 0.22);
       border-color: #23A55A;
@@ -1597,7 +1611,7 @@
         padding: 5px 6px !important;
       }
       #btn-add-dim, #btn-rename-dim, #btn-delete-dim, #btn-dim-up, #btn-dim-down,
-      #btn-open-wiki-history, #btn-open-evolution-planner, #btn-open-training-calc, #btn-open-status-board, #btn-open-attr-chart {
+      #btn-open-wiki-history, #btn-open-evolution-planner, #btn-open-training-calc, #btn-open-status-board, #btn-open-attr-chart, #btn-open-digimon-list {
         display: none !important;
       }
 
@@ -1618,6 +1632,9 @@
         display: inline-flex !important;
       }
       #btn-mobile-attr-chart {
+        display: inline-flex !important;
+      }
+      #btn-mobile-digimon-list {
         display: inline-flex !important;
       }
 
@@ -2423,6 +2440,16 @@
     border-color: rgba(167, 139, 250, 0.28);
   }
 
+/* ===== 위키 편집 창: 조건 공개 상태 ===== */
+.report-status-lock { display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; }
+.report-lock-opt { display:flex; align-items:center; justify-content:center; padding:7px 4px; border:1px solid #4E5058; border-radius:6px; background:#2B2D31; color:#CBD5E1; font-size:0.78rem; font-weight:600; cursor:pointer; user-select:none; white-space:nowrap; }
+.report-lock-opt input { display:none; }
+.report-lock-opt:hover { background:#36393F; }
+.report-lock-opt.active[data-lock="auto"] { background:rgba(245,158,11,0.16); border-color:#F59E0B; color:#FCD34D; }
+.report-lock-opt.active[data-lock="known"] { background:rgba(35,165,90,0.22); border-color:#23A55A; color:#2ECC71; }
+.report-lock-opt.active[data-lock="partial"] { background:rgba(56,189,248,0.22); border-color:#38BDF8; color:#7DD3FC; }
+.report-lock-opt.active[data-lock="unknown"] { background:rgba(148,163,184,0.22); border-color:#94A3B8; color:#F1F5F9; }
+
 /* ===== 조건 공개 현황판 (js/105-status-board.js) ===== */
 .status-summary { background:#2B2D31; border:1px solid #3F4147; border-radius:8px; padding:12px; margin-bottom:12px; }
 .status-summary-head { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; font-size:0.85rem; color:#E2E8F0; margin-bottom:8px; }
@@ -2521,4 +2548,51 @@
   .attr-chart-table th.corner { font-size:0.6rem; }
   .attr-chart-table td { padding:7px 1px; }
   .attr-chart-table .attr-chart-dot { display:none; }
+}
+
+/* ===== 전체 디지몬 목록 (js/107-digimon-list.js) ===== */
+.digi-list-box { max-width:760px; width:96%; height:88vh; display:flex; flex-direction:column; padding:0; overflow:hidden; background:#1E1F22; border:1px solid #33363D; border-radius:10px; box-shadow:0 16px 40px rgba(0,0,0,0.8); }
+.digi-list-top { padding:10px 16px; background:#23272A; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; }
+.digi-list-controls { padding:10px 14px 6px; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; flex-direction:column; gap:6px; }
+.digi-list-ctrl-row { display:flex; gap:6px; }
+.digi-list-ctrl-row input { flex:1; min-width:0; font-size:0.82rem; padding:6px 8px; }
+.digi-list-ctrl-row select { width:auto; font-size:0.8rem; padding:6px 6px; }
+.digi-list-btn { padding:6px 10px; font-size:0.78rem; font-weight:600; background:#2B2D31; border:1px solid #4E5058; color:#E2E8F0; border-radius:6px; cursor:pointer; white-space:nowrap; }
+.digi-chip-row { display:flex; align-items:flex-start; gap:8px; }
+.digi-chip-row > span { font-size:0.72rem; color:#94A3B8; padding-top:4px; white-space:nowrap; width:28px; }
+.digi-chips { display:flex; flex-wrap:wrap; gap:4px; }
+.digi-chip { display:inline-flex; align-items:center; gap:3px; padding:3px 8px; font-size:0.72rem; border-radius:12px; border:1px solid #4E5058; background:#2B2D31; color:#94A3B8; cursor:pointer; }
+.digi-chip.active { background:rgba(34,211,238,0.15); border-color:#22D3EE; color:#E2E8F0; font-weight:600; }
+.digi-chip .attr-icon { width:14px; height:14px; }
+.digi-list-body { flex:1; overflow-y:auto; padding:0 8px 8px; }
+.digi-list-row { display:grid; grid-template-columns:44px minmax(0,1fr) 72px 84px 54px 54px 54px; align-items:center; gap:6px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.05); font-size:0.8rem; color:#E2E8F0; }
+.digi-list-row[data-id] { cursor:pointer; }
+.digi-list-row[data-id]:hover { background:rgba(255,255,255,0.05); }
+.digi-list-head { position:sticky; top:0; z-index:1; background:#1E1F22; border-bottom:1px solid #3F4147; padding-top:8px; }
+.digi-list-head button { background:none; border:none; color:#94A3B8; font-size:0.72rem; font-weight:700; cursor:pointer; text-align:left; padding:2px 0; white-space:nowrap; }
+.digi-list-head button:hover { color:#E2E8F0; }
+.digi-list-head .col-stat { text-align:right; }
+.col-img img { width:40px; height:40px; object-fit:contain; image-rendering:pixelated; display:block; }
+.col-name { display:flex; flex-direction:column; min-width:0; }
+.col-name strong { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.col-name small { font-size:0.66rem; color:#64748B; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.col-meta { display:none; align-items:center; gap:3px; font-size:0.68rem; color:#94A3B8; }
+.col-meta .attr-icon { width:13px; height:13px; }
+.col-stage { font-size:0.74rem; color:#CBD5E1; white-space:nowrap; }
+.col-attr { display:inline-flex; align-items:center; gap:4px; font-size:0.74rem; color:var(--attr-c); white-space:nowrap; }
+.col-attr em { font-style:normal; }
+.col-attr .attr-icon { width:18px; height:18px; }
+.col-stat { text-align:right; font-variant-numeric:tabular-nums; font-weight:700; }
+.col-stat.hp { color:#34D399; } .col-stat.ap { color:#F87171; } .col-stat.spd { color:#38BDF8; }
+.col-stat.empty { color:#4B5563; font-weight:400; }
+.digi-list-hint { font-size:0.7rem; color:#64748B; min-width:0; }
+.digi-list-empty { padding:30px; text-align:center; color:#94A3B8; font-size:0.85rem; }
+@media (max-width: 600px) {
+  .digi-list-box { width:100%; height:92vh; }
+  .digi-list-row { grid-template-columns:38px minmax(0,1fr) 40px 40px 40px; gap:4px; }
+  .digi-list-row > .col-stage, .digi-list-row > .col-attr { display:none; }
+  .col-meta { display:flex !important; }
+  .col-img img { width:34px; height:34px; }
+  .digi-list-ctrl-row { flex-wrap:wrap; }
+  .digi-list-ctrl-row input { flex-basis:100%; }
 }

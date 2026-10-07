@@ -2557,8 +2557,7 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "lineColor": "#2563EB",
       "unknownTime": false,
-      "partialUnknown": false,
-      "conditionStatus": "known"
+      "partialUnknown": false
     },
     "digi_1790221247996": {
       "id": "digi_1790221247996",
@@ -6986,9 +6985,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "lineColor": "#EF4444",
       "unknownTime": false,
       "partialUnknown": false,
-      "baseHp": "",
-      "baseAp": "",
-      "baseSpd": ""
+      "baseHp": 100,
+      "baseAp": 20,
+      "baseSpd": 40
     },
     "digi_1790351066177": {
       "id": "digi_1790351066177",
@@ -7011,7 +7010,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "unknownTime": false,
       "partialUnknown": false,
-      "lineColor": "#EF4444"
+      "lineColor": "#EF4444",
+      "baseHp": 145,
+      "baseAp": 45,
+      "baseSpd": 70
     },
     "digi_1790352697336": {
       "id": "digi_1790352697336",
@@ -7034,7 +7036,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "unknownTime": false,
       "partialUnknown": false,
-      "lineColor": "#A855F7"
+      "lineColor": "#A855F7",
+      "baseHp": 150,
+      "baseAp": 40,
+      "baseSpd": 60
     },
     "digi_1790352769392": {
       "id": "digi_1790352769392",
@@ -7059,7 +7064,9 @@ window.DIGIPET_DEFAULT_DATA = {
       "lineColor": "#2563EB",
       "unknownTime": false,
       "partialUnknown": false,
-      "conditionStatus": "known"
+      "baseHp": 145,
+      "baseAp": 40,
+      "baseSpd": 50
     },
     "digi_1790352796310": {
       "id": "digi_1790352796310",
@@ -7082,7 +7089,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "unknownTime": false,
       "partialUnknown": false,
-      "lineColor": "#EF4444"
+      "lineColor": "#EF4444",
+      "baseHp": 220,
+      "baseAp": 60,
+      "baseSpd": 90
     },
     "digi_1790352800449": {
       "id": "digi_1790352800449",
@@ -7129,7 +7139,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "unknownTime": false,
       "partialUnknown": false,
       "independentReq": true,
-      "lineColor": "#22C55E"
+      "lineColor": "#22C55E",
+      "baseHp": 165,
+      "baseAp": 35,
+      "baseSpd": 70
     },
     "digi_1790353066755": {
       "id": "digi_1790353066755",
@@ -7141,20 +7154,22 @@ window.DIGIPET_DEFAULT_DATA = {
       "order": 87,
       "req": {
         "time": "36시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
-        "winRate": "",
+        "vital": 3000,
+        "pp": 12,
+        "battle": 120,
+        "winRate": "70",
         "dungeon": "",
         "jogress": "",
         "item": "",
         "note": ""
       },
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "lineColor": "#F97316",
-      "conditionStatus": "unknown"
+      "baseHp": 210,
+      "baseAp": 65,
+      "baseSpd": 110
     },
     "digi_1790353494535": {
       "id": "digi_1790353494535",
@@ -7359,7 +7374,7 @@ window.DIGIPET_DEFAULT_DATA = {
     },
     "digi_1790360149415": {
       "id": "digi_1790360149415",
-      "name": "오메가몬 Alter-B",
+      "name": "오메가몬 alter-B",
       "stage": "초궁극체II",
       "attr": "virus",
       "img": "images/embedded/f1d75d94215031ea.gif",
@@ -11396,7 +11411,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#F97316"
+      "lineColor": "#F97316",
+      "baseHp": 210,
+      "baseAp": 65,
+      "baseSpd": 110
     },
     "digi_1790664830124": {
       "id": "digi_1790664830124",
@@ -11736,7 +11754,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#EF4444"
+      "lineColor": "#EF4444",
+      "baseHp": 210,
+      "baseAp": 65,
+      "baseSpd": 110
     },
     "digi_1790669167299": {
       "id": "digi_1790669167299",
@@ -13456,7 +13477,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "챠크몬 EX🚧",
       "order": 37,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "1시간",
@@ -13470,7 +13491,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "note": ""
       },
       "lineColor": "#EF4444",
-      "conditionStatus": "unknown"
+      "conditionStatus": "known"
     },
     "digi_1790822690259": {
       "id": "digi_1790822690259",
@@ -13484,7 +13505,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "챠크몬 EX🚧",
       "order": 38,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "1시간",
@@ -13498,7 +13519,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "note": "방치 진화"
       },
       "lineColor": "#A855F7",
-      "conditionStatus": "unknown"
+      "conditionStatus": "known"
     },
     "digi_1790822719494": {
       "id": "digi_1790822719494",
@@ -15069,7 +15090,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "order": 126,
       "independentReq": true,
       "unknownTime": false,
-      "partialUnknown": true,
+      "partialUnknown": false,
       "req": {
         "time": "24시간",
         "vital": "",
@@ -15082,7 +15103,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "note": ""
       },
       "lineColor": "#EF4444",
-      "conditionStatus": "partial"
+      "conditionStatus": "known"
     },
     "digi_1790831583472": {
       "id": "digi_1790831583472",
@@ -23335,10 +23356,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790353066755",
       "lineColor": "#22C55E",
       "time": "36시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 3000,
+      "pp": 12,
+      "battle": 120,
+      "winRate": "70",
       "dungeon": "",
       "jogress": "",
       "item": "",

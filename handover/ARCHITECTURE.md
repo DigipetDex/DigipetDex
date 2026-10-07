@@ -1,6 +1,6 @@
 # 🗺️ ARCHITECTURE — 파일 구성 & 핵심 함수 맵
 
-> **마지막 업데이트:** 2026-10-07 (v1.3.97)  
+> **마지막 업데이트:** 2026-10-07 (v1.3.98)  
 > 아래 두 표(`AUTO:FILES`, `AUTO:FUNCS`)는 `tools/gen_docs.py` 가 배포 때마다 다시 씁니다. 손으로 고치지 마세요. 핵심 함수 목록/역할은 `tools/gen_docs.py` 의 `KEY_FUNCS` 에서 관리합니다.
 
 ---
@@ -12,8 +12,8 @@
 <!-- AUTO:FILES -->
 | 파일 | 줄 수 | 내용 |
 |---|---:|---|
-| `editor.html` | 1,281 | HTML 셸 (마크업 + `<script>` 로드 순서) |
-| `css/editor.css` | 2,524 | 전체 스타일 (다크 테마, 모바일 대응) |
+| `editor.html` | 1,329 | HTML 셸 (마크업 + `<script>` 로드 순서) |
+| `css/editor.css` | 2,598 | 전체 스타일 (다크 테마, 모바일 대응) |
 | `js/05-img-fallback.js` | 35 | 이미지 로드 실패 폴백(handleDigiImgError) — head 태그에서 가장 먼저 로드 |
 | `js/00-config.js` | 4 | 앱 설정 상수 (STORAGE_KEY, APP_VERSION — make_deploy.py가 APP_VERSION을 갱신) |
 | `js/10-search-utils.js` | 473 | 영문-한글 디지몬 이름 매핑 및 바이링구얼 검색 유틸 |
@@ -21,19 +21,20 @@
 | `js/30-state-conditions.js` | 953 | 프로젝트 상태/저장, 세대별 기본 조건, 동명 동기화, 조건 공개 판정, DiM 필터 |
 | `js/40-render-tree.js` | 653 | 진화 트리 캔버스 렌더링 (renderTree 등) |
 | `js/50-node-sidebar.js` | 337 | 노드 클릭/연결 모드, 연결선 색상, 우측 패널(사이드바) |
-| `js/60-condition-clipboard.js` | 954 | 조건 클립보드 및 조건 입력 핸들러 |
+| `js/60-condition-clipboard.js` | 964 | 조건 클립보드 및 조건 입력 핸들러 |
 | `js/70-digimon-crud.js` | 164 | 디지몬 추가/삭제/분기 추가 |
 | `js/80-export.js` | 340 | 스프레드시트/엑셀/CSV/JSON 내보내기 및 저장 |
 | `js/90-zoom-mobile.js` | 251 | 캔버스 줌/팬, 모바일 제스처, 바텀시트 |
 | `js/95-training-calc.js` | 337 | 30회 훈련 손익 & 리셋 판독기 |
 | `js/96-mode-save-deploy.js` | 116 | 뷰어/에디터 모드 전환 버튼, project_data.js 다이렉트 저장(Ctrl+S), 앱 내 원클릭 배포 버튼 |
-| `js/100-wiki-report.js` | 2,391 | 유저 제보/위키 변경역사/GAS 연동/실시간 조건 배포 |
+| `js/100-wiki-report.js` | 2,481 | 유저 제보/위키 변경역사/GAS 연동/실시간 조건 배포 |
 | `js/105-status-board.js` | 204 | 조건 공개 현황판 (DiM별 진화 루트 공개율, 미공개 루트 목록 → 트리 이동/제보) |
 | `js/106-attr-chart.js` | 199 | 디지펫 속성 상성표 (헤더 [상성표] 버튼 모달, 선택한 디지몬의 속성 강조) |
+| `js/107-digimon-list.js` | 226 | 전체 디지몬 목록 (이름·이미지·세대·속성·스탯, 정렬/필터/검색, 누르면 트리로 이동) |
 | `js/110-planner.js` | 1,135 | 진화 경로 플래너, 저장된 경로 관리 |
 | `js/120-planner-canvas.js` | 630 | 플래너 캔버스(PNG/클립보드) 생성 및 window load 초기화 |
 
-> JS 합계 9,230줄. 스크립트는 전부 classic script 이며 **로드 순서 = 실행 순서**입니다 (`editor.html` 의 `<script>` 순서).
+> JS 합계 9,556줄. 스크립트는 전부 classic script 이며 **로드 순서 = 실행 순서**입니다 (`editor.html` 의 `<script>` 순서).
 <!-- /AUTO:FILES -->
 
 ### 로드 방식
@@ -60,15 +61,15 @@
 | `recalculateAllDigimonConditionStatuses()` | `js/30-state-conditions.js:596` | 전체 디지몬 일괄 재판정 (renderTree 시 매번 호출) |
 | `renderTree()` | `js/40-render-tree.js:194` | 진화 트리 전체 렌더링 (recalculate 포함) |
 | `updateSidebar()` | `js/60-condition-clipboard.js:149` | 우측 패널(사이드바) 갱신 |
-| `handleReqFieldChange()` | `js/60-condition-clipboard.js:660` | 조건 입력 필드 변경 이벤트 핸들러 |
+| `handleReqFieldChange()` | `js/60-condition-clipboard.js:665` | 조건 입력 필드 변경 이벤트 핸들러 |
 | `executeDirectSave()` | `js/96-mode-save-deploy.js:17` | project_data.js 저장 (Electron IPC / File System API / 다운로드 폴백) |
 | `openReportModalForDigi()` | `js/100-wiki-report.js:161` | 위키 제보 모달 오픈 |
-| `submitReport()` | `js/100-wiki-report.js:290` | 위키 제보 저장 & GAS 전송 |
-| `applyReportToTree()` | `js/100-wiki-report.js:1684` | 제보 1건을 트리에 반영 |
-| `renderWikiHistoryListUI()` | `js/100-wiki-report.js:702` | 위키 변경 역사 목록 렌더링 |
-| `revertWikiRevision()` | `js/100-wiki-report.js:913` | 위키 역사 롤백 ("restore" | "undo") |
-| `syncLiveConditionsToGas()` | `js/100-wiki-report.js:1872` | 전체 조건 GAS 배포 (Pre-Merge 안전장치 포함) |
-| `fetchAndApplyLiveConditions()` | `js/100-wiki-report.js:2071` | 서버 최신 조건 로드 & 병합 |
+| `submitReport()` | `js/100-wiki-report.js:333` | 위키 제보 저장 & GAS 전송 |
+| `applyReportToTree()` | `js/100-wiki-report.js:1741` | 제보 1건을 트리에 반영 |
+| `renderWikiHistoryListUI()` | `js/100-wiki-report.js:753` | 위키 변경 역사 목록 렌더링 |
+| `revertWikiRevision()` | `js/100-wiki-report.js:964` | 위키 역사 롤백 ("restore" | "undo") |
+| `syncLiveConditionsToGas()` | `js/100-wiki-report.js:1929` | 전체 조건 GAS 배포 (Pre-Merge 안전장치 포함) |
+| `fetchAndApplyLiveConditions()` | `js/100-wiki-report.js:2132` | 서버 최신 조건 로드 & 병합 |
 | `collectConditionStats()` | `js/105-status-board.js:28` | 조건 현황판: DiM별 진화 루트 공개/미공개 집계 |
 | `openStatusBoardModal()` | `js/105-status-board.js:174` | 조건 현황판 모달 열기 (헤더 [조건 현황] 버튼) |
 | `loadImgAsync()` | `js/120-planner-canvas.js:56` | 캔버스용 이미지 로더 (crossOrigin=anonymous, 실패 시 null) |

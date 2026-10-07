@@ -4,23 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="js/05-img-fallback.js?v=v1.3.97"></script>
-  <script src="digimon_db.js?v=v1.3.97"></script>
-  <script src="project_data.js?v=v1.3.97"></script>
+  <script src="js/05-img-fallback.js?v=v1.3.98"></script>
+  <script src="digimon_db.js?v=v1.3.98"></script>
+  <script src="project_data.js?v=v1.3.98"></script>
   <script src="xlsx.full.min.js"></script>
-  <link rel="stylesheet" href="css/editor.css?v=v1.3.97">
+  <link rel="stylesheet" href="css/editor.css?v=v1.3.98">
 </head>
 <body>
 
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.97</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.98</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span class="dim-selector-label" style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
         <button id="btn-open-status-board" style="background:#0F766E; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:0.75rem; border:1px solid #14B8A6;" title="DiM별 조건 공개 현황과 아직 밝혀지지 않은 디지몬 목록을 봅니다.">
           <span>조건 현황</span>
+        </button>
+        <button id="btn-open-digimon-list" style="background:#0E7490; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:0.75rem; border:1px solid #22D3EE;" title="전체 디지몬 목록 (이름·이미지·세대·속성·스탯 정렬)">
+          <span>도감</span>
         </button>
         <button id="btn-open-attr-chart" style="background:#B45309; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:0.75rem; border:1px solid #F59E0B;" title="디지펫 속성 상성표 (디지몬을 선택한 채로 열면 그 속성을 강조)">
           <span>상성표</span>
@@ -46,6 +49,9 @@
     <div class="mobile-only mobile-header-actions" style="display:none; align-items:center; gap:5px;">
       <button id="btn-mobile-status-board" style="padding:5px 8px; font-size:0.75rem; font-weight:700; background:rgba(20,184,166,0.2); border:1px solid #14B8A6; color:#5EEAD4; border-radius:6px; align-items:center; cursor:pointer;" title="조건 공개 현황">
         <span>현황</span>
+      </button>
+      <button id="btn-mobile-digimon-list" style="padding:5px 8px; font-size:0.75rem; font-weight:700; background:rgba(34,211,238,0.15); border:1px solid #22D3EE; color:#67E8F9; border-radius:6px; align-items:center; cursor:pointer;" title="전체 디지몬 목록">
+        <span>도감</span>
       </button>
       <button id="btn-mobile-attr-chart" style="padding:5px 8px; font-size:0.75rem; font-weight:700; background:rgba(245,158,11,0.2); border:1px solid #F59E0B; color:#FCD34D; border-radius:6px; align-items:center; cursor:pointer;" title="속성 상성표">
         <span>상성</span>
@@ -217,15 +223,19 @@
         <div class="form-group" style="margin-top:6px;">
           <label style="font-size:0.8rem; color:var(--text-sub); display:block; margin-bottom:5px;">진화 조건 공개 상태</label>
           <div class="condition-status-group" id="condition-status-selector">
-            <label class="status-btn-opt status-opt-known active" data-status="known" title="모든 진화 조건 공개 (전체 컬러)">
-              <input type="radio" name="condition-status" value="known" checked>
+            <label class="status-btn-opt status-opt-auto active" data-status="auto" title="들어오는 진화선에 입력된 조건으로 자동 판정합니다 (기본값). 아래 버튼을 누르면 그 상태로 고정됩니다.">
+              <input type="radio" name="condition-status" value="auto" checked>
+              <span>🤖 자동 판정<em id="condition-status-auto-result"></em></span>
+            </label>
+            <label class="status-btn-opt status-opt-known" data-status="known" title="모든 진화 조건 공개로 고정 (전체 컬러)">
+              <input type="radio" name="condition-status" value="known">
               <span>조건 공개</span>
             </label>
-            <label class="status-btn-opt status-opt-partial" data-status="partial" title="A➔C 등 일부 루트만 공개 (사선 회색/컬러 반반 분할)">
+            <label class="status-btn-opt status-opt-partial" data-status="partial" title="일부 불명으로 고정 (사선 회색/컬러 반반 분할)">
               <input type="radio" name="condition-status" value="partial">
               <span>🌓 일부 불명</span>
             </label>
-            <label class="status-btn-opt status-opt-unknown" data-status="unknown" title="진화 조건 전체 미공개 (전체 회색)">
+            <label class="status-btn-opt status-opt-unknown" data-status="unknown" title="전체 불명으로 고정 (전체 회색)">
               <input type="radio" name="condition-status" value="unknown">
               <span>🌫️ 전체 불명</span>
             </label>
@@ -798,6 +808,18 @@
           </label>
         </div>
 
+        <!-- 조건 공개 상태 (자동 판정 / 고정) -->
+        <div>
+          <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; display: block;">조건 공개 상태</label>
+          <div class="report-status-lock" id="report-status-lock">
+            <label class="report-lock-opt" data-lock="auto" title="입력된 조건으로 자동 판정"><input type="radio" name="report-status-lock" value="auto"><span>🤖 자동</span></label>
+            <label class="report-lock-opt" data-lock="known" title="모든 조건이 밝혀짐으로 고정"><input type="radio" name="report-status-lock" value="known"><span>공개</span></label>
+            <label class="report-lock-opt" data-lock="partial" title="일부만 밝혀짐으로 고정"><input type="radio" name="report-status-lock" value="partial"><span>🌓 일부 불명</span></label>
+            <label class="report-lock-opt" data-lock="unknown" title="밝혀지지 않음으로 고정"><input type="radio" name="report-status-lock" value="unknown"><span>🌫️ 불명</span></label>
+          </div>
+          <div id="report-status-lock-hint" style="font-size: 0.7rem; color: #94A3B8; margin-top: 4px;"></div>
+        </div>
+
         <!-- 에디터와 동일한 규격화된 조건 입력 폼 -->
         <div>
           <label style="font-size: 0.78rem; font-weight: 700; color: #E2E8F0; margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
@@ -931,6 +953,31 @@
   </div>
 
   <!-- 1-B. 위키 변경 역사 (Revision History) 모달 -->
+  <!-- 전체 디지몬 목록 모달 -->
+  <div class="modal-overlay" id="digimon-list-modal" style="display:none; z-index:1100;">
+    <div class="modal-box digi-list-box">
+      <div class="digi-list-top">
+        <span style="font-size:0.92rem; color:#FFF; font-weight:700;">디지몬 도감 <small id="digimon-list-count" style="font-size:0.72rem; color:#94A3B8; font-weight:500; margin-left:6px;"></small></span>
+        <button class="modal-close" id="digimon-list-close" style="font-size:1.1rem; padding:2px 6px; color:#94A3B8; cursor:pointer; background:none; border:none; line-height:1;">✕</button>
+      </div>
+      <div class="digi-list-controls">
+        <div class="digi-list-ctrl-row">
+          <input type="search" id="digimon-list-search" class="form-control" placeholder="이름 검색" autocomplete="off">
+          <select id="digimon-list-sort" class="form-control" title="정렬 기준"></select>
+          <button type="button" id="digimon-list-dir" class="digi-list-btn" title="정렬 방향"></button>
+          <button type="button" id="digimon-list-reset" class="digi-list-btn" title="필터와 정렬을 기본(궁극체 이상, 세대순)으로">초기화</button>
+        </div>
+        <div class="digi-chip-row"><span>세대</span><div id="digimon-list-stage-chips" class="digi-chips"></div></div>
+        <div class="digi-chip-row"><span>속성</span><div id="digimon-list-attr-chips" class="digi-chips"></div></div>
+      </div>
+      <div id="digimon-list-body" class="digi-list-body"></div>
+      <div style="padding:8px 16px; background:#23272A; border-top:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <span class="digi-list-hint">디지몬을 누르면 트리에서 보여줍니다 · 같은 이름은 한 줄로 묶음</span>
+        <button type="button" id="btn-digimon-list-close-bottom" style="padding:4px 14px; font-size:0.78rem; font-weight:600; background:#3B4252; border:1px solid #4C566A; color:#ECEFF4; border-radius:4px; cursor:pointer; white-space:nowrap; flex-shrink:0;">닫기</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 속성 상성표 모달 -->
   <div class="modal-overlay" id="attr-chart-modal" style="display:none; z-index:1100;">
     <div class="modal-box" style="max-width:560px; width:94%; max-height:90vh; display:flex; flex-direction:column; padding:0; overflow:hidden; background:#1E1F22; border:1px solid #33363D; border-radius:10px; box-shadow:0 16px 40px rgba(0,0,0,0.8);">
@@ -1257,23 +1304,24 @@
     </div>
   </div>
 
-  <script src="js/00-config.js?v=v1.3.97"></script>
-  <script src="js/10-search-utils.js?v=v1.3.97"></script>
-  <script src="js/20-mode.js?v=v1.3.97"></script>
-  <script src="js/30-state-conditions.js?v=v1.3.97"></script>
-  <script src="js/40-render-tree.js?v=v1.3.97"></script>
-  <script src="js/50-node-sidebar.js?v=v1.3.97"></script>
-  <script src="js/60-condition-clipboard.js?v=v1.3.97"></script>
-  <script src="js/70-digimon-crud.js?v=v1.3.97"></script>
-  <script src="js/80-export.js?v=v1.3.97"></script>
-  <script src="js/90-zoom-mobile.js?v=v1.3.97"></script>
-  <script src="js/95-training-calc.js?v=v1.3.97"></script>
-  <script src="js/96-mode-save-deploy.js?v=v1.3.97"></script>
-  <script src="js/100-wiki-report.js?v=v1.3.97"></script>
-  <script src="js/105-status-board.js?v=v1.3.97"></script>
-  <script src="js/106-attr-chart.js?v=v1.3.97"></script>
-  <script src="js/110-planner.js?v=v1.3.97"></script>
-  <script src="js/120-planner-canvas.js?v=v1.3.97"></script>
+  <script src="js/00-config.js?v=v1.3.98"></script>
+  <script src="js/10-search-utils.js?v=v1.3.98"></script>
+  <script src="js/20-mode.js?v=v1.3.98"></script>
+  <script src="js/30-state-conditions.js?v=v1.3.98"></script>
+  <script src="js/40-render-tree.js?v=v1.3.98"></script>
+  <script src="js/50-node-sidebar.js?v=v1.3.98"></script>
+  <script src="js/60-condition-clipboard.js?v=v1.3.98"></script>
+  <script src="js/70-digimon-crud.js?v=v1.3.98"></script>
+  <script src="js/80-export.js?v=v1.3.98"></script>
+  <script src="js/90-zoom-mobile.js?v=v1.3.98"></script>
+  <script src="js/95-training-calc.js?v=v1.3.98"></script>
+  <script src="js/96-mode-save-deploy.js?v=v1.3.98"></script>
+  <script src="js/100-wiki-report.js?v=v1.3.98"></script>
+  <script src="js/105-status-board.js?v=v1.3.98"></script>
+  <script src="js/106-attr-chart.js?v=v1.3.98"></script>
+  <script src="js/107-digimon-list.js?v=v1.3.98"></script>
+  <script src="js/110-planner.js?v=v1.3.98"></script>
+  <script src="js/120-planner-canvas.js?v=v1.3.98"></script>
 
   <div id="global-toast" class="toast-msg">최신 데이터가 내장된 배포용 'index.html' 파일이 다운로드되었습니다!
   (폴더의 index.html에 덮어쓰거나 그대로 웹에 업로드하시면 됩니다)</div>
