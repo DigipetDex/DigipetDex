@@ -598,6 +598,11 @@
     }
 
     // 구글 시트에서 위키 변경 역사 가져오기
+    function showAdminHistory() {
+      const box = document.getElementById("wiki-history-show-admin");
+      return !isViewerMode && !!(box && box.checked);
+    }
+
     async function fetchWikiHistoryFromGas(isSilent = false) {
       const gasUrl = project.gasWebhookUrl || localStorage.getItem("digipet_gas_webhook_url") || DEFAULT_GAS_WEBHOOK_URL;
       const listEl = document.getElementById("wiki-history-list");
@@ -623,7 +628,7 @@
 
       try {
         // limit=60으로 전역 최신 변경 내역만 신속하게 가져옴 (GAS 단일 슬라이스 조회로 0.3초 내 응답)
-        let url = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=get_wiki_history&limit=60&t=${Date.now()}`;
+        let url = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=get_wiki_history&limit=60${showAdminHistory() ? "&includeAdmin=1" : ""}&t=${Date.now()}`;
 
         const res = await fetch(url);
         const data = await res.json();
@@ -755,7 +760,8 @@
       const countEl = document.getElementById("wiki-history-count-text");
       if (!listEl) return;
 
-      let itemsToRender = currentWikiHistoryCache || [];
+      // 관리자 배포 기록은 기본 숨김 (에디터에서 '관리자 배포 기록 보기'를 켜면 표시)
+      let itemsToRender = (currentWikiHistoryCache || []).filter(h => showAdminHistory() || String(h.uid || "") !== "관리자 배포");
       if (currentWikiHistoryFilter.to) {
         const filterToLower = currentWikiHistoryFilter.to.trim().toLowerCase();
         itemsToRender = itemsToRender.filter(h => (h.toName || "").toLowerCase().includes(filterToLower));
@@ -2340,6 +2346,13 @@
           e.preventDefault();
           selectReportStatusLock(opt.dataset.lock);
         });
+      });
+
+      // 위키 역사: 관리자 배포 기록 보기 (에디터 전용)
+      const showAdminBox = document.getElementById("wiki-history-show-admin");
+      if (showAdminBox) showAdminBox.addEventListener("change", () => {
+        renderWikiHistoryListUI();
+        fetchWikiHistoryFromGas(false);
       });
 
       // 시간 프리셋 칩 클릭

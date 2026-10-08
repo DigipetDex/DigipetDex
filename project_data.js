@@ -3794,7 +3794,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "unknownTime": false,
       "lineColor": "#A855F7",
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 225,
+      "baseAp": 45,
+      "baseSpd": 70
     },
     "digi_1790244138787": {
       "id": "digi_1790244138787",
@@ -3817,7 +3820,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "unknownTime": false,
       "lineColor": "#A855F7",
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 215,
+      "baseAp": 55,
+      "baseSpd": 70
     },
     "digi_1790248978132": {
       "id": "digi_1790248978132",
@@ -11793,7 +11799,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "jogress": "",
         "item": "",
         "note": ""
-      }
+      },
+      "baseHp": 150,
+      "baseAp": 45,
+      "baseSpd": 70
     },
     "digi_1790669159309": {
       "id": "digi_1790669159309",
@@ -11916,7 +11925,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#22C55E"
+      "lineColor": "#22C55E",
+      "baseHp": 185,
+      "baseAp": 65,
+      "baseSpd": 120
     },
     "digi_1790669207692": {
       "id": "digi_1790669207692",

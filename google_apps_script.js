@@ -187,7 +187,39 @@ function auditNorm(field, v) {
   if (field === "winRate") return cleanWinRate(v);
   if (v === undefined || v === null) return "";
   var t = String(v).trim();
-  return (t === "-" || t === "null" || t === "undefined") ? "" : t;
+  if (t === "-" || t === "null" || t === "undefined") t = "";
+  // 상태 고정은 빈칸과 auto 가 같은 뜻(자동 판정) — 새 열이 생긴 뒤 첫 배포가 전부 변경으로 기록되지 않게
+  if (field === "statusLock" && t === "") t = "auto";
+  return t;
+}
+
+/**
+ * [Apps Script 편집기에서 직접 한 번 실행] '상태 고정' 열 추가 직후 첫 실시간 배포가 남긴
+ * "상태 고정: - → auto" 만 있는 관리자 배포 기록을 위키_변경역사에서 지운다. 다른 기록은 그대로 둔다.
+ * 실행: 편집기 상단 함수 선택에서 cleanupStatusLockNoiseHistory 를 고르고 [실행].
+ */
+function cleanupStatusLockNoiseHistory() {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME_HISTORY);
+    if (!sheet || sheet.getLastRow() <= 1) return 0;
+    var width = Math.max(sheet.getLastColumn(), HISTORY_HEADERS.length);
+    var vals = sheet.getRange(1, 1, sheet.getLastRow(), width).getValues();
+    var keep = [vals[0]], removed = 0;
+    for (var i = 1; i < vals.length; i++) {
+      var isNoise = String(vals[i][8]).trim() === "관리자 배포" && String(vals[i][5]).trim() === "상태 고정: - → auto";
+      if (isNoise) removed++; else keep.push(vals[i]);
+    }
+    if (removed > 0) {
+      sheet.getRange(1, 1, vals.length, width).clearContent();
+      sheet.getRange(1, 1, keep.length, width).setValues(keep);
+    }
+    Logger.log("상태 고정 잡음 기록 " + removed + "건 삭제, " + (keep.length - 1) + "건 유지");
+    return removed;
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function recordSyncHistory(ss, oldVals, newRows, nowStr) {
@@ -679,6 +711,8 @@ function doGet(e) {
       var filterTo = String(e.parameter.to || "").trim().toLowerCase();
       var filterDim = String(e.parameter.dim || "").trim().toLowerCase();
       var limit = parseInt(e.parameter.limit || "100", 10);
+      // 관리자 배포 기록은 기본 제외 (시트에는 남아 있고, 에디터에서 includeAdmin=1 로 볼 수 있음)
+      var includeAdmin = String(e.parameter.includeAdmin || "") === "1";
 
       var hLastRow = histSheet.getLastRow();
       if (hLastRow <= 1) {
@@ -690,7 +724,8 @@ function doGet(e) {
       }
 
       // 속도 대폭 최적화: 전체 시트가 아닌 최근 행만 슬라이스 조회하여 GAS 응답 속도 극대화
-      var maxScan = (filterTo || filterDim) ? Math.min(hLastRow - 1, 300) : Math.min(hLastRow - 1, limit);
+      // 필터가 있거나 관리자 기록을 건너뛰어야 하면 더 많이 훑어서 limit 만큼 채운다
+      var maxScan = (filterTo || filterDim || !includeAdmin) ? Math.min(hLastRow - 1, Math.max(3000, limit)) : Math.min(hLastRow - 1, limit);
       var startRow = hLastRow - maxScan + 1;
       var allHistVals = histSheet.getRange(startRow, 1, maxScan, HISTORY_HEADERS.length).getValues();
 
@@ -713,6 +748,7 @@ function doGet(e) {
 
         if (!rTo && !rFrom && !rRevId) continue;
 
+        if (!includeAdmin && rUid === "관리자 배포") continue;
         if (filterTo && rTo.toLowerCase().indexOf(filterTo) === -1) continue;
         if (filterDim && rDim.toLowerCase().indexOf(filterDim) === -1) continue;
 
