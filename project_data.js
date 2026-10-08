@@ -2116,17 +2116,20 @@ window.DIGIPET_DEFAULT_DATA = {
       "order": 15,
       "req": {
         "time": "48시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
-        "winRate": "",
+        "vital": 4500,
+        "pp": 15,
+        "battle": 120,
+        "winRate": "70",
         "dungeon": "",
         "jogress": "",
         "item": "",
         "note": ""
       },
-      "unknownTime": true,
-      "partialUnknown": false
+      "unknownTime": false,
+      "partialUnknown": false,
+      "baseHp": 285,
+      "baseAp": 125,
+      "baseSpd": 140
     },
     "digi_1790192442250": {
       "id": "digi_1790192442250",
@@ -3000,7 +3003,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "unknownTime": false,
       "lineColor": "#22C55E",
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 135,
+      "baseAp": 30,
+      "baseSpd": 60
     },
     "digi_1790234208428": {
       "id": "digi_1790234208428",
@@ -6894,7 +6900,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 I",
       "attr": "none",
       "img": "아구몬/Botamon.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 999,
       "req": {
         "time": "1시간",
@@ -6920,7 +6926,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "디지타마",
       "attr": "none",
       "img": "images/embedded/fcbb5d640e68ff51.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 15,
       "req": {
         "time": "-",
@@ -6943,7 +6949,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 II",
       "attr": "none",
       "img": "아구몬/Koromon.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 999,
       "req": {
         "time": "1시간",
@@ -6969,7 +6975,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성장기",
       "attr": "vaccine",
       "img": "아구몬/Agumon.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 21,
       "req": {
         "time": "1시간",
@@ -6995,7 +7001,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "vaccine",
       "img": "images/embedded/9f1a00c747e4c73c.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 61,
       "req": {
         "time": "24시간",
@@ -7021,7 +7027,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "virus",
       "img": "images/embedded/8a36e13277f25af1.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 62,
       "req": {
         "time": "24시간",
@@ -7047,7 +7053,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "virus",
       "img": "images/embedded/04aa9636ee2efe94.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 64,
       "req": {
         "time": "24시간",
@@ -7074,7 +7080,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "vaccine",
       "img": "images/embedded/76097a292a0ad1ef.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 85,
       "req": {
         "time": "36시간",
@@ -7100,7 +7106,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "virus",
       "img": "images/embedded/7432a69cc1e1fd08.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 86,
       "req": {
         "time": "36시간",
@@ -7115,7 +7121,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "unknownTime": false,
       "partialUnknown": false,
-      "lineColor": "#A855F7"
+      "lineColor": "#A855F7",
+      "baseHp": 205,
+      "baseAp": 50,
+      "baseSpd": 70
     },
     "digi_1790353022275": {
       "id": "digi_1790353022275",
@@ -7123,7 +7132,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "data",
       "img": "images/embedded/dc68e0aa050db92a.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 63,
       "req": {
         "time": "24시간",
@@ -7150,7 +7159,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "vaccine",
       "img": "images/embedded/93f5dfa3e0b52b22.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 87,
       "req": {
         "time": "36시간",
@@ -7177,7 +7186,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "vaccine",
       "img": "images/embedded/d97497dafe850529.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 88,
       "req": {
         "time": "36시간",
@@ -7192,7 +7201,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "unknownTime": false,
       "partialUnknown": false,
-      "lineColor": "#EAB308"
+      "lineColor": "#EAB308",
+      "baseHp": 195,
+      "baseAp": 40,
+      "baseSpd": 80
     },
     "digi_1790354917106": {
       "id": "digi_1790354917106",
@@ -7200,7 +7212,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "data",
       "img": "images/embedded/6e2c8de6add904bc.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 89,
       "req": {
         "time": "36시간",
@@ -7215,7 +7227,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "unknownTime": false,
       "partialUnknown": false,
-      "lineColor": "#22C55E"
+      "lineColor": "#22C55E",
+      "baseHp": 235,
+      "baseAp": 40,
+      "baseSpd": 70
     },
     "digi_1790354923698": {
       "id": "digi_1790354923698",
@@ -7223,7 +7238,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "data",
       "img": "images/embedded/ebe4e0ce2a24ee5a.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 90,
       "req": {
         "time": "36시간",
@@ -7238,7 +7253,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "unknownTime": false,
       "partialUnknown": false,
-      "lineColor": "#2DD4BF"
+      "lineColor": "#2DD4BF",
+      "baseHp": 220,
+      "baseAp": 55,
+      "baseSpd": 110
     },
     "digi_1790354941464": {
       "id": "digi_1790354941464",
@@ -7246,7 +7264,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "vaccine",
       "img": "images/embedded/cd3d00b88c0acdc1.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 58,
       "req": {
         "time": "48시간",
@@ -7260,7 +7278,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "note": ""
       },
       "unknownTime": false,
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 305,
+      "baseAp": 125,
+      "baseSpd": 100
     },
     "digi_1790354953989": {
       "id": "digi_1790354953989",
@@ -7268,7 +7289,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "virus",
       "img": "images/embedded/8e4d421c94beeccd.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 59,
       "req": {
         "time": "48시간",
@@ -7282,7 +7303,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "note": ""
       },
       "unknownTime": false,
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 300,
+      "baseAp": 120,
+      "baseSpd": 100
     },
     "digi_1790354979003": {
       "id": "digi_1790354979003",
@@ -7290,7 +7314,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "data",
       "img": "images/embedded/123d4814662b1421.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 60,
       "req": {
         "time": "48시간",
@@ -7304,7 +7328,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "note": ""
       },
       "unknownTime": false,
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 285,
+      "baseAp": 110,
+      "baseSpd": 150
     },
     "digi_1790354987961": {
       "id": "digi_1790354987961",
@@ -7312,7 +7339,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "virus",
       "img": "images/embedded/8d6728b91026511d.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 61,
       "req": {
         "time": "48시간",
@@ -7326,7 +7353,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "note": ""
       },
       "unknownTime": false,
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 285,
+      "baseAp": 115,
+      "baseSpd": 120
     },
     "digi_1790355013454": {
       "id": "digi_1790355013454",
@@ -7334,7 +7364,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "초궁극체",
       "attr": "vaccine",
       "img": "images/embedded/fbe12846e520c741.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 21,
       "req": {
         "time": "3시간",
@@ -7348,7 +7378,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "note": "우호도 90 이상"
       },
       "unknownTime": false,
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 385,
+      "baseAp": 175,
+      "baseSpd": 110
     },
     "digi_1790355021369": {
       "id": "digi_1790355021369",
@@ -7356,7 +7389,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "초궁극체",
       "attr": "vaccine",
       "img": "images/embedded/d92c818511173d67.gif",
-      "dim": "솔라 세이버즈(아구몬s)🚧",
+      "dim": "솔라 세이버즈(아구몬s)",
       "order": 22,
       "req": {
         "time": "3시간",
@@ -7370,7 +7403,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "note": "우호도 50 이하"
       },
       "unknownTime": false,
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 375,
+      "baseAp": 185,
+      "baseSpd": 110
     },
     "digi_1790360149415": {
       "id": "digi_1790360149415",
@@ -7508,7 +7544,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 I",
       "attr": "none",
       "img": "images/embedded/051caec055974dce.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 999,
       "independentReq": true,
       "req": {
@@ -7535,7 +7571,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "디지타마",
       "attr": "none",
       "img": "images/embedded/c3a9e03ba36fb9c5.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 16,
       "independentReq": true,
       "req": {
@@ -7559,7 +7595,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 II",
       "attr": "none",
       "img": "images/embedded/1be9344c7df4c04f.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 999,
       "independentReq": true,
       "req": {
@@ -7586,7 +7622,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성장기",
       "attr": "data",
       "img": "images/embedded/228b307b604fdbc6.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 22,
       "independentReq": true,
       "req": {
@@ -7613,7 +7649,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "data",
       "img": "images/embedded/e44855eea7e952e2.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 65,
       "independentReq": true,
       "req": {
@@ -7640,7 +7676,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "free",
       "img": "images/embedded/f7054972f4143448.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 66,
       "independentReq": true,
       "req": {
@@ -7667,7 +7703,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "data",
       "img": "images/embedded/c01dc67fc2aa7b77.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 67,
       "independentReq": true,
       "req": {
@@ -7694,7 +7730,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "vaccine",
       "img": "images/embedded/3a84c73ddee92e6e.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 68,
       "independentReq": true,
       "req": {
@@ -7721,7 +7757,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "vaccine",
       "img": "images/embedded/587204d345c0e469.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 91,
       "independentReq": true,
       "req": {
@@ -7748,7 +7784,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "data",
       "img": "images/embedded/b1dda60c6e65d549.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 92,
       "independentReq": true,
       "req": {
@@ -7775,7 +7811,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "data",
       "img": "images/embedded/d7e9b7d992cb003c.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 94,
       "independentReq": true,
       "req": {
@@ -7802,7 +7838,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "vaccine",
       "img": "images/embedded/84e3550999fab327.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 93,
       "independentReq": true,
       "req": {
@@ -7826,7 +7862,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "data",
       "img": "images/embedded/87b2e73def6ba921.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 62,
       "independentReq": true,
       "req": {
@@ -7853,7 +7889,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "data",
       "img": "images/embedded/88d7a0c903973ab0.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 63,
       "independentReq": true,
       "req": {
@@ -7877,7 +7913,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "virus",
       "img": "images/embedded/a983dfd1eeef61b8.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 64,
       "independentReq": true,
       "req": {
@@ -7903,7 +7939,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "virus",
       "img": "images/embedded/90cd2434a65477d8.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 65,
       "independentReq": true,
       "req": {
@@ -7926,7 +7962,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "virus",
       "img": "images/embedded/92235d0d411516e8.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 95,
       "independentReq": true,
       "req": {
@@ -7953,7 +7989,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "data",
       "img": "images/embedded/b79a2312f2aad859.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 96,
       "independentReq": true,
       "req": {
@@ -7980,7 +8016,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "초궁극체",
       "attr": "data",
       "img": "images/embedded/e03e7210502b9b6f.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 23,
       "independentReq": true,
       "req": {
@@ -8006,7 +8042,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "초궁극체",
       "attr": "data",
       "img": "images/embedded/3262c6676889abaa.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 24,
       "independentReq": true,
       "req": {
@@ -8032,7 +8068,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "초궁극체",
       "attr": "data",
       "img": "images/embedded/9f58bf3f43eb3b1a.gif",
-      "dim": "레나몬 EX🚧",
+      "dim": "레나몬 EX",
       "order": 25,
       "independentReq": true,
       "req": {
@@ -8055,7 +8091,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 I",
       "attr": "none",
       "img": "images/embedded/908f025e22804949.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 999,
       "independentReq": true,
       "req": {
@@ -8082,7 +8118,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "디지타마",
       "attr": "none",
       "img": "images/embedded/f03679d1bac91529.png",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 17,
       "independentReq": true,
       "req": {
@@ -8109,7 +8145,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 II",
       "attr": "none",
       "img": "images/embedded/b395fa79ec0d60df.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 999,
       "independentReq": true,
       "req": {
@@ -8133,7 +8169,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "free",
       "img": "images/embedded/e154e595fb24ae16.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 69,
       "independentReq": true,
       "req": {
@@ -8157,7 +8193,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "vaccine",
       "img": "images/embedded/bd846c20f0de69df.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 70,
       "independentReq": true,
       "req": {
@@ -8184,7 +8220,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "data",
       "img": "images/embedded/ad51051d9c2d38d6.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 71,
       "independentReq": true,
       "req": {
@@ -8209,7 +8245,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성장기",
       "attr": "vaccine",
       "img": "images/embedded/c5ab44d5ac2a192b.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 23,
       "independentReq": true,
       "req": {
@@ -8233,7 +8269,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "vaccine",
       "img": "images/embedded/6797b674ec394d77.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 72,
       "independentReq": true,
       "req": {
@@ -8257,7 +8293,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "vaccine",
       "img": "images/embedded/492fbd1575808ec9.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 97,
       "independentReq": true,
       "req": {
@@ -8281,7 +8317,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "data",
       "img": "images/embedded/264c222fd13c8dca.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 98,
       "independentReq": true,
       "req": {
@@ -8308,7 +8344,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "free",
       "img": "images/embedded/7460dc1f85cad024.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 99,
       "independentReq": true,
       "req": {
@@ -8332,7 +8368,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "virus",
       "img": "images/embedded/7ad1c79fd8bfcf08.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 100,
       "independentReq": true,
       "req": {
@@ -8356,7 +8392,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "data",
       "img": "images/embedded/6be178037db608bd.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 101,
       "independentReq": true,
       "req": {
@@ -8380,7 +8416,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "data",
       "img": "images/embedded/2380cc8636c72fb9.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 102,
       "independentReq": true,
       "req": {
@@ -8404,7 +8440,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "vaccine",
       "img": "images/embedded/20dcb0ff272ec6de.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 66,
       "independentReq": true,
       "req": {
@@ -8430,7 +8466,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "virus",
       "img": "images/embedded/131d66825d1a8228.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 67,
       "independentReq": true,
       "req": {
@@ -8454,7 +8490,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "vaccine",
       "img": "images/embedded/3f12e8348d50d807.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 68,
       "independentReq": true,
       "req": {
@@ -8477,7 +8513,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "vaccine",
       "img": "images/embedded/6f2f86dd9c5d58cd.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 69,
       "independentReq": true,
       "req": {
@@ -8503,7 +8539,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "vaccine",
       "img": "images/embedded/b43bdb6ccf130ef7.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 70,
       "independentReq": true,
       "req": {
@@ -8526,7 +8562,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체2",
       "attr": "virus",
       "img": "images/embedded/bac27234b49718ba.gif",
-      "dim": "셀레스티얼 그레이스(가트몬)🚧",
+      "dim": "가트몬",
       "order": 0,
       "independentReq": true,
       "req": {
@@ -9174,7 +9210,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 I",
       "attr": "none",
       "img": "images/embedded/c12ce0d3680b04e5.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 999,
       "independentReq": true,
       "unknownTime": false,
@@ -9201,7 +9237,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 II",
       "attr": "none",
       "img": "images/embedded/e398b18f1ce03dd3.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 999,
       "independentReq": true,
       "unknownTime": false,
@@ -9228,7 +9264,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성장기",
       "attr": "data",
       "img": "images/embedded/faa1828a4623ee58.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 27,
       "independentReq": true,
       "unknownTime": false,
@@ -9255,7 +9291,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "data",
       "img": "images/embedded/7554b95c61728383.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 81,
       "independentReq": true,
       "unknownTime": false,
@@ -9282,7 +9318,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "data",
       "img": "images/embedded/101b5a18e91190f3.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 115,
       "independentReq": true,
       "unknownTime": false,
@@ -9309,7 +9345,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "data",
       "img": "images/embedded/896bc246da48e2a3.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 80,
       "independentReq": true,
       "unknownTime": false,
@@ -9335,7 +9371,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성장기",
       "attr": "vaccine",
       "img": "images/embedded/e4e1cfc4e191583a.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 26,
       "independentReq": true,
       "unknownTime": false,
@@ -9361,7 +9397,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "vaccine",
       "img": "images/embedded/a65298f67809247b.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 78,
       "independentReq": true,
       "unknownTime": false,
@@ -9387,7 +9423,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "vaccine",
       "img": "images/embedded/1e91b5cf4bf04b8c.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 110,
       "independentReq": true,
       "unknownTime": false,
@@ -9411,7 +9447,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "data",
       "img": "images/embedded/e717272c67705c0c.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 111,
       "independentReq": true,
       "unknownTime": false,
@@ -9435,7 +9471,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "vaccine",
       "img": "images/embedded/6825752e4f9e1fff.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 112,
       "independentReq": true,
       "unknownTime": false,
@@ -9459,7 +9495,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "virus",
       "img": "images/embedded/afeef9e1cb993eb3.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 113,
       "independentReq": true,
       "unknownTime": false,
@@ -9483,7 +9519,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "vaccine",
       "img": "images/embedded/e5b2208479eb1d50.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 78,
       "independentReq": true,
       "unknownTime": false,
@@ -9506,7 +9542,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "free",
       "img": "images/embedded/38820a374f655174.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 77,
       "independentReq": true,
       "unknownTime": false,
@@ -9529,7 +9565,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "virus",
       "img": "images/embedded/726454e1c01b5743.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 114,
       "independentReq": true,
       "unknownTime": false,
@@ -9556,7 +9592,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "data",
       "img": "images/embedded/fd2985f9c1e62ce1.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 79,
       "independentReq": true,
       "unknownTime": false,
@@ -9582,7 +9618,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "디지타마",
       "attr": "none",
       "img": "images/embedded/77474152b6490c7f.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 19,
       "independentReq": true,
       "unknownTime": false,
@@ -9606,7 +9642,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "vaccine",
       "img": "images/embedded/f8f168c9f2ae0006.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 79,
       "independentReq": true,
       "unknownTime": false,
@@ -9630,7 +9666,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "data",
       "img": "images/embedded/c89e9c3a08f9bbf9.gif",
-      "dim": "오션 글로우(쉬라몬/젤리몬)🚧",
+      "dim": "오션 글로우(쉬라몬/젤리몬)",
       "order": 80,
       "independentReq": true,
       "unknownTime": false,
@@ -10409,8 +10445,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "dim": "그로울링 하울(볼프몬)🚧",
       "order": 86,
       "independentReq": true,
-      "unknownTime": true,
-      "partialUnknown": false,
+      "unknownTime": false,
+      "partialUnknown": true,
       "req": {
         "time": "48시간",
         "vital": "",
@@ -10601,7 +10637,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 I",
       "attr": "none",
       "img": "images/embedded/34d69fe92882a186.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 999,
       "independentReq": true,
       "unknownTime": false,
@@ -10628,7 +10664,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 II",
       "attr": "none",
       "img": "images/embedded/63403cbc6b8d885c.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 999,
       "independentReq": true,
       "unknownTime": false,
@@ -10655,7 +10691,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "디지타마",
       "attr": "none",
       "img": "images/embedded/bea6e3baf3782f51.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 22,
       "independentReq": true,
       "unknownTime": false,
@@ -10679,7 +10715,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성장기",
       "attr": "free",
       "img": "images/embedded/e9d5a7d11824f005.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 31,
       "independentReq": true,
       "unknownTime": false,
@@ -10706,7 +10742,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "free",
       "img": "images/embedded/247ec444f693e523.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 90,
       "independentReq": true,
       "unknownTime": false,
@@ -10733,7 +10769,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "vaccine",
       "img": "images/embedded/5351c57016188b4f.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 91,
       "independentReq": true,
       "unknownTime": false,
@@ -10760,7 +10796,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "data",
       "img": "images/embedded/1e403f978d089fd1.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 92,
       "independentReq": true,
       "unknownTime": false,
@@ -10776,7 +10812,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#22C55E"
+      "lineColor": "#22C55E",
+      "baseHp": 150,
+      "baseAp": 45,
+      "baseSpd": 70
     },
     "digi_1790594417155": {
       "id": "digi_1790594417155",
@@ -10784,7 +10823,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "data",
       "img": "images/embedded/712e7205347b3e3b.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 93,
       "independentReq": true,
       "unknownTime": false,
@@ -10811,7 +10850,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "free",
       "img": "images/embedded/2b7c48654fee7e05.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 128,
       "independentReq": true,
       "unknownTime": false,
@@ -10838,7 +10877,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "free",
       "img": "images/embedded/25fd47d2272c1335.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 129,
       "independentReq": true,
       "unknownTime": false,
@@ -10865,7 +10904,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "virus",
       "img": "images/embedded/5459b0d2630e4da0.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 130,
       "independentReq": true,
       "unknownTime": false,
@@ -10881,7 +10920,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#A855F7"
+      "lineColor": "#A855F7",
+      "baseHp": 225,
+      "baseAp": 45,
+      "baseSpd": 70
     },
     "digi_1790594541776": {
       "id": "digi_1790594541776",
@@ -10889,15 +10931,15 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "virus",
       "img": "images/embedded/21d1abf70d9f71b0.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 131,
       "independentReq": true,
       "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "36시간",
-        "vital": 2000,
-        "pp": 8,
+        "vital": 2500,
+        "pp": 10,
         "battle": 80,
         "winRate": "50",
         "dungeon": "",
@@ -10905,7 +10947,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#2563EB"
+      "lineColor": "#2563EB",
+      "baseHp": 205,
+      "baseAp": 40,
+      "baseSpd": 90
     },
     "digi_1790594553077": {
       "id": "digi_1790594553077",
@@ -10913,7 +10958,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "data",
       "img": "images/embedded/a86c2777999cbd3d.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 132,
       "independentReq": true,
       "unknownTime": false,
@@ -10929,7 +10974,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#22C55E"
+      "lineColor": "#22C55E",
+      "baseHp": 185,
+      "baseAp": 65,
+      "baseSpd": 120
     },
     "digi_1790594593783": {
       "id": "digi_1790594593783",
@@ -10937,7 +10985,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "virus",
       "img": "images/embedded/46fdc11403804bce.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 133,
       "independentReq": true,
       "unknownTime": false,
@@ -10953,7 +11001,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#A855F7"
+      "lineColor": "#A855F7",
+      "baseHp": 215,
+      "baseAp": 55,
+      "baseSpd": 70
     },
     "digi_1790594648611": {
       "id": "digi_1790594648611",
@@ -10961,7 +11012,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "free",
       "img": "images/embedded/4acffe69b8a48398.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 89,
       "independentReq": true,
       "unknownTime": false,
@@ -10988,7 +11039,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "vaccine",
       "img": "images/embedded/5ced3549fbb187c7.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 90,
       "independentReq": true,
       "unknownTime": false,
@@ -11003,7 +11054,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "jogress": "",
         "item": "",
         "note": ""
-      }
+      },
+      "baseHp": 315,
+      "baseAp": 125,
+      "baseSpd": 100
     },
     "digi_1790594678744": {
       "id": "digi_1790594678744",
@@ -11011,7 +11065,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "virus",
       "img": "images/embedded/885c5198f0f29e29.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 91,
       "independentReq": true,
       "unknownTime": false,
@@ -11034,7 +11088,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "data",
       "img": "images/embedded/e79c43196d2c1441.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 92,
       "independentReq": true,
       "unknownTime": false,
@@ -11049,7 +11103,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "jogress": "",
         "item": "",
         "note": ""
-      }
+      },
+      "baseHp": 300,
+      "baseAp": 105,
+      "baseSpd": 100
     },
     "digi_1790594696455": {
       "id": "digi_1790594696455",
@@ -11057,7 +11114,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "초궁극체",
       "attr": "vaccine",
       "img": "images/embedded/42aff4d167f71102.gif",
-      "dim": "블레이징 스피릿(아그니몬)🚧",
+      "dim": "아그니몬",
       "order": 999,
       "independentReq": true,
       "unknownTime": false,
@@ -11267,7 +11324,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#22C55E"
+      "lineColor": "#22C55E",
+      "baseHp": 165,
+      "baseAp": 35,
+      "baseSpd": 70
     },
     "digi_1790664632335": {
       "id": "digi_1790664632335",
@@ -11683,7 +11743,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#22C55E"
+      "lineColor": "#22C55E",
+      "baseHp": 165,
+      "baseAp": 35,
+      "baseSpd": 70
     },
     "digi_1790669105620": {
       "id": "digi_1790669105620",
@@ -12761,7 +12824,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "jogress": "",
         "item": "",
         "note": ""
-      }
+      },
+      "baseHp": 220,
+      "baseAp": 55,
+      "baseSpd": 110
     },
     "digi_1790672012550": {
       "id": "digi_1790672012550",
@@ -12831,7 +12897,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "jogress": "",
         "item": "",
         "note": ""
-      }
+      },
+      "baseHp": 285,
+      "baseAp": 110,
+      "baseSpd": 150
     },
     "digi_1790672082424": {
       "id": "digi_1790672082424",
@@ -13490,8 +13559,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#EF4444",
-      "conditionStatus": "known"
+      "lineColor": "#EF4444"
     },
     "digi_1790822690259": {
       "id": "digi_1790822690259",
@@ -13518,8 +13586,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": "방치 진화"
       },
-      "lineColor": "#A855F7",
-      "conditionStatus": "known"
+      "lineColor": "#A855F7"
     },
     "digi_1790822719494": {
       "id": "digi_1790822719494",
@@ -15102,8 +15169,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "블랙디지트론",
         "note": ""
       },
-      "lineColor": "#EF4444",
-      "conditionStatus": "known"
+      "lineColor": "#EF4444"
     },
     "digi_1790831583472": {
       "id": "digi_1790831583472",
@@ -15538,23 +15604,23 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "vaccine",
       "img": "images/embedded/ba1a86df819ca9e7.gif",
-      "baseHp": "",
-      "baseAp": "",
-      "baseSpd": "",
+      "baseHp": 310,
+      "baseAp": 100,
+      "baseSpd": 140,
       "dim": "테리어몬 EX🚧",
       "order": 130,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "48시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
-        "winRate": "",
-        "dungeon": "",
+        "vital": 7000,
+        "pp": 20,
+        "battle": 150,
+        "winRate": "70",
+        "dungeon": "★★",
         "jogress": "",
-        "item": "",
+        "item": "운명의 캡슐",
         "note": ""
       }
     },
@@ -18656,10 +18722,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790192399374",
       "lineColor": "#EF4444",
       "time": "48시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 4500,
+      "pp": 15,
+      "battle": 120,
+      "winRate": "70",
       "dungeon": "",
       "jogress": "",
       "item": "",
@@ -18698,10 +18764,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790192399374",
       "lineColor": "#F97316",
       "time": "48시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 4500,
+      "pp": 15,
+      "battle": 120,
+      "winRate": "70",
       "dungeon": "",
       "jogress": "",
       "item": "",
@@ -18810,10 +18876,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790192399374",
       "lineColor": "#2DD4BF",
       "time": "48시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 4500,
+      "pp": 15,
+      "battle": 120,
+      "winRate": "70",
       "dungeon": "",
       "jogress": "",
       "item": "",
@@ -26484,10 +26550,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790439727691",
       "lineColor": "#F97316",
       "time": "48시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 5000,
+      "pp": 20,
+      "battle": 160,
+      "winRate": "70",
       "dungeon": "",
       "jogress": "",
       "item": "",
@@ -26750,8 +26816,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790594541776",
       "lineColor": "#22C55E",
       "time": "36시간",
-      "vital": 2000,
-      "pp": 8,
+      "vital": 2500,
+      "pp": 10,
       "battle": 80,
       "winRate": "50",
       "dungeon": "",
@@ -30425,14 +30491,14 @@ window.DIGIPET_DEFAULT_DATA = {
       "from": "digi_1790831540680",
       "to": "digi_1790832055719",
       "lineColor": "#EF4444",
-      "time": "48시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
-      "dungeon": "",
+      "time": "-",
+      "vital": 7000,
+      "pp": 20,
+      "battle": 150,
+      "winRate": "70",
+      "dungeon": "★★",
       "jogress": "",
-      "item": "",
+      "item": "운명의 캡슐",
       "note": ""
     },
     {
@@ -31517,11 +31583,11 @@ window.DIGIPET_DEFAULT_DATA = {
     "감마몬",
     "미스틱 페더(피요몬)🚧",
     "허밋 인 더 정글(팔몬)",
-    "레나몬 EX🚧",
-    "셀레스티얼 그레이스(가트몬)🚧",
+    "레나몬 EX",
+    "가트몬",
     "인피니트 타이드(산호몬)🚧",
     "파피몬 EX",
-    "오션 글로우(쉬라몬/젤리몬)🚧",
+    "오션 글로우(쉬라몬/젤리몬)",
     "에인션트 워리어즈(브이몬)",
     "프라이미벌 워리어즈(추추몬)🚧",
     "블리자드 팽(블루코몬)🚧",
@@ -31538,8 +31604,8 @@ window.DIGIPET_DEFAULT_DATA = {
     "길몬 EX",
     "다이너스티 오브 디 이블(임프몬)🚧",
     "레베몬 EX🚧",
-    "솔라 세이버즈(아구몬s)🚧",
-    "블레이징 스피릿(아그니몬)🚧",
+    "솔라 세이버즈(아구몬s)",
+    "아그니몬",
     "드라코닉 블레이즈(드라코몬)",
     "류우다몬🚧",
     "도루몬🚧",
@@ -31598,23 +31664,11 @@ window.DIGIPET_DEFAULT_DATA = {
     "도루몬🚧": {
       "location": "균열 지대"
     },
-    "솔라 세이버즈(아구몬s)🚧": {
-      "location": "코어 광맥"
-    },
     "홀리 윙(파닥몬/럭스몬)": {
       "location": "제로 터미널"
     },
-    "레나몬 EX🚧": {
-      "location": "패킷 숲"
-    },
-    "셀레스티얼 그레이스(가트몬)🚧": {
-      "location": "패킷 숲"
-    },
     "트와일라잇 그리모어(피코데블몬)🚧": {
       "location": "균열 지대"
-    },
-    "오션 글로우(쉬라몬/젤리몬)🚧": {
-      "location": "서버 해안"
     },
     "인피니트 타이드(산호몬)🚧": {
       "location": "서버 해안"
@@ -31630,9 +31684,6 @@ window.DIGIPET_DEFAULT_DATA = {
     },
     "감마몬": {
       "location": "데이터 초원"
-    },
-    "블레이징 스피릿(아그니몬)🚧": {
-      "location": "코어 광맥"
     },
     "루가몬🚧": {
       "location": "미러 정글"
@@ -31663,6 +31714,21 @@ window.DIGIPET_DEFAULT_DATA = {
     },
     "류우다몬🚧": {
       "location": "균열 지대"
+    },
+    "아그니몬": {
+      "location": "코어 광맥"
+    },
+    "오션 글로우(쉬라몬/젤리몬)": {
+      "location": "서버 해안"
+    },
+    "레나몬 EX": {
+      "location": "패킷 숲"
+    },
+    "가트몬": {
+      "location": "패킷 숲"
+    },
+    "솔라 세이버즈(아구몬s)": {
+      "location": "코어 광맥"
     }
   },
   "gasWebhookUrl": "https://script.google.com/macros/s/AKfycbx1XUIl4kVde4m0G1RhLNiNAloJIR7BVpfvqnSV2Eah8scuEA79Bg3fKYTnqEOttjji/exec"
