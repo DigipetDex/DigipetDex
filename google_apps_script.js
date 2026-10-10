@@ -680,7 +680,7 @@ function doGet(e) {
           jogress: jogressIdx !== undefined ? cr[jogressIdx] : "",
           item: itemIdx !== undefined ? cr[itemIdx] : "",
           note: noteIdx !== undefined ? cr[noteIdx] : "",
-          updatedAt: updatedIdx !== undefined ? cr[updatedIdx] : "",
+          updatedAt: updatedIdx !== undefined ? cellTime(cr[updatedIdx]) : "",
           baseHp: hpIdx !== undefined && cr[hpIdx] !== undefined ? String(cr[hpIdx]).trim() : "",
           baseAp: apIdx !== undefined && cr[apIdx] !== undefined ? String(cr[apIdx]).trim() : "",
           baseSpd: spdIdx !== undefined && cr[spdIdx] !== undefined ? String(cr[spdIdx]).trim() : "",
@@ -734,9 +734,7 @@ function doGet(e) {
       for (var hi = allHistVals.length - 1; hi >= 0; hi--) {
         var hr = allHistVals[hi];
         var rRevId = String(hr[0] || "");
-        var rTs = (hr[1] instanceof Date) 
-          ? Utilities.formatDate(hr[1], Session.getScriptTimeZone() || "Asia/Seoul", "yyyy-MM-dd HH:mm:ss")
-          : String(hr[1] || "");
+        var rTs = cellTime(hr[1]);
         var rDim = String(hr[2] || "");
         var rFrom = String(hr[3] || "");
         var rTo = String(hr[4] || "");
@@ -860,7 +858,7 @@ function doGet(e) {
 
         reports.push({
           id: (ri + 1),
-          timestamp: tsIdx !== undefined ? r[tsIdx] : "",
+          timestamp: tsIdx !== undefined ? cellTime(r[tsIdx]) : "",
           dim: rDimIdx !== undefined ? r[rDimIdx] : "",
           fromName: fVal || "",
           toName: tVal || "",
@@ -922,8 +920,8 @@ function doGet(e) {
 
         trash.push({
           id: (ti + 1),
-          deletedAt: tDelTsIdx !== undefined ? tr[tDelTsIdx] : "",
-          timestamp: tTsIdx !== undefined ? tr[tTsIdx] : "",
+          deletedAt: tDelTsIdx !== undefined ? cellTime(tr[tDelTsIdx]) : "",
+          timestamp: tTsIdx !== undefined ? cellTime(tr[tTsIdx]) : "",
           dim: tDimIdx !== undefined ? tr[tDimIdx] : "",
           fromName: tfVal || "",
           toName: ttVal || "",
@@ -1271,6 +1269,17 @@ function cleanWinRate(v) {
   if (v === undefined || v === null) return "";
   if (typeof v === "number") return (v > 0 && v <= 1) ? String(Math.round(v * 100)) : String(v);
   return String(v).replace(/%/g, "").trim();
+}
+
+/**
+ * 시트의 날짜 칸을 "yyyy-MM-dd HH:mm:ss" 글자로 읽는다.
+ * 기록은 스크립트 시간대(한국)로 만든 글자를 넣는데, 시트는 그 글자를 '스프레드시트 시간대'로 해석해 날짜로 바꿔 둔다.
+ * 그래서 읽을 때도 스프레드시트 시간대로 풀어야 적은 그대로 나온다 (스크립트 시간대로 풀면 두 시간대 차이만큼 어긋남).
+ */
+function cellTime(v) {
+  if (!(v instanceof Date)) return v === undefined || v === null ? "" : String(v);
+  var tz = SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone() || Session.getScriptTimeZone() || "Asia/Seoul";
+  return Utilities.formatDate(v, tz, "yyyy-MM-dd HH:mm:ss");
 }
 
 /**
