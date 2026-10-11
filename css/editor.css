@@ -96,6 +96,20 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    /* 헤더 버튼이 많아져도 글자가 세로로 찌그러지지 않게: 줄바꿈 금지 + 자리가 모자라면 다음 줄로 */
+    header {
+      flex-wrap: wrap;
+      row-gap: 6px;
+    }
+    header button, header .logo-area h1, header .dim-selector-group > span {
+      white-space: nowrap;
+    }
+    header .logo-area {
+      flex-wrap: wrap;
+      row-gap: 6px;
     }
 
     button {
@@ -270,6 +284,35 @@
       letter-spacing: 0.5px;
       flex-shrink: 0;
     }
+
+    /* 같은 세대의 2번째 줄부터: 이름표 자리는 비워 두되 높이는 맞춘다 */
+    .stage-title.stage-title-cont {
+      visibility: hidden;
+    }
+    /* [에디터] 세대에 새 줄을 만드는 드롭 자리 */
+    .stage-col-new {
+      align-self: stretch;
+      width: 22px;
+      margin-left: -44px;
+      margin-right: -38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed rgba(255,255,255,0.10);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.22);
+      font-size: 0.62rem;
+      line-height: 1.2;
+      text-align: center;
+      user-select: none;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .stage-col-new.drag-over {
+      background: rgba(20, 184, 166, 0.2);
+      border-color: #14B8A6;
+      color: #5EEAD4;
+    }
+    body.viewer-mode .stage-col-new { display: none; }
 
     .nodes-list {
       display: flex;

@@ -325,6 +325,7 @@
       reader.onload = (event) => {
         try {
           project = JSON.parse(event.target.result);
+          migrateLegacyStageColumns(); // 예전 백업의 "궁극체2"/"초궁극체II" 를 세대 + 줄 번호로 변환
           selectedDigiId = Object.keys(project.digimons)[0] || null;
           saveState();
           updateDimFilterOptions();

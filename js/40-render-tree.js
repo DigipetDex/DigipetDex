@@ -6,12 +6,36 @@
     const svgLayer = document.getElementById("svg-layer");
 
     // 세대 컬럼 DOM 생성 모듈화 함수
-    function createStageColumn(stageName, digis, dimContext) {
+    // [에디터] 세대에 새 세로줄을 만드는 드롭 자리. 평소엔 얇게 숨어 있다가 끌어올 때 강조된다.
+    function createNewStageColumnDropZone(stageName, newColNum) {
+      const zone = document.createElement("div");
+      zone.className = "stage-col-new";
+      zone.title = `디지몬을 여기로 끌어다 놓으면 '${stageName}'에 줄이 하나 더 생깁니다`;
+      zone.innerHTML = `<span>＋<br>줄</span>`;
+      zone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        zone.classList.add("drag-over");
+      });
+      zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
+      zone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        zone.classList.remove("drag-over");
+        if (!draggedId || !project.digimons[draggedId]) return;
+        if (e.ctrlKey || isCtrlKeyDown) return;
+        moveDigimonToStage(draggedId, stageName, null, "end", newColNum);
+      });
+      return zone;
+    }
+
+    // 세대의 세로줄 하나. colNum = 그 세대의 몇 번째 줄(디지몬의 col 값), stageTotal = 세대 전체 디지몬 수.
+    // 이름표는 세대의 첫 줄에만 달고, 이어지는 줄은 같은 높이의 빈 자리만 둔다.
+    function createStageColumn(stageName, digis, dimContext, colNum = 1, isFirstCol = true, stageTotal = digis.length) {
       const col = document.createElement("div");
-      col.className = "stage-col";
+      col.className = `stage-col${isFirstCol ? "" : " stage-col-cont"}`;
       col.innerHTML = `
-        <div class="stage-title">${stageName} (${digis.length})</div>
-        <div class="nodes-list" id="col-${cleanDimId(dimContext)}-${stageName}" data-stage="${stageName}" data-dim="${dimContext}"></div>
+        <div class="stage-title${isFirstCol ? "" : " stage-title-cont"}">${isFirstCol ? `${stageName} (${stageTotal})` : "&nbsp;"}</div>
+        <div class="nodes-list" id="col-${cleanDimId(dimContext)}-${stageName}-${colNum}" data-stage="${stageName}" data-col="${colNum}" data-dim="${dimContext}"></div>
       `;
 
       const listEl = col.querySelector(".nodes-list");
@@ -35,7 +59,7 @@
           if (e.ctrlKey || isCtrlKeyDown) return;
 
           if (e.target === listEl || e.target.closest(".card-node") === null) {
-            moveDigimonToStage(draggedId, stageName, null, "end");
+            moveDigimonToStage(draggedId, stageName, null, "end", colNum);
           }
         });
       }
@@ -167,7 +191,7 @@
             const relY = e.clientY - rect.top;
             const position = relY < rect.height / 2 ? "before" : "after";
 
-            moveDigimonToStage(draggedId, stageName, digi.id, position);
+            moveDigimonToStage(draggedId, stageName, digi.id, position, colNum);
           });
         }
 
@@ -248,8 +272,18 @@
 
           if (digis.length === 0 && !["디지타마", "유년기 I", "유년기 II", "성장기", "성숙기", "완전체", "궁극체"].includes(stageName)) return;
 
-          const col = createStageColumn(stageName, digis, filterDim);
-          rowEl.appendChild(col);
+          // 한 세대가 세로줄을 여러 개 쓸 수 있다: 디지몬의 col 값별로 줄을 나눈다 (빈 번호는 건너뜀)
+          const colNums = Array.from(new Set(digis.map(digiCol))).sort((a, b) => a - b);
+          if (colNums.length === 0) colNums.push(1);
+          colNums.forEach((colNum, idx) => {
+            const colDigis = digis.filter(d => digiCol(d) === colNum);
+            rowEl.appendChild(createStageColumn(stageName, colDigis, filterDim, colNum, idx === 0, digis.length));
+          });
+
+          // 에디터: 이 세대에 줄을 하나 더 만드는 자리 (디지몬을 끌어다 놓으면 새 줄이 생김)
+          if (!isViewerMode && digis.length > 0) {
+            rowEl.appendChild(createNewStageColumnDropZone(stageName, colNums[colNums.length - 1] + 1));
+          }
         });
       }
 

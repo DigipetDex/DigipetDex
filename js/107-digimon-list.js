@@ -4,7 +4,13 @@
     // 정렬/필터 선택은 이 브라우저에만 기억한다 (localStorage).
     // -------------------------------------------------------------
     const DIGI_LIST_PREF_KEY = "digipet_digimon_list_prefs";
-    const DIGI_LIST_DEFAULT_STAGES = ["궁극체", "궁극체2", "초궁극체", "초궁극체II"];
+    // 목록에서는 세대만 본다: 트리에서 열을 나누려고 만든 "궁극체2", "초궁극체II" 는 각각 궁극체, 초궁극체로 묶는다.
+    const DIGI_LIST_STAGE_MERGE = { "궁극체2": "궁극체", "초궁극체II": "초궁극체" };
+    function listStage(stage) {
+      return DIGI_LIST_STAGE_MERGE[stage] || stage || "";
+    }
+    const DIGI_LIST_STAGES = stageOrder.map(listStage).filter((s, i, a) => a.indexOf(s) === i);
+    const DIGI_LIST_DEFAULT_STAGES = ["궁극체", "초궁극체"];
     const DIGI_LIST_ATTRS = ["vaccine", "data", "virus", "free", "unknown", "none"];
     const DIGI_LIST_ATTR_LABELS = { vaccine: "백신", data: "데이터", virus: "바이러스", free: "프리", unknown: "불명", none: "-" };
     const DIGI_LIST_SORTS = {
@@ -14,7 +20,11 @@
     let digiListPrefs = { stages: DIGI_LIST_DEFAULT_STAGES.slice(), attrs: DIGI_LIST_ATTRS.slice(), sort: "stage", desc: false, query: "" };
     try {
       const saved = JSON.parse(localStorage.getItem(DIGI_LIST_PREF_KEY) || "null");
-      if (saved && Array.isArray(saved.stages) && Array.isArray(saved.attrs)) digiListPrefs = { ...digiListPrefs, ...saved, query: "" };
+      if (saved && Array.isArray(saved.stages) && Array.isArray(saved.attrs)) {
+        digiListPrefs = { ...digiListPrefs, ...saved, query: "" };
+        // 예전에 저장된 "궁극체2" 등은 묶인 이름으로 바꿈
+        digiListPrefs.stages = digiListPrefs.stages.map(listStage).filter((x, i, a) => a.indexOf(x) === i);
+      }
     } catch (e) {}
 
     function saveDigiListPrefs() {
@@ -42,7 +52,7 @@
         list.forEach(d => String(d.dim || "").split(",").map(s => s.trim()).filter(Boolean).forEach(x => { if (!dims.includes(x)) dims.push(x); }));
         return {
           name, rep, list, dims,
-          stage: rep.stage || "", attr: rep.attr || "none",
+          stage: listStage(rep.stage), attr: rep.attr || "none",
           hp, ap, spd,
           total: (hp === null && ap === null && spd === null) ? null : (hp || 0) + (ap || 0) + (spd || 0)
         };
@@ -53,7 +63,7 @@
       const { sort, desc } = digiListPrefs;
       const dir = desc ? -1 : 1;
       const byName = (a, b) => a.name.localeCompare(b.name, "ko");
-      const byStage = (a, b) => stageOrder.indexOf(a.stage) - stageOrder.indexOf(b.stage);
+      const byStage = (a, b) => DIGI_LIST_STAGES.indexOf(a.stage) - DIGI_LIST_STAGES.indexOf(b.stage);
       return entries.sort((a, b) => {
         if (["hp", "ap", "spd", "total"].includes(sort)) {
           // 스탯이 없는 디지몬은 정렬 방향과 상관없이 맨 뒤
@@ -152,7 +162,7 @@
     function buildDigimonListControls() {
       const stageWrap = document.getElementById("digimon-list-stage-chips");
       if (stageWrap && !stageWrap.childElementCount) {
-        stageWrap.innerHTML = stageOrder.map(s => `<button type="button" class="digi-chip" data-stage="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join("");
+        stageWrap.innerHTML = DIGI_LIST_STAGES.map(s => `<button type="button" class="digi-chip" data-stage="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join("");
         stageWrap.querySelectorAll(".digi-chip").forEach(chip => chip.addEventListener("click", () => {
           const s = chip.dataset.stage;
           digiListPrefs.stages = digiListPrefs.stages.includes(s) ? digiListPrefs.stages.filter(x => x !== s) : digiListPrefs.stages.concat(s);

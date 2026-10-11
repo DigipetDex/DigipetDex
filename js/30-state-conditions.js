@@ -56,9 +56,9 @@
         defaultTime = "24시간";
       } else if (stage === "완전체") {
         defaultTime = "36시간";
-      } else if (stage === "궁극체" || stage === "궁극체2") {
+      } else if (stage === "궁극체") {
         defaultTime = "48시간";
-      } else if (["디지타마", "초궁극체", "초궁극체II"].includes(stage)) {
+      } else if (["디지타마", "초궁극체"].includes(stage)) {
         defaultTime = "-";
       }
 
@@ -143,11 +143,11 @@
           if (!digi.req.time || digi.req.time === "24시간" || digi.req.time === "12시간" || digi.req.time === "-") {
             digi.req.time = "36시간";
           }
-        } else if (digi.stage === "궁극체" || digi.stage === "궁극체2") {
+        } else if (digi.stage === "궁극체") {
           if (!digi.req.time || digi.req.time === "24시간" || digi.req.time === "36시간" || digi.req.time === "-") {
             digi.req.time = "48시간";
           }
-        } else if (digi.stage === "초궁극체" || digi.stage === "초궁극체II") {
+        } else if (digi.stage === "초궁극체") {
           if (!digi.req.time || digi.req.time === "즉시" || digi.req.time === "24시간") {
             digi.req.time = "-";
           }
@@ -232,7 +232,7 @@
         if (d.id !== sourceDigi.id && d.name && d.name.trim().toLowerCase() === targetName) {
           if (sourceDigi.img) d.img = sourceDigi.img;
           if (sourceDigi.attr) d.attr = sourceDigi.attr;
-          if (sourceDigi.stage) d.stage = sourceDigi.stage;
+          if (sourceDigi.stage) d.stage = LEGACY_STAGE_COLUMNS[sourceDigi.stage] || sourceDigi.stage;
           if (sourceDigi.baseHp !== undefined) d.baseHp = sourceDigi.baseHp;
           if (sourceDigi.baseAp !== undefined) d.baseAp = sourceDigi.baseAp;
           if (sourceDigi.baseSpd !== undefined) d.baseSpd = sourceDigi.baseSpd;
@@ -424,7 +424,29 @@
       }
     }
 
-    const stageOrder = ["디지타마", "유년기 I", "유년기 II", "성장기", "성숙기", "완전체", "궁극체", "궁극체2", "초궁극체", "초궁극체II", "아머체"];
+    // 세대 목록. 한 세대가 트리에서 세로줄을 여러 개 쓸 수 있고, 몇 번째 줄인지는 디지몬의 col(1부터)에 둔다.
+    // (예전에는 같은 세대 안의 옆줄을 "궁극체2", "초궁극체II" 라는 가짜 세대로 표현했다 → migrateLegacyStageColumns 가 변환)
+    const stageOrder = ["디지타마", "유년기 I", "유년기 II", "성장기", "성숙기", "완전체", "궁극체", "초궁극체", "아머체"];
+    const LEGACY_STAGE_COLUMNS = { "궁극체2": "궁극체", "초궁극체II": "초궁극체" };
+
+    function digiCol(digi) {
+      const n = parseInt(digi && digi.col, 10);
+      return n >= 1 ? n : 1;
+    }
+
+    // "궁극체2" → 궁극체의 2번째 줄, "초궁극체II" → 초궁극체의 2번째 줄. 바꾼 개수 반환
+    function migrateLegacyStageColumns() {
+      let count = 0;
+      Object.values(project.digimons || {}).forEach(d => {
+        const base = LEGACY_STAGE_COLUMNS[d.stage];
+        if (!base) return;
+        d.stage = base;
+        if (digiCol(d) < 2) d.col = 2;
+        count++;
+      });
+      return count;
+    }
+    migrateLegacyStageColumns();
     const attrColors = { vaccine: "#E74C3C", data: "#3498DB", virus: "#9B59B6", free: "#F1C40F", none: "#8E9297", unknown: "#E5E7EB" };
 
     const LINE_COLOR_PRESETS = [
@@ -888,9 +910,12 @@
       document.querySelectorAll(".nodes-list").forEach(l => l.classList.remove("drag-over"));
     }
 
-    function moveDigimonToStage(dragId, targetStage, targetId, position) {
+    // targetCol: 그 세대의 몇 번째 줄에 놓을지 (없으면 대상 카드의 줄, 그것도 없으면 1번 줄)
+    function moveDigimonToStage(dragId, targetStage, targetId, position, targetCol) {
       const draggedDigi = project.digimons[dragId];
       if (!draggedDigi) return;
+      const col = targetCol || (targetId && project.digimons[targetId] ? digiCol(project.digimons[targetId]) : 1);
+      if (col > 1) draggedDigi.col = col; else delete draggedDigi.col;
 
       // 세대 변경
       if (draggedDigi.stage !== targetStage) {
@@ -922,9 +947,9 @@
         });
       }
 
-      // 해당 세대의 디지몬들 정렬 (본인 제외)
+      // 해당 세대·같은 줄의 디지몬들 정렬 (본인 제외)
       let stageDigis = Object.values(project.digimons)
-        .filter(d => d.stage === targetStage && d.id !== dragId)
+        .filter(d => d.stage === targetStage && digiCol(d) === col && d.id !== dragId)
         .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
       if (position === "end" || !targetId) {
