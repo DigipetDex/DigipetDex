@@ -818,12 +818,17 @@
 
     document.getElementById("edit-stage").addEventListener("change", (e) => {
       if (project.digimons[selectedDigiId]) {
-        project.digimons[selectedDigiId].stage = e.target.value;
-        if (NO_ATTR_STAGES.includes(e.target.value)) project.digimons[selectedDigiId].attr = "none";
-        syncSameNameDigimons(project.digimons[selectedDigiId]);
+        const stageDigi = project.digimons[selectedDigiId];
+        const placeBefore = placeStageOf(stageDigi);
+        setDigiStageKeepPlace(stageDigi, e.target.value); // 세대만 바꾸고 트리 자리는 그대로
+        if (NO_ATTR_STAGES.includes(e.target.value)) stageDigi.attr = "none";
+        syncSameNameDigimons(stageDigi);
         saveState();
         renderTree();
         updateSidebar();
+        if (placeBefore !== e.target.value) {
+          showToast(`세대를 <strong>${escapeHtml(e.target.value)}</strong>(으)로 바꿨습니다. 트리에서의 자리는 그대로입니다.<br>자리를 옮기려면 카드를 끌어다 놓으세요.`);
+        }
       }
     });
 

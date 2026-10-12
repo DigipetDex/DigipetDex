@@ -70,7 +70,8 @@
           if (a[sort] === null && b[sort] === null) return byName(a, b);
           if (a[sort] === null) return 1;
           if (b[sort] === null) return -1;
-          return (a[sort] - b[sort]) * dir || byName(a, b);
+          // 수치가 같으면 스탯 합계가 높은 쪽을 위로 (정렬 방향과 무관), 그래도 같으면 이름순
+          return (a[sort] - b[sort]) * dir || ((b.total || 0) - (a.total || 0)) || byName(a, b);
         }
         if (sort === "name") return byName(a, b) * dir;
         if (sort === "attr") return ((DIGI_LIST_ATTRS.indexOf(a.attr) - DIGI_LIST_ATTRS.indexOf(b.attr)) * dir) || byStage(a, b) || byName(a, b);
@@ -91,6 +92,7 @@
         (!q || e.name.toLowerCase().includes(q))
       ));
       if (countEl) countEl.textContent = `${shown.length}종 / 전체 ${all.length}종`;
+      renderDigimonListAverage(shown);
 
       const arrow = key => digiListPrefs.sort === key ? (digiListPrefs.desc ? " ▼" : " ▲") : "";
       const head = `
@@ -102,6 +104,7 @@
           <button type="button" data-sort="hp" class="col-stat">체력${arrow("hp")}</button>
           <button type="button" data-sort="ap" class="col-stat">전투력${arrow("ap")}</button>
           <button type="button" data-sort="spd" class="col-stat">속도${arrow("spd")}</button>
+          <button type="button" data-sort="total" class="col-stat">합계${arrow("total")}</button>
         </div>`;
 
       const statCell = (v, cls) => `<span class="col-stat ${cls}${v === null ? " empty" : ""}">${v === null ? "-" : v}</span>`;
@@ -114,7 +117,7 @@
             <span class="col-name"><strong>${escapeHtml(e.name)}</strong><span class="col-meta">${escapeHtml(e.stage)} · ${icon}${DIGI_LIST_ATTR_LABELS[attrKey]}</span><small>${escapeHtml(e.dims.join(" · "))}</small></span>
             <span class="col-stage">${escapeHtml(e.stage)}</span>
             <span class="col-attr" style="--attr-c:${attrColors[attrKey] || "#888"}">${icon}<em>${DIGI_LIST_ATTR_LABELS[attrKey]}</em></span>
-            ${statCell(e.hp, "hp")}${statCell(e.ap, "ap")}${statCell(e.spd, "spd")}
+            ${statCell(e.hp, "hp")}${statCell(e.ap, "ap")}${statCell(e.spd, "spd")}${statCell(e.total, "total")}
           </div>`;
       }).join("");
 
@@ -133,6 +136,23 @@
       body.querySelectorAll(".digi-list-row[data-id]").forEach(row => {
         row.addEventListener("click", () => goToDigimonFromList(row.dataset.id));
       });
+    }
+
+    // 지금 목록에 보이는 디지몬 중 스탯 3개가 모두 등록된 것들의 평균
+    function renderDigimonListAverage(shown) {
+      const el = document.getElementById("digimon-list-avg");
+      if (!el) return;
+      const full = shown.filter(e => e.hp !== null && e.ap !== null && e.spd !== null);
+      if (full.length === 0) {
+        el.innerHTML = `<span class="muted">표시된 ${shown.length}종 중 스탯이 등록된 디지몬이 없습니다.</span>`;
+        return;
+      }
+      const avg = k => (full.reduce((s, e) => s + e[k], 0) / full.length).toFixed(1);
+      const total = (full.reduce((s, e) => s + e.hp + e.ap + e.spd, 0) / full.length).toFixed(1);
+      el.innerHTML = `
+        <span class="muted">평균 (스탯 등록 ${full.length}종)</span>
+        <span class="hp">체력 ${avg("hp")}</span><span class="ap">전투력 ${avg("ap")}</span><span class="spd">속도 ${avg("spd")}</span>
+        <strong>합계 ${total}</strong>`;
     }
 
     // 디지몬을 누르면 그 디지몬이 있는 DiM 트리로 이동해 선택

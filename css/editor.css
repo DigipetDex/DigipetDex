@@ -289,6 +289,10 @@
     .stage-title.stage-title-cont {
       visibility: hidden;
     }
+    /* 줄 안에서 세대가 바뀌는 자리에 붙는 이름표 */
+    .stage-title.stage-title-inline {
+      margin: 2px 0 -8px;
+    }
     /* [에디터] 세대에 새 줄을 만드는 드롭 자리 */
     .stage-col-new {
       align-self: stretch;
@@ -2608,7 +2612,7 @@
 .digi-chip.active { background:rgba(34,211,238,0.15); border-color:#22D3EE; color:#E2E8F0; font-weight:600; }
 .digi-chip .attr-icon { width:14px; height:14px; }
 .digi-list-body { flex:1; overflow-y:auto; padding:0 8px 8px; }
-.digi-list-row { display:grid; grid-template-columns:44px minmax(0,1fr) 72px 84px 54px 54px 54px; align-items:center; gap:6px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.05); font-size:0.8rem; color:#E2E8F0; }
+.digi-list-row { display:grid; grid-template-columns:44px minmax(0,1fr) 72px 84px 50px 50px 50px 54px; align-items:center; gap:6px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.05); font-size:0.8rem; color:#E2E8F0; }
 .digi-list-row[data-id] { cursor:pointer; }
 .digi-list-row[data-id]:hover { background:rgba(255,255,255,0.05); }
 .digi-list-head { position:sticky; top:0; z-index:1; background:#1E1F22; border-bottom:1px solid #3F4147; padding-top:8px; }
@@ -2626,16 +2630,22 @@
 .col-attr em { font-style:normal; }
 .col-attr .attr-icon { width:18px; height:18px; }
 .col-stat { text-align:right; font-variant-numeric:tabular-nums; font-weight:700; }
-.col-stat.hp { color:#34D399; } .col-stat.ap { color:#F87171; } .col-stat.spd { color:#38BDF8; }
+.col-stat.hp { color:#34D399; } .col-stat.ap { color:#F87171; } .col-stat.spd { color:#38BDF8; } .col-stat.total { color:#FCD34D; }
 .col-stat.empty { color:#4B5563; font-weight:400; }
 .digi-list-hint { font-size:0.7rem; color:#64748B; min-width:0; }
 .digi-list-empty { padding:30px; text-align:center; color:#94A3B8; font-size:0.85rem; }
 @media (max-width: 600px) {
   .digi-list-box { width:100%; height:92vh; }
-  .digi-list-row { grid-template-columns:38px minmax(0,1fr) 40px 40px 40px; gap:4px; }
+  .digi-list-row { grid-template-columns:38px minmax(0,1fr) 36px 36px 36px 40px; gap:4px; }
   .digi-list-row > .col-stage, .digi-list-row > .col-attr { display:none; }
   .col-meta { display:flex !important; }
   .col-img img { width:34px; height:34px; }
   .digi-list-ctrl-row { flex-wrap:wrap; }
   .digi-list-ctrl-row input { flex-basis:100%; }
 }
+
+/* 도감: 표시된 디지몬의 스탯 평균 */
+.digi-list-avg { display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; padding:6px 16px; font-size:0.76rem; background:#191A1D; border-bottom:1px solid rgba(255,255,255,0.06); color:#E2E8F0; }
+.digi-list-avg .muted { color:#94A3B8; }
+.digi-list-avg .hp { color:#34D399; } .digi-list-avg .ap { color:#F87171; } .digi-list-avg .spd { color:#38BDF8; }
+.digi-list-avg strong { color:#FCD34D; }

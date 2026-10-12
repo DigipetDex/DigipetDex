@@ -10,7 +10,7 @@
     function createNewStageColumnDropZone(stageName, newColNum) {
       const zone = document.createElement("div");
       zone.className = "stage-col-new";
-      zone.title = `디지몬을 여기로 끌어다 놓으면 '${stageName}'에 줄이 하나 더 생깁니다`;
+      zone.title = `디지몬을 여기로 끌어다 놓으면 '${stageName}' 옆에 줄이 하나 더 생깁니다 (Shift: 세대는 그대로 두고 자리만 이동)`;
       zone.innerHTML = `<span>＋<br>줄</span>`;
       zone.addEventListener("dragover", (e) => {
         e.preventDefault();
@@ -23,18 +23,30 @@
         zone.classList.remove("drag-over");
         if (!draggedId || !project.digimons[draggedId]) return;
         if (e.ctrlKey || isCtrlKeyDown) return;
-        moveDigimonToStage(draggedId, stageName, null, "end", newColNum);
+        moveDigimonToStage(draggedId, stageName, null, "end", newColNum, e.shiftKey);
       });
       return zone;
     }
 
-    // 세대의 세로줄 하나. colNum = 그 세대의 몇 번째 줄(디지몬의 col 값), stageTotal = 세대 전체 디지몬 수.
-    // 이름표는 세대의 첫 줄에만 달고, 이어지는 줄은 같은 높이의 빈 자리만 둔다.
-    function createStageColumn(stageName, digis, dimContext, colNum = 1, isFirstCol = true, stageTotal = digis.length) {
+    // 세로줄 하나. stageName = 이 줄이 속한 묶음(자리), colNum = 묶음의 몇 번째 줄.
+    // 한 줄에 서로 다른 세대가 함께 놓일 수 있다 (공식 도감 배치). 세대 이름표는 줄마다 달지 않고,
+    // 위→아래·왼쪽→오른쪽으로 읽다가 '세대가 바뀌는 자리'에만 단다. labelState 로 앞 줄의 마지막 세대를 이어받는다.
+    function stageLabelText(stage, labelState) {
+      // 그 세대가 처음 나올 때만 마릿수를 붙인다
+      const first = !labelState.seen.has(stage);
+      labelState.seen.add(stage);
+      labelState.current = stage;
+      return first ? `${stage} (${labelState.counts[stage] || 0})` : stage;
+    }
+
+    function createStageColumn(stageName, digis, dimContext, colNum = 1, labelState = { current: null, seen: new Set(), counts: {} }) {
       const col = document.createElement("div");
-      col.className = `stage-col${isFirstCol ? "" : " stage-col-cont"}`;
+      // 줄 맨 위 이름표: 첫 카드의 세대가 앞에서 이어지던 세대와 다를 때만 (빈 줄은 묶음 이름)
+      const headStage = digis.length ? digis[0].stage : stageName;
+      const showHead = headStage !== labelState.current;
+      col.className = `stage-col${showHead ? "" : " stage-col-cont"}`;
       col.innerHTML = `
-        <div class="stage-title${isFirstCol ? "" : " stage-title-cont"}">${isFirstCol ? `${stageName} (${stageTotal})` : "&nbsp;"}</div>
+        <div class="stage-title${showHead ? "" : " stage-title-cont"}">${showHead ? escapeHtml(stageLabelText(headStage, labelState)) : "&nbsp;"}</div>
         <div class="nodes-list" id="col-${cleanDimId(dimContext)}-${stageName}-${colNum}" data-stage="${stageName}" data-col="${colNum}" data-dim="${dimContext}"></div>
       `;
 
@@ -59,7 +71,7 @@
           if (e.ctrlKey || isCtrlKeyDown) return;
 
           if (e.target === listEl || e.target.closest(".card-node") === null) {
-            moveDigimonToStage(draggedId, stageName, null, "end", colNum);
+            moveDigimonToStage(draggedId, stageName, null, "end", colNum, e.shiftKey);
           }
         });
       }
@@ -191,10 +203,17 @@
             const relY = e.clientY - rect.top;
             const position = relY < rect.height / 2 ? "before" : "after";
 
-            moveDigimonToStage(draggedId, stageName, digi.id, position, colNum);
+            moveDigimonToStage(draggedId, stageName, digi.id, position, colNum, e.shiftKey);
           });
         }
 
+        // 줄 안에서 세대가 바뀌는 자리(맨 위 카드 제외)에 이름표
+        if (digi.stage !== labelState.current) {
+          const inlineLabel = document.createElement("div");
+          inlineLabel.className = "stage-title stage-title-inline";
+          inlineLabel.textContent = stageLabelText(digi.stage, labelState);
+          listEl.appendChild(inlineLabel);
+        }
         listEl.appendChild(card);
       });
 
@@ -262,9 +281,16 @@
         `;
         rowEl.appendChild(emptyMsg);
       } else {
+        // 이름표용: 이 DiM 의 세대별 마릿수(진짜 세대 기준)와, 읽는 순서대로 이어지는 '현재 세대'
+        const labelState = { current: null, seen: new Set(), counts: {} };
+        Object.values(project.digimons).forEach(d => {
+          if (isDigimonVisibleInDim(d, filterDim)) labelState.counts[d.stage] = (labelState.counts[d.stage] || 0) + 1;
+        });
+
         stageOrder.forEach(stageName => {
+          // 세대가 아니라 '놓인 자리'가 이 묶음인 디지몬들
           let digis = Object.values(project.digimons).filter(d => {
-            if (d.stage !== stageName) return false;
+            if (placeStageOf(d) !== stageName) return false;
             return isDigimonVisibleInDim(d, filterDim);
           });
 
@@ -277,7 +303,7 @@
           if (colNums.length === 0) colNums.push(1);
           colNums.forEach((colNum, idx) => {
             const colDigis = digis.filter(d => digiCol(d) === colNum);
-            rowEl.appendChild(createStageColumn(stageName, colDigis, filterDim, colNum, idx === 0, digis.length));
+            rowEl.appendChild(createStageColumn(stageName, colDigis, filterDim, colNum, labelState));
           });
 
           // 에디터: 이 세대에 줄을 하나 더 만드는 자리 (디지몬을 끌어다 놓으면 새 줄이 생김)

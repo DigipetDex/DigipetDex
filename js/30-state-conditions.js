@@ -232,7 +232,7 @@
         if (d.id !== sourceDigi.id && d.name && d.name.trim().toLowerCase() === targetName) {
           if (sourceDigi.img) d.img = sourceDigi.img;
           if (sourceDigi.attr) d.attr = sourceDigi.attr;
-          if (sourceDigi.stage) d.stage = LEGACY_STAGE_COLUMNS[sourceDigi.stage] || sourceDigi.stage;
+          if (sourceDigi.stage) setDigiStageKeepPlace(d, LEGACY_STAGE_COLUMNS[sourceDigi.stage] || sourceDigi.stage);
           if (sourceDigi.baseHp !== undefined) d.baseHp = sourceDigi.baseHp;
           if (sourceDigi.baseAp !== undefined) d.baseAp = sourceDigi.baseAp;
           if (sourceDigi.baseSpd !== undefined) d.baseSpd = sourceDigi.baseSpd;
@@ -428,6 +428,22 @@
     // (예전에는 같은 세대 안의 옆줄을 "궁극체2", "초궁극체II" 라는 가짜 세대로 표현했다 → migrateLegacyStageColumns 가 변환)
     const stageOrder = ["디지타마", "유년기 I", "유년기 II", "성장기", "성숙기", "완전체", "궁극체", "초궁극체", "아머체"];
     const LEGACY_STAGE_COLUMNS = { "궁극체2": "궁극체", "초궁극체II": "초궁극체" };
+
+    // 트리에서 놓인 자리: 세대(stage)와 별개다. 공식 도감 배치처럼 한 세로줄에 서로 다른 세대가 함께 놓일 수 있다.
+    //  - digi.stage : 진짜 세대 (도감·통계·조건 판정에 사용)
+    //  - digi.place : 놓인 세로줄 묶음(세대 이름). 없으면 자기 세대의 줄
+    //  - digi.col   : 그 묶음의 몇 번째 줄 (1부터)
+    function placeStageOf(digi) {
+      return digi && digi.place && stageOrder.includes(digi.place) ? digi.place : (digi ? digi.stage : "");
+    }
+
+    // 세대만 바꾸고 트리 자리는 그대로 둔다
+    function setDigiStageKeepPlace(digi, newStage) {
+      if (!digi || digi.stage === newStage) return;
+      const keep = placeStageOf(digi);
+      digi.stage = newStage;
+      if (keep && keep !== newStage) digi.place = keep; else delete digi.place;
+    }
 
     function digiCol(digi) {
       const n = parseInt(digi && digi.col, 10);
@@ -911,14 +927,22 @@
     }
 
     // targetCol: 그 세대의 몇 번째 줄에 놓을지 (없으면 대상 카드의 줄, 그것도 없으면 1번 줄)
-    function moveDigimonToStage(dragId, targetStage, targetId, position, targetCol) {
+    // placeOnly: true 면 세대는 그대로 두고 자리만 옮긴다 (Shift+드래그). false 면 그 줄의 세대로 바꾼다.
+    function moveDigimonToStage(dragId, targetStage, targetId, position, targetCol, placeOnly = false) {
       const draggedDigi = project.digimons[dragId];
       if (!draggedDigi) return;
       const col = targetCol || (targetId && project.digimons[targetId] ? digiCol(project.digimons[targetId]) : 1);
       if (col > 1) draggedDigi.col = col; else delete draggedDigi.col;
+      const stageChanged = !placeOnly && draggedDigi.stage !== targetStage;
+
+      if (placeOnly) {
+        if (targetStage !== draggedDigi.stage) draggedDigi.place = targetStage; else delete draggedDigi.place;
+      } else {
+        delete draggedDigi.place;
+      }
 
       // 세대 변경
-      if (draggedDigi.stage !== targetStage) {
+      if (stageChanged) {
         draggedDigi.stage = targetStage;
         if (NO_ATTR_STAGES.includes(targetStage)) draggedDigi.attr = "none";
         const defaultReq = getDefaultReqForStage(targetStage);
@@ -949,7 +973,7 @@
 
       // 해당 세대·같은 줄의 디지몬들 정렬 (본인 제외)
       let stageDigis = Object.values(project.digimons)
-        .filter(d => d.stage === targetStage && digiCol(d) === col && d.id !== dragId)
+        .filter(d => placeStageOf(d) === targetStage && digiCol(d) === col && d.id !== dragId)
         .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
       if (position === "end" || !targetId) {
@@ -974,5 +998,8 @@
       saveState();
       renderTree();
       updateSidebar();
+      if (stageChanged) {
+        showToast(`<strong>${escapeHtml(draggedDigi.name)}</strong>의 세대가 <strong>${escapeHtml(targetStage)}</strong>(으)로 바뀌었습니다.<br>세대는 그대로 두고 자리만 옮기려면 <strong>Shift</strong>를 누른 채 놓으세요.`);
+      }
     }
 
