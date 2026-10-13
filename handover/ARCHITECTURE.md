@@ -1,6 +1,6 @@
 # 🗺️ ARCHITECTURE — 파일 구성 & 핵심 함수 맵
 
-> **마지막 업데이트:** 2026-10-13 (v1.3.108)  
+> **마지막 업데이트:** 2026-10-13 (v1.3.109)  
 > 아래 두 표(`AUTO:FILES`, `AUTO:FUNCS`)는 `tools/gen_docs.py` 가 배포 때마다 다시 씁니다. 손으로 고치지 마세요. 핵심 함수 목록/역할은 `tools/gen_docs.py` 의 `KEY_FUNCS` 에서 관리합니다.
 
 ---
@@ -18,7 +18,7 @@
 | `js/00-config.js` | 4 | 앱 설정 상수 (STORAGE_KEY, APP_VERSION — make_deploy.py가 APP_VERSION을 갱신) |
 | `js/10-search-utils.js` | 473 | 영문-한글 디지몬 이름 매핑 및 바이링구얼 검색 유틸 |
 | `js/20-mode.js` | 54 | 뷰어/에디터 모드 판별 |
-| `js/30-state-conditions.js` | 1,005 | 프로젝트 상태/저장, 세대별 기본 조건, 동명 동기화, 조건 공개 판정, DiM 필터 |
+| `js/30-state-conditions.js` | 1,006 | 프로젝트 상태/저장, 세대별 기본 조건, 동명 동기화, 조건 공개 판정, DiM 필터 |
 | `js/40-render-tree.js` | 713 | 진화 트리 캔버스 렌더링 (renderTree 등) |
 | `js/50-node-sidebar.js` | 337 | 노드 클릭/연결 모드, 연결선 색상, 우측 패널(사이드바) |
 | `js/60-condition-clipboard.js` | 969 | 조건 클립보드 및 조건 입력 핸들러 |
@@ -34,7 +34,7 @@
 | `js/110-planner.js` | 1,135 | 진화 경로 플래너, 저장된 경로 관리 |
 | `js/120-planner-canvas.js` | 630 | 플래너 캔버스(PNG/클립보드) 생성 및 window load 초기화 |
 
-> JS 합계 9,717줄. 스크립트는 전부 classic script 이며 **로드 순서 = 실행 순서**입니다 (`editor.html` 의 `<script>` 순서).
+> JS 합계 9,718줄. 스크립트는 전부 classic script 이며 **로드 순서 = 실행 순서**입니다 (`editor.html` 의 `<script>` 순서).
 <!-- /AUTO:FILES -->
 
 ### 로드 방식

@@ -85,7 +85,7 @@
       if (otherDigis.length === 0) return alert("현재 DiM 내에 연결할 다른 디지몬이 없습니다.");
 
       const options = otherDigis.map((d, i) => `${i + 1}. ${d.name} (${d.stage})`).join("\n");
-      const choice = await showCustomPrompt("진화 연결 대상 선택", `진화할 대상 디지몬 번호를 입력하세요:\n\n${options}`, "1", "번호 입력");
+      const choice = await showCustomPrompt("진화 연결 대상 선택", `진화할 대상 디지몬 번호를 입력하세요:\n\n${options}`, "1", "번호 입력", "", true);
       const idx = parseInt(choice) - 1;
 
       if (!isNaN(idx) && otherDigis[idx]) {

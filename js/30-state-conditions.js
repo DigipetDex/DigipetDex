@@ -720,7 +720,8 @@
 
     // DiM 추가 버튼
     document.getElementById("btn-add-dim").addEventListener("click", async () => {
-      const name = await showCustomPrompt("새 DiM 추가", "새로 추가할 DiM 카테고리 이름을 입력하세요:", "", "예: Gabumon EX, Volcanic Beat 등");
+      // 마지막 인자 true = 디지몬 도감 연동 끔 (DiM 이름이 디지몬 이름으로 바뀌지 않게)
+      const name = await showCustomPrompt("새 DiM 추가", "새로 추가할 DiM 카테고리 이름을 입력하세요:", "", "예: Gabumon EX, Volcanic Beat 등", "", true);
       if (!name || !name.trim()) return;
 
       const cleanName = name.trim();
@@ -745,7 +746,7 @@
 
       let newName = customNewName;
       if (!newName) {
-        newName = await showCustomPrompt("DiM 이름 변경", `현재 선택된 '${oldName}' DiM의 새 이름을 입력하세요:`, oldName);
+        newName = await showCustomPrompt("DiM 이름 변경", `현재 선택된 '${oldName}' DiM의 새 이름을 입력하세요:`, oldName, "", "", true);
       }
       if (!newName || !newName.trim() || newName.trim() === oldName) return;
 

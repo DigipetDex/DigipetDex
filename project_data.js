@@ -4298,7 +4298,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 I",
       "attr": "none",
       "img": "images/embedded/38058aa23e9ed248.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 9,
       "req": {
         "time": "1시간",
@@ -4324,7 +4324,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "유년기 II",
       "attr": "none",
       "img": "images/embedded/d91d6e9c0a3e8675.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 999,
       "req": {
         "time": "1시간",
@@ -4350,7 +4350,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성장기",
       "attr": "free",
       "img": "images/embedded/c259611d475d56b7.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 12,
       "req": {
         "time": "1시간",
@@ -4376,7 +4376,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "free",
       "img": "images/embedded/f9fa82eb27211164.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 37,
       "req": {
         "time": "24시간",
@@ -4402,7 +4402,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "free",
       "img": "images/embedded/650d145d1222ba7d.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 38,
       "req": {
         "time": "24시간",
@@ -4425,7 +4425,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "free",
       "img": "images/embedded/3aaed8b294c1539e.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 39,
       "req": {
         "time": "24시간",
@@ -4451,7 +4451,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "성숙기",
       "attr": "virus",
       "img": "images/embedded/4db06cce2d1fef71.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 40,
       "req": {
         "time": "24시간",
@@ -4475,7 +4475,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "free",
       "img": "images/embedded/ecf0a54f5e699954.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 53,
       "req": {
         "time": "36시간",
@@ -4501,7 +4501,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "free",
       "img": "images/embedded/28d9266f05ce0cfc.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 56,
       "req": {
         "time": "36시간",
@@ -4524,7 +4524,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "free",
       "img": "images/embedded/f27e84bc85dd7110.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 54,
       "req": {
         "time": "36시간",
@@ -4547,7 +4547,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "vaccine",
       "img": "images/embedded/c09b90f58b386ee5.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 55,
       "lineColor": "#EF4444",
       "req": {
@@ -4571,7 +4571,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "완전체",
       "attr": "free",
       "img": "images/embedded/58c6dc0d144d6230.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 57,
       "req": {
         "time": "36시간",
@@ -4597,7 +4597,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "디지타마",
       "attr": "none",
       "img": "images/embedded/d9f9df432005b47f.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 9,
       "req": {
         "time": "-",
@@ -4620,7 +4620,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "free",
       "img": "images/embedded/eaafe847f19de43d.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 33,
       "req": {
         "time": "48시간",
@@ -4646,14 +4646,14 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "free",
       "img": "images/embedded/a034d89df90781fd.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 34,
       "req": {
         "time": "48시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
-        "winRate": "",
+        "vital": 4500,
+        "pp": 10,
+        "battle": 120,
+        "winRate": "50",
         "dungeon": "",
         "jogress": "",
         "item": "",
@@ -4671,7 +4671,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "virus",
       "img": "images/embedded/b6b97f2c93d036cc.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 35,
       "req": {
         "time": "48시간",
@@ -4693,7 +4693,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "초궁극체",
       "attr": "virus",
       "img": "images/embedded/bb28d061f63b0005.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 17,
       "req": {
         "time": "3시간",
@@ -4718,7 +4718,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "초궁극체",
       "attr": "virus",
       "img": "images/embedded/f804a9f699f47c9c.gif",
-      "dim": "추추몬",
+      "dim": "프라이미벌 워리어즈(추추몬)",
       "order": 18,
       "req": {
         "time": "-",
@@ -10046,10 +10046,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "partialUnknown": false,
       "req": {
         "time": "36시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
-        "winRate": "",
+        "vital": 3000,
+        "pp": 12,
+        "battle": 120,
+        "winRate": "70",
         "dungeon": "",
         "jogress": "",
         "item": "",
@@ -10196,10 +10196,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "partialUnknown": true,
       "req": {
         "time": "48시간",
-        "vital": 4500,
-        "pp": 10,
-        "battle": "120",
-        "winRate": "50",
+        "vital": "",
+        "pp": "",
+        "battle": "",
+        "winRate": "",
         "dungeon": "",
         "jogress": "",
         "item": "",
@@ -10219,10 +10219,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "partialUnknown": false,
       "req": {
         "time": "48시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
-        "winRate": "",
+        "vital": 4500,
+        "pp": 15,
+        "battle": 120,
+        "winRate": "70",
         "dungeon": "",
         "jogress": "",
         "item": "",
@@ -11932,7 +11932,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#EF4444"
+      "lineColor": "#EF4444",
+      "baseHp": 145,
+      "baseAp": 40,
+      "baseSpd": 70
     },
     "digi_1790669151801": {
       "id": "digi_1790669151801",
@@ -17136,7 +17139,7 @@ window.DIGIPET_DEFAULT_DATA = {
         "time": "48시간",
         "vital": 5000,
         "pp": 20,
-        "battle": "160",
+        "battle": 160,
         "winRate": "70",
         "dungeon": "",
         "jogress": "지크그레이몬,오메가샤우트몬",
@@ -17303,9 +17306,9 @@ window.DIGIPET_DEFAULT_DATA = {
         "pp": "",
         "battle": "",
         "winRate": "",
-        "dungeon": "-",
-        "jogress": "-",
-        "item": "-",
+        "dungeon": "",
+        "jogress": "",
+        "item": "",
         "note": ""
       },
       "lineColor": "#38BDF8"
@@ -26660,7 +26663,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "time": "48시간",
       "vital": 4500,
       "pp": 10,
-      "battle": "120",
+      "battle": 120,
       "winRate": "50",
       "dungeon": "",
       "jogress": "",
@@ -32395,7 +32398,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "time": "36시간",
       "vital": 5000,
       "pp": 20,
-      "battle": "160",
+      "battle": 160,
       "winRate": "70",
       "dungeon": "",
       "jogress": "지크그레이몬,오메가샤우트몬",
@@ -32575,7 +32578,7 @@ window.DIGIPET_DEFAULT_DATA = {
     "파피몬 EX",
     "오션 글로우(쉬라몬/젤리몬)",
     "에인션트 워리어즈(브이몬)",
-    "추추몬",
+    "프라이미벌 워리어즈(추추몬)",
     "블리자드 팽(블루코몬)🚧",
     "그로울링 하울(볼프몬)🚧",
     "챠크몬 EX🚧",
@@ -32713,7 +32716,7 @@ window.DIGIPET_DEFAULT_DATA = {
     "샤우트몬 EX": {
       "location": "레이드 보상"
     },
-    "추추몬": {
+    "프라이미벌 워리어즈(추추몬)": {
       "location": "케이블 협곡"
     }
   },
