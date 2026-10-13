@@ -2037,7 +2037,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "lineColor": "#EF4444",
       "unknownTime": false,
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 145,
+      "baseAp": 40,
+      "baseSpd": 70
     },
     "digi_1790191875581": {
       "id": "digi_1790191875581",
@@ -2109,7 +2112,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "lineColor": "#22C55E",
       "unknownTime": false,
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 150,
+      "baseAp": 45,
+      "baseSpd": 70
     },
     "digi_1790192360278": {
       "id": "digi_1790192360278",
@@ -2132,7 +2138,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "lineColor": "#F97316",
       "unknownTime": false,
-      "partialUnknown": true
+      "partialUnknown": true,
+      "baseHp": 265,
+      "baseAp": 125,
+      "baseSpd": 140
     },
     "digi_1790192399374": {
       "id": "digi_1790192399374",
@@ -2298,17 +2307,20 @@ window.DIGIPET_DEFAULT_DATA = {
       "order": 9,
       "req": {
         "time": "-",
-        "vital": "",
-        "pp": "",
-        "battle": "",
-        "winRate": "",
-        "dungeon": "",
+        "vital": 7000,
+        "pp": 25,
+        "battle": 240,
+        "winRate": "70",
+        "dungeon": "★★★",
         "jogress": "",
         "item": "",
         "note": ""
       },
-      "unknownTime": true,
-      "partialUnknown": false
+      "unknownTime": false,
+      "partialUnknown": false,
+      "baseHp": 345,
+      "baseAp": 165,
+      "baseSpd": 160
     },
     "digi_1790193065249": {
       "id": "digi_1790193065249",
@@ -9263,7 +9275,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "name": "인펠몬",
       "stage": "완전체",
       "attr": "unknown",
-      "img": "images/embedded/425d252c4f2a3344.jpg",
+      "img": "images/embedded/49f350323895513c.webp",
       "dim": "디아블로몬 EX",
       "order": 109,
       "independentReq": true,
@@ -19391,10 +19403,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790192360278",
       "lineColor": "#EF4444",
       "time": "48시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 4500,
+      "pp": 10,
+      "battle": 120,
+      "winRate": "50",
       "dungeon": "",
       "jogress": "",
       "item": "",
@@ -19405,11 +19417,11 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790192855386",
       "lineColor": "#F97316",
       "time": "-",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
-      "dungeon": "",
+      "vital": 7000,
+      "pp": 25,
+      "battle": 240,
+      "winRate": "70",
+      "dungeon": "★★★",
       "jogress": "",
       "item": "",
       "note": ""
