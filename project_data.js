@@ -2136,10 +2136,10 @@ window.DIGIPET_DEFAULT_DATA = {
     },
     "digi_1790192399374": {
       "id": "digi_1790192399374",
-      "name": "호루스몬",
+      "name": "페닉스몬",
       "stage": "궁극체",
-      "attr": "free",
-      "img": "images/embedded/66cd16ae3be29f90.gif",
+      "attr": "vaccine",
+      "img": "images/embedded/cbd4eca3b2481f01.gif",
       "dim": "미스틱 페더(피요몬)🚧",
       "order": 15,
       "req": {
@@ -2155,9 +2155,9 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "unknownTime": false,
       "partialUnknown": false,
-      "baseHp": 285,
-      "baseAp": 125,
-      "baseSpd": 140
+      "baseHp": "",
+      "baseAp": "",
+      "baseSpd": ""
     },
     "digi_1790192442250": {
       "id": "digi_1790192442250",
@@ -8055,7 +8055,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "note": ""
       },
       "unknownTime": false,
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 285,
+      "baseAp": 110,
+      "baseSpd": 130
     },
     "digi_1790388630727": {
       "id": "digi_1790388630727",
@@ -9250,7 +9253,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#151719"
+      "lineColor": "#151719",
+      "baseHp": 150,
+      "baseAp": 35,
+      "baseSpd": 70
     },
     "digi_1790435451535": {
       "id": "digi_1790435451535",
@@ -15611,7 +15617,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "req": {
         "time": "36시간",
         "vital": 2500,
-        "pp": "",
+        "pp": 10,
         "battle": 80,
         "winRate": "50",
         "dungeon": "",
@@ -15665,7 +15671,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "req": {
         "time": "36시간",
         "vital": 3000,
-        "pp": "",
+        "pp": 12,
         "battle": 120,
         "winRate": "70",
         "dungeon": "",
@@ -15681,25 +15687,26 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "vaccine",
       "img": "images/embedded/0119bc0aabefdd63.gif",
-      "baseHp": "",
-      "baseAp": "",
-      "baseSpd": "",
+      "baseHp": 285,
+      "baseAp": 115,
+      "baseSpd": 140,
       "dim": "테리어몬 EX🚧",
       "order": 127,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "48시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
-        "winRate": "",
+        "vital": 5000,
+        "pp": 20,
+        "battle": 160,
+        "winRate": "70",
         "dungeon": "",
         "jogress": "",
         "item": "",
         "note": ""
-      }
+      },
+      "conditionStatus": "known"
     },
     "digi_1790831972514": {
       "id": "digi_1790831972514",
@@ -15707,25 +15714,26 @@ window.DIGIPET_DEFAULT_DATA = {
       "stage": "궁극체",
       "attr": "vaccine",
       "img": "images/embedded/1320f4515ba3eaa6.gif",
-      "baseHp": "",
-      "baseAp": "",
-      "baseSpd": "",
+      "baseHp": 300,
+      "baseAp": 120,
+      "baseSpd": 130,
       "dim": "테리어몬 EX🚧",
       "order": 128,
       "independentReq": true,
-      "unknownTime": true,
+      "unknownTime": false,
       "partialUnknown": false,
       "req": {
         "time": "48시간",
-        "vital": "",
-        "pp": "",
-        "battle": "",
-        "winRate": "",
+        "vital": 4500,
+        "pp": 15,
+        "battle": 120,
+        "winRate": "70",
         "dungeon": "",
         "jogress": "",
         "item": "",
         "note": ""
-      }
+      },
+      "conditionStatus": "known"
     },
     "digi_1790831983482": {
       "id": "digi_1790831983482",
@@ -31281,7 +31289,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "lineColor": "#A855F7",
       "time": "36시간",
       "vital": 2500,
-      "pp": "",
+      "pp": 10,
       "battle": 80,
       "winRate": "50",
       "dungeon": "",
@@ -31295,7 +31303,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "lineColor": "#A855F7",
       "time": "36시간",
       "vital": 3000,
-      "pp": "",
+      "pp": 12,
       "battle": 120,
       "winRate": "70",
       "dungeon": "",
@@ -31350,10 +31358,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790831966604",
       "lineColor": "#22C55E",
       "time": "48시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 5000,
+      "pp": 20,
+      "battle": 160,
+      "winRate": "70",
       "dungeon": "",
       "jogress": "",
       "item": "",
@@ -31364,10 +31372,10 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790831972514",
       "lineColor": "#2563EB",
       "time": "48시간",
-      "vital": "",
-      "pp": "",
-      "battle": "",
-      "winRate": "",
+      "vital": 4500,
+      "pp": 15,
+      "battle": 120,
+      "winRate": "70",
       "dungeon": "",
       "jogress": "",
       "item": "",
