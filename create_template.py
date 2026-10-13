@@ -198,7 +198,7 @@ def create_template():
         
     ws_dex.auto_filter.ref = "A1:G1"
     
-    output_path = r"f:\Game\DIGIPET\디지펫_바이탈링크_진화트리_템플릿.xlsx"
+    output_path = r"f:\Ai Program\DIGIPET\디지펫_바이탈링크_진화트리_템플릿.xlsx"
     wb.save(output_path)
     print(f"Template successfully saved to {output_path}")
 

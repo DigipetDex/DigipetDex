@@ -1,8 +1,8 @@
 # 📖 DIGIPET 바이탈 링크 — AI 프로젝트 인수인계 문서
 
 > **작성일:** 2026-10-01  
-> **마지막 버전:** v1.3.106 (10.13 14:36)  
-> **프로젝트 경로:** `f:\Game\DIGIPET\`  
+> **마지막 버전:** v1.3.107 (10.13 15:40)  
+> **프로젝트 경로:** `f:\Ai Program\DIGIPET\`  
 > **배포 사이트:** https://digipetdex.github.io/DigipetDex/ (GitHub Pages, 저장소 `DigipetDex/DigipetDex`)
 
 > 버전 줄은 `make_deploy.py` 가 배포할 때마다 자동으로 고칩니다. 구조 개편(CSS/JS/이미지 분리) 내용은 [CHANGELOG.md](./CHANGELOG.md) 의 "구조 개편" 항목을 먼저 읽으세요.
@@ -50,7 +50,7 @@ DiM 38개 · 디지몬 672종 · 진화선 1,070개 · 공식 도감(`digimon_db
 ## 3. 파일 구조 및 역할
 
 ```
-f:\Game\DIGIPET\
+f:\Ai Program\DIGIPET\
 ├── editor.html              ← 유일한 HTML 소스 (마크업 + <script> 로드 순서만 담은 셸)
 ├── css/editor.css           ← 전체 스타일
 ├── js/                      ← 스크립트 소스 (상세는 ARCHITECTURE.md)

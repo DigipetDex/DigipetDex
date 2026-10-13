@@ -1,4 +1,4 @@
 /* 앱 설정 상수 (STORAGE_KEY, APP_VERSION — make_deploy.py가 APP_VERSION을 갱신) */
     const STORAGE_KEY = "digipet_project_data_v2";
-    const APP_VERSION = "v1.3.106 (10.13 14:36)";
+    const APP_VERSION = "v1.3.107 (10.13 15:40)";
 
