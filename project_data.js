@@ -17569,7 +17569,7 @@ window.DIGIPET_DEFAULT_DATA = {
     "digi_1792012074970": {
       "id": "digi_1792012074970",
       "name": "볼브몬",
-      "stage": "궁극체",
+      "stage": "초궁극체",
       "attr": "unknown",
       "img": "sprites/volvemon.gif",
       "baseHp": "",
@@ -17591,8 +17591,9 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "col": 2,
-      "conditionStatus": "unknown"
+      "col": 3,
+      "conditionStatus": "unknown",
+      "place": "궁극체"
     }
   },
   "evolutions": [
