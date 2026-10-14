@@ -1,4 +1,10 @@
 {
+  },
+  "볼브몬": {
+    "attr": "none",
+    "stage": "궁극체",
+    "dir": "volvemon"
+  },
   "노스페라몬": {
     "attr": "virus",
     "stage": "궁극체",
