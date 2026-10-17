@@ -764,7 +764,10 @@ window.DIGIPET_DEFAULT_DATA = {
       },
       "lineColor": "#A855F7",
       "unknownTime": false,
-      "partialUnknown": false
+      "partialUnknown": false,
+      "baseHp": 185,
+      "baseAp": 35,
+      "baseSpd": 80
     },
     "digi_1790159772060": {
       "id": "digi_1790159772060",
@@ -3366,7 +3369,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "name": "매그너몬(X항체)",
       "stage": "초궁극체",
       "attr": "vaccine",
-      "img": "images/embedded/d2220ef356072dab.gif",
+      "img": "images/embedded/063510d7b4bcc4ff.webp",
       "dim": "에인션트 워리어즈(브이몬)",
       "order": 12,
       "req": {
@@ -6779,7 +6782,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "order": 60,
       "req": {
         "time": "24시간",
-        "vital": "",
+        "vital": 600,
         "pp": "",
         "battle": "18+",
         "winRate": "",
@@ -9377,7 +9380,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#151719"
+      "lineColor": "#151719",
+      "baseHp": 320,
+      "baseAp": 105,
+      "baseSpd": 110
     },
     "digi_1790435459910": {
       "id": "digi_1790435459910",
@@ -9401,7 +9407,10 @@ window.DIGIPET_DEFAULT_DATA = {
         "item": "",
         "note": ""
       },
-      "lineColor": "#23272a"
+      "lineColor": "#23272a",
+      "baseHp": 420,
+      "baseAp": 135,
+      "baseSpd": 140
     },
     "digi_1790436251940": {
       "id": "digi_1790436251940",
@@ -23958,7 +23967,7 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790328425574",
       "lineColor": "#22C55E",
       "time": "24시간",
-      "vital": "",
+      "vital": 600,
       "pp": "",
       "battle": "18+",
       "winRate": "",
@@ -25045,8 +25054,8 @@ window.DIGIPET_DEFAULT_DATA = {
       "to": "digi_1790387638627",
       "lineColor": "#2DD4BF",
       "time": "36시간",
-      "vital": "",
-      "pp": "",
+      "vital": 3000,
+      "pp": 12,
       "battle": 120,
       "winRate": "70",
       "dungeon": "",
