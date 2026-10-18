@@ -1,6 +1,6 @@
 # 🗺️ ARCHITECTURE — 파일 구성 & 핵심 함수 맵
 
-> **마지막 업데이트:** 2026-10-17 (v1.3.116)  
+> **마지막 업데이트:** 2026-10-19 (v1.3.117)  
 > 아래 두 표(`AUTO:FILES`, `AUTO:FUNCS`)는 `tools/gen_docs.py` 가 배포 때마다 다시 씁니다. 손으로 고치지 마세요. 핵심 함수 목록/역할은 `tools/gen_docs.py` 의 `KEY_FUNCS` 에서 관리합니다.
 
 ---
@@ -16,7 +16,7 @@
 | `css/editor.css` | 2,651 | 전체 스타일 (다크 테마, 모바일 대응) |
 | `js/05-img-fallback.js` | 35 | 이미지 로드 실패 폴백(handleDigiImgError) — head 태그에서 가장 먼저 로드 |
 | `js/00-config.js` | 4 | 앱 설정 상수 (STORAGE_KEY, APP_VERSION — make_deploy.py가 APP_VERSION을 갱신) |
-| `js/10-search-utils.js` | 473 | 영문-한글 디지몬 이름 매핑 및 바이링구얼 검색 유틸 |
+| `js/10-search-utils.js` | 474 | 영문-한글 디지몬 이름 매핑 및 바이링구얼 검색 유틸 |
 | `js/20-mode.js` | 54 | 뷰어/에디터 모드 판별 |
 | `js/30-state-conditions.js` | 1,006 | 프로젝트 상태/저장, 세대별 기본 조건, 동명 동기화, 조건 공개 판정, DiM 필터 |
 | `js/40-render-tree.js` | 713 | 진화 트리 캔버스 렌더링 (renderTree 등) |
@@ -26,7 +26,7 @@
 | `js/80-export.js` | 341 | 스프레드시트/엑셀/CSV/JSON 내보내기 및 저장 |
 | `js/90-zoom-mobile.js` | 251 | 캔버스 줌/팬, 모바일 제스처, 바텀시트 |
 | `js/95-training-calc.js` | 337 | 30회 훈련 손익 & 리셋 판독기 |
-| `js/96-mode-save-deploy.js` | 116 | 뷰어/에디터 모드 전환 버튼, project_data.js 다이렉트 저장(Ctrl+S), 앱 내 원클릭 배포 버튼 |
+| `js/96-mode-save-deploy.js` | 121 | 뷰어/에디터 모드 전환 버튼, project_data.js 다이렉트 저장(Ctrl+S), 앱 내 원클릭 배포 버튼 |
 | `js/100-wiki-report.js` | 2,494 | 유저 제보/위키 변경역사/GAS 연동/실시간 조건 배포 |
 | `js/105-status-board.js` | 204 | 조건 공개 현황판 (DiM별 진화 루트 공개율, 미공개 루트 목록 → 트리 이동/제보) |
 | `js/106-attr-chart.js` | 199 | 디지펫 속성 상성표 (헤더 [상성표] 버튼 모달, 선택한 디지몬의 속성 강조) |
@@ -34,7 +34,7 @@
 | `js/110-planner.js` | 1,135 | 진화 경로 플래너, 저장된 경로 관리 |
 | `js/120-planner-canvas.js` | 630 | 플래너 캔버스(PNG/클립보드) 생성 및 window load 초기화 |
 
-> JS 합계 9,718줄. 스크립트는 전부 classic script 이며 **로드 순서 = 실행 순서**입니다 (`editor.html` 의 `<script>` 순서).
+> JS 합계 9,724줄. 스크립트는 전부 classic script 이며 **로드 순서 = 실행 순서**입니다 (`editor.html` 의 `<script>` 순서).
 <!-- /AUTO:FILES -->
 
 ### 로드 방식

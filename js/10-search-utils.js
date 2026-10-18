@@ -54,7 +54,7 @@
       if (!clean) return null;
 
       // "아구몬 (Agumon)" 같은 괄호 병기 형태 분리
-      if (clean.includes("(") && clean.includes(")")) {
+      if (clean.includes("(") && clean.includes(")") && !OFFICIAL_DIGIMON_DB[clean]) {
         const parts = clean.split("(");
         const p1 = parts[0].trim();
         const p2 = parts[1].replace(")", "").trim();
@@ -236,7 +236,8 @@
         descEl.textContent = desc;
         inputEl.value = defaultValue;
         inputEl.placeholder = placeholder || "입력하세요...";
-        if (datalistId) {
+        // 자체 검색 목록(suggBox)이 켜져 있으면 브라우저 기본 datalist 는 붙이지 않음(드롭다운 2개 겹침 방지)
+        if (datalistId && disableDigiCheck) {
           inputEl.setAttribute("list", datalistId);
         } else {
           inputEl.removeAttribute("list");

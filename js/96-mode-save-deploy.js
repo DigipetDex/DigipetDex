@@ -85,8 +85,12 @@
     // 앱 내부 원클릭 배포 버튼 (GitHub Pages)
     const desktopDeployBtn = document.getElementById("btn-desktop-deploy");
     if (desktopDeployBtn) {
+      // 네이티브 alert/confirm 뒤에 Electron 창이 입력 포커스를 잃는 문제 복구
+      const refocusApp = () => { try { window.electronAPI?.refocusWindow?.(); } catch (e) {} };
       desktopDeployBtn.addEventListener("click", async () => {
-        if (!confirm("현재 작업 내용을 저장하고 GitHub Pages(https://digipetdex.github.io/DigipetDex/)로 즉시 배포하시겠습니까?")) return;
+        const proceed = confirm("현재 작업 내용을 저장하고 GitHub Pages(https://digipetdex.github.io/DigipetDex/)로 즉시 배포하시겠습니까?");
+        refocusApp();
+        if (!proceed) return;
 
         // 먼저 최신 데이터 저장
         await executeDirectSave();
@@ -105,6 +109,7 @@
           } else {
             alert("❌ [배포 오류]\n" + (res.error || "배포에 실패했습니다."));
           }
+          refocusApp();
         } else {
           // 브라우저 환경 안내
           desktopDeployBtn.disabled = false;

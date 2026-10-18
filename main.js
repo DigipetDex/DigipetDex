@@ -72,6 +72,14 @@ ipcMain.handle('save-project-data', async (event, projectJson) => {
   }
 });
 
+// IPC 핸들러: 네이티브 alert/confirm 직후 Electron(Windows)이 입력 포커스를 잃어 클릭/입력이 먹통이 되는 문제 복구
+ipcMain.handle('refocus-window', () => {
+  if (!mainWindow) return;
+  mainWindow.blur();
+  mainWindow.focus();
+  mainWindow.webContents.focus();
+});
+
 // IPC 핸들러 2: GitHub Pages 원클릭 배포 실행
 ipcMain.handle('deploy-to-netlify', async (event) => {
   return new Promise((resolve) => {
