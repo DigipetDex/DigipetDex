@@ -1,6 +1,6 @@
 # 🗺️ ARCHITECTURE — 파일 구성 & 핵심 함수 맵
 
-> **마지막 업데이트:** 2026-10-19 (v1.3.118)  
+> **마지막 업데이트:** 2026-10-19 (v1.3.119)  
 > 아래 두 표(`AUTO:FILES`, `AUTO:FUNCS`)는 `tools/gen_docs.py` 가 배포 때마다 다시 씁니다. 손으로 고치지 마세요. 핵심 함수 목록/역할은 `tools/gen_docs.py` 의 `KEY_FUNCS` 에서 관리합니다.
 
 ---
@@ -18,7 +18,7 @@
 | `js/00-config.js` | 4 | 앱 설정 상수 (STORAGE_KEY, APP_VERSION — make_deploy.py가 APP_VERSION을 갱신) |
 | `js/10-search-utils.js` | 474 | 영문-한글 디지몬 이름 매핑 및 바이링구얼 검색 유틸 |
 | `js/20-mode.js` | 54 | 뷰어/에디터 모드 판별 |
-| `js/30-state-conditions.js` | 1,006 | 프로젝트 상태/저장, 세대별 기본 조건, 동명 동기화, 조건 공개 판정, DiM 필터 |
+| `js/30-state-conditions.js` | 1,005 | 프로젝트 상태/저장, 세대별 기본 조건, 동명 동기화, 조건 공개 판정, DiM 필터 |
 | `js/40-render-tree.js` | 713 | 진화 트리 캔버스 렌더링 (renderTree 등) |
 | `js/50-node-sidebar.js` | 337 | 노드 클릭/연결 모드, 연결선 색상, 우측 패널(사이드바) |
 | `js/60-condition-clipboard.js` | 969 | 조건 클립보드 및 조건 입력 핸들러 |
@@ -34,7 +34,7 @@
 | `js/110-planner.js` | 1,135 | 진화 경로 플래너, 저장된 경로 관리 |
 | `js/120-planner-canvas.js` | 630 | 플래너 캔버스(PNG/클립보드) 생성 및 window load 초기화 |
 
-> JS 합계 9,724줄. 스크립트는 전부 classic script 이며 **로드 순서 = 실행 순서**입니다 (`editor.html` 의 `<script>` 순서).
+> JS 합계 9,723줄. 스크립트는 전부 classic script 이며 **로드 순서 = 실행 순서**입니다 (`editor.html` 의 `<script>` 순서).
 <!-- /AUTO:FILES -->
 
 ### 로드 방식
@@ -55,10 +55,10 @@
 | `getDefaultReqForStage()` | `js/30-state-conditions.js:51` | 세대별 기본 요건 반환 (시간만, 나머지 빈칸) |
 | `ensureDigimonRequirements()` | `js/30-state-conditions.js:93` | 로드 시 기본값 정리 (세대별 진화 시간 등) |
 | `handleDigiImgError()` | `js/05-img-fallback.js:4` | 이미지 로드 실패 시 폴백 경로 탐색 (js/05 — <head>에서 가장 먼저 로드) |
-| `syncSameNameDigimons()` | `js/30-state-conditions.js:226` | 동명 디지몬 간 img/attr/stage/baseHp·Ap·Spd 동기화 |
-| `isEvoRevealed()` | `js/30-state-conditions.js:541` | 단일 진화선 공개 여부 판별 |
-| `updateDigimonConditionStatus()` | `js/30-state-conditions.js:569` | 해당 디지몬의 모든 incoming 루트 종합 판정 |
-| `recalculateAllDigimonConditionStatuses()` | `js/30-state-conditions.js:634` | 전체 디지몬 일괄 재판정 (renderTree 시 매번 호출) |
+| `syncSameNameDigimons()` | `js/30-state-conditions.js:225` | 동명 디지몬 간 img/attr/stage/baseHp·Ap·Spd 동기화 |
+| `isEvoRevealed()` | `js/30-state-conditions.js:540` | 단일 진화선 공개 여부 판별 |
+| `updateDigimonConditionStatus()` | `js/30-state-conditions.js:568` | 해당 디지몬의 모든 incoming 루트 종합 판정 |
+| `recalculateAllDigimonConditionStatuses()` | `js/30-state-conditions.js:633` | 전체 디지몬 일괄 재판정 (renderTree 시 매번 호출) |
 | `renderTree()` | `js/40-render-tree.js:237` | 진화 트리 전체 렌더링 (recalculate 포함) |
 | `updateSidebar()` | `js/60-condition-clipboard.js:149` | 우측 패널(사이드바) 갱신 |
 | `handleReqFieldChange()` | `js/60-condition-clipboard.js:665` | 조건 입력 필드 변경 이벤트 핸들러 |

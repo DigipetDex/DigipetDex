@@ -187,15 +187,14 @@
       // 1. Direct ID match
       if (project.digimons[q]) return project.digimons[q];
 
-      // 2. Exact Name match (case-insensitive)
-      const digis = Object.values(project.digimons);
-      const exact = digis.find(d => d.name && d.name.trim().toLowerCase() === q);
+      // 2. Exact Name match (case-insensitive, 공백 무시: "메탈가루몬 (흑)" == "메탈가루몬(흑)")
+      const norm = s => s.toLowerCase().replace(/\s+/g, "");
+      const nq = norm(q);
+      const digis = Object.values(project.digimons).filter(d => d.name);
+      const exact = digis.find(d => norm(d.name) === nq);
       if (exact) return exact;
 
-      // 3. Partial match
-      const partial = digis.find(d => d.name && (d.name.toLowerCase().includes(q) || q.includes(d.name.toLowerCase())));
-      if (partial) return partial;
-
+      // 부분 일치는 하지 않음: "메탈가루몬"과 "메탈가루몬(흑)"은 서로 다른 디지몬
       return null;
     }
 
