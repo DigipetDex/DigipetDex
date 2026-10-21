@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="js/05-img-fallback.js?v=v1.3.119"></script>
-  <script src="digimon_db.js?v=v1.3.119"></script>
-  <script src="project_data.js?v=v1.3.119"></script>
+  <script src="js/05-img-fallback.js?v=v1.3.120"></script>
+  <script src="digimon_db.js?v=v1.3.120"></script>
+  <script src="project_data.js?v=v1.3.120"></script>
   <script src="xlsx.full.min.js"></script>
-  <link rel="stylesheet" href="css/editor.css?v=v1.3.119">
+  <link rel="stylesheet" href="css/editor.css?v=v1.3.120">
 </head>
 <body>
 
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.119</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.120</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span class="dim-selector-label" style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -27,6 +27,9 @@
         </button>
         <button id="btn-open-attr-chart" style="background:#B45309; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:0.75rem; border:1px solid #F59E0B;" title="디지펫 속성 상성표 (디지몬을 선택한 채로 열면 그 속성을 강조)">
           <span>상성표</span>
+        </button>
+        <button id="btn-open-battle-sim" style="background:#9F1239; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:0.75rem; border:1px solid #FB7185;" title="전투 시뮬레이터 (추정 공식으로 1,000/5,000회 모의 전투)">
+          <span>전투 시뮬</span>
         </button>
         <button id="btn-open-wiki-history" style="background:#4F46E5; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:0.75rem; border:1px solid #6366F1;" title="위키 변경 역사 및 최근 편집 내역을 확인하고 이전 상태로 되돌립니다.">
           <span>위키 변경역사</span>
@@ -55,6 +58,9 @@
       </button>
       <button id="btn-mobile-attr-chart" style="padding:5px 8px; font-size:0.75rem; font-weight:700; background:rgba(245,158,11,0.2); border:1px solid #F59E0B; color:#FCD34D; border-radius:6px; align-items:center; cursor:pointer;" title="속성 상성표">
         <span>상성</span>
+      </button>
+      <button id="btn-mobile-battle-sim" style="padding:5px 8px; font-size:0.75rem; font-weight:700; background:rgba(251,113,133,0.18); border:1px solid #FB7185; color:#FDA4AF; border-radius:6px; align-items:center; cursor:pointer;" title="전투 시뮬레이터">
+        <span>시뮬</span>
       </button>
       <button id="btn-mobile-wiki-history" style="padding:5px 8px; font-size:0.75rem; font-weight:700; background:rgba(79,70,229,0.25); border:1px solid #4F46E5; color:#A5B4FC; border-radius:6px; align-items:center; cursor:pointer;" title="위키 변경 역사">
         <span>역사</span>
@@ -977,6 +983,80 @@
     </div>
   </div>
 
+  <!-- 전투 시뮬레이터 모달 (js/108-battle-sim.js) -->
+  <div class="modal-overlay" id="battle-sim-modal" style="display:none; z-index:1100;">
+    <div class="modal-box digi-list-box bsim-box">
+      <div class="digi-list-top">
+        <span style="font-size:0.92rem; color:#FFF; font-weight:700;">전투 시뮬레이터 <small style="font-size:0.72rem; color:#FDA4AF; font-weight:600; margin-left:6px;">프로토타입</small></span>
+        <button class="modal-close" id="battle-sim-close" style="font-size:1.1rem; padding:2px 6px; color:#94A3B8; cursor:pointer; background:none; border:none; line-height:1;">✕</button>
+      </div>
+      <div class="bsim-body">
+        <datalist id="bsim-names"></datalist>
+        <div class="bsim-sides">
+          <div class="bsim-side" id="bsim-side-A">
+            <div class="bsim-side-head a">A</div>
+            <input type="search" id="bsim-name-A" class="form-control" list="bsim-names" placeholder="디지몬 이름" autocomplete="off">
+            <div class="bsim-info"></div>
+            <div class="bsim-train"></div>
+          </div>
+          <button type="button" id="bsim-swap" class="digi-list-btn bsim-swap" title="A와 B 바꾸기">⇄</button>
+          <div class="bsim-side" id="bsim-side-B">
+            <div class="bsim-side-head b">B</div>
+            <input type="search" id="bsim-name-B" class="form-control" list="bsim-names" placeholder="디지몬 이름" autocomplete="off">
+            <div class="bsim-info"></div>
+            <div class="bsim-train"></div>
+          </div>
+        </div>
+        <div id="bsim-preview"></div>
+        <div class="bsim-run">
+          <button type="button" class="digi-list-btn" data-bsim-run="1000">1,000회 시뮬</button>
+          <button type="button" class="digi-list-btn" data-bsim-run="5000">5,000회 시뮬</button>
+        </div>
+        <div id="bsim-result"></div>
+        <p class="bsim-note">전투 기록으로 역산한 추정 공식입니다. 검증 중이라 실제와 다를 수 있습니다.</p>
+        <button type="button" id="bsim-help-toggle" class="bsim-help-btn">📊 데이터 수집에 도움을 주세요!</button>
+        <div id="bsim-help" class="bsim-help" style="display:none;">
+          <p>디스코드 서버에 <b>전투 기록 봇</b>을 초대하면, 평소처럼 게임을 하는 것만으로 전투 기록이 모여 공식이 더 정확해집니다.</p>
+          <h4>1. 봇 초대</h4>
+          <div class="bsim-invite">
+            <input type="text" id="bsim-invite-url" readonly value="https://discord.com/oauth2/authorize?client_id=1561971003972648960&amp;scope=bot%20applications.commands&amp;permissions=68608">
+            <button type="button" id="bsim-invite-copy" class="digi-list-btn">링크 복사</button>
+          </div>
+          <p class="muted">서버 관리 권한이 필요합니다. 권한: 채널 보기, 메시지 기록 보기, 메시지 보내기, 명령어 사용</p>
+          <h4>2. 사용법</h4>
+          <ul>
+            <li>초대 후 설정 없이 평소처럼 <code>/배틀</code>, <code>/탐험</code>을 하면 끝난 전투가 자동으로 기록됩니다. 각자의 포럼 포스트에서도 됩니다.</li>
+            <li><code>/통계</code> — 최근 전투와 같은 조건(같은 디지몬·스탯)의 명중률·데미지·승률</li>
+            <li><code>/통계 범위:전체</code> — 이 채널의 조건별 통계</li>
+            <li><code>/알림 상태:켜기 간격:10</code> — 10전마다 통계 자동 알림 (기본 꺼짐)</li>
+            <li>같은 디지몬·같은 스탯으로 20판 이상 하면 정확한 통계가 나옵니다.</li>
+          </ul>
+          <h4>예측이 불안정한 경우와 필요한 기록</h4>
+          <p class="muted">아래 처음 네 가지는 시뮬에서 해당되면 노란 경고로도 표시됩니다. 이런 전투 기록이 모일수록 공식이 정확해집니다.</p>
+          <ul>
+            <li><b>고전투력 (전투력 130 이상)</b> — 실제 데미지가 공식보다 4~14 높게 나와 승률이 어긋날 수 있습니다. <span class="need">필요: 전투력 130 이상 디지몬의 정규전, 상대 체력이 다양할수록 좋음</span></li>
+            <li><b>고체력·저전투력 장기전 (전투력 90 이하, 10턴 이상)</b> — 그랜드로코몬(체력 투자 vs 속도 투자)이 개발자 수치 59.5%와 달리 73%로 나오고 원인을 아직 모릅니다. <span class="need">필요: 전투력 70~90, 체력 400 이상끼리의 긴 전투</span></li>
+            <li><b>타수 경계 (상대를 쓰러뜨리는 데 3타가 필요할지 4타가 필요할지 애매한 경우)</b> — 데미지가 1만 달라도 승률이 8%p 가까이 바뀝니다 (예: 쿠즈하몬). <span class="need">필요: 그 전투력·체력 조합의 실제 데미지 기록</span></li>
+            <li><b>속도 차이가 큰 대결 (한쪽 속도가 상대의 절반 이하)</b> — 명중률 기록이 적습니다. <span class="need">필요: 속도 차이가 큰 정규전</span></li>
+            <li><b>같은 종끼리</b> — 같은 종이면 명중이 약 8.6%p 낮아지는 보정이 있는데, 이유와 조건(이름이 같으면인지 종이 같으면인지)을 모릅니다. <span class="need">필요: 같은 종 다른 이름 대결 (예: 아구몬 vs 아구몬(흑))</span></li>
+            <li><b>탐험</b> — 시뮬은 정규전 기준입니다. 탐험은 야생 상대 보정이 있는지 확인 중입니다. <span class="need">필요: 탐험 전투</span></li>
+          </ul>
+          <h4>3. 수집하는 정보</h4>
+          <ul>
+            <li>게임 봇 메시지만 읽습니다. <b>일반 채팅은 읽거나 저장하지 않습니다.</b></li>
+            <li>전투: 양쪽 디지몬 이름·속성·세대·스탯, 상성, 턴별 명중/빗나감·데미지, 승자</li>
+            <li><code>/상태</code> 화면의 디지몬 수치, 전투에 표시된 플레이어 이름, 서버·채널 이름</li>
+            <li>게임을 대신 플레이하거나 버튼을 누르지 않습니다. 공식 분석에만 쓰고 외부에 공개하지 않습니다.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="padding:8px 16px; background:#23272A; border-top:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <span class="digi-list-hint">훈련: 체력 +15/+25 · 전투력 +5/+10 · 속도 +5/+10 (성공/대성공)</span>
+        <button type="button" id="btn-battle-sim-close-bottom" style="padding:4px 14px; font-size:0.78rem; font-weight:600; background:#3B4252; border:1px solid #4C566A; color:#ECEFF4; border-radius:4px; cursor:pointer; white-space:nowrap; flex-shrink:0;">닫기</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 속성 상성표 모달 -->
   <div class="modal-overlay" id="attr-chart-modal" style="display:none; z-index:1100;">
     <div class="modal-box" style="max-width:560px; width:94%; max-height:90vh; display:flex; flex-direction:column; padding:0; overflow:hidden; background:#1E1F22; border:1px solid #33363D; border-radius:10px; box-shadow:0 16px 40px rgba(0,0,0,0.8);">
@@ -1305,24 +1385,25 @@
     </div>
   </div>
 
-  <script src="js/00-config.js?v=v1.3.119"></script>
-  <script src="js/10-search-utils.js?v=v1.3.119"></script>
-  <script src="js/20-mode.js?v=v1.3.119"></script>
-  <script src="js/30-state-conditions.js?v=v1.3.119"></script>
-  <script src="js/40-render-tree.js?v=v1.3.119"></script>
-  <script src="js/50-node-sidebar.js?v=v1.3.119"></script>
-  <script src="js/60-condition-clipboard.js?v=v1.3.119"></script>
-  <script src="js/70-digimon-crud.js?v=v1.3.119"></script>
-  <script src="js/80-export.js?v=v1.3.119"></script>
-  <script src="js/90-zoom-mobile.js?v=v1.3.119"></script>
-  <script src="js/95-training-calc.js?v=v1.3.119"></script>
-  <script src="js/96-mode-save-deploy.js?v=v1.3.119"></script>
-  <script src="js/100-wiki-report.js?v=v1.3.119"></script>
-  <script src="js/105-status-board.js?v=v1.3.119"></script>
-  <script src="js/106-attr-chart.js?v=v1.3.119"></script>
-  <script src="js/107-digimon-list.js?v=v1.3.119"></script>
-  <script src="js/110-planner.js?v=v1.3.119"></script>
-  <script src="js/120-planner-canvas.js?v=v1.3.119"></script>
+  <script src="js/00-config.js?v=v1.3.120"></script>
+  <script src="js/10-search-utils.js?v=v1.3.120"></script>
+  <script src="js/20-mode.js?v=v1.3.120"></script>
+  <script src="js/30-state-conditions.js?v=v1.3.120"></script>
+  <script src="js/40-render-tree.js?v=v1.3.120"></script>
+  <script src="js/50-node-sidebar.js?v=v1.3.120"></script>
+  <script src="js/60-condition-clipboard.js?v=v1.3.120"></script>
+  <script src="js/70-digimon-crud.js?v=v1.3.120"></script>
+  <script src="js/80-export.js?v=v1.3.120"></script>
+  <script src="js/90-zoom-mobile.js?v=v1.3.120"></script>
+  <script src="js/95-training-calc.js?v=v1.3.120"></script>
+  <script src="js/96-mode-save-deploy.js?v=v1.3.120"></script>
+  <script src="js/100-wiki-report.js?v=v1.3.120"></script>
+  <script src="js/105-status-board.js?v=v1.3.120"></script>
+  <script src="js/106-attr-chart.js?v=v1.3.120"></script>
+  <script src="js/107-digimon-list.js?v=v1.3.120"></script>
+  <script src="js/108-battle-sim.js?v=v1.3.120"></script>
+  <script src="js/110-planner.js?v=v1.3.120"></script>
+  <script src="js/120-planner-canvas.js?v=v1.3.120"></script>
 
   <div id="global-toast" class="toast-msg">최신 데이터가 내장된 배포용 'index.html' 파일이 다운로드되었습니다!
   (폴더의 index.html에 덮어쓰거나 그대로 웹에 업로드하시면 됩니다)</div>

@@ -1658,7 +1658,7 @@
         padding: 5px 6px !important;
       }
       #btn-add-dim, #btn-rename-dim, #btn-delete-dim, #btn-dim-up, #btn-dim-down,
-      #btn-open-wiki-history, #btn-open-evolution-planner, #btn-open-training-calc, #btn-open-status-board, #btn-open-attr-chart, #btn-open-digimon-list {
+      #btn-open-wiki-history, #btn-open-evolution-planner, #btn-open-training-calc, #btn-open-status-board, #btn-open-attr-chart, #btn-open-digimon-list, #btn-open-battle-sim {
         display: none !important;
       }
 
@@ -1682,6 +1682,9 @@
         display: inline-flex !important;
       }
       #btn-mobile-digimon-list {
+        display: inline-flex !important;
+      }
+      #btn-mobile-battle-sim {
         display: inline-flex !important;
       }
 
@@ -2649,3 +2652,62 @@
 .digi-list-avg .muted { color:#94A3B8; }
 .digi-list-avg .hp { color:#34D399; } .digi-list-avg .ap { color:#F87171; } .digi-list-avg .spd { color:#38BDF8; }
 .digi-list-avg strong { color:#FCD34D; }
+
+/* 전투 시뮬레이터 (js/108-battle-sim.js) */
+.bsim-box { max-width:820px; }
+.bsim-body { flex:1; overflow-y:auto; padding:12px 14px; display:flex; flex-direction:column; gap:10px; color:#E2E8F0; }
+.bsim-sides { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:8px; align-items:start; }
+.bsim-side { background:#232428; border:1px solid #33363D; border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:8px; min-width:0; }
+.bsim-side input[type=search] { font-size:0.85rem; padding:6px 8px; }
+.bsim-side-head { font-size:0.75rem; font-weight:800; }
+.bsim-side-head.a, .bsim-wins .a { color:#38BDF8; } .bsim-side-head.b, .bsim-wins .b { color:#FB7185; }
+.bsim-swap { align-self:center; }
+.bsim-info { display:flex; gap:8px; align-items:center; min-height:48px; }
+.bsim-info img { width:44px; height:44px; object-fit:contain; image-rendering:pixelated; }
+.bsim-meta { font-size:0.74rem; color:#94A3B8; display:flex; align-items:center; gap:3px; flex-wrap:wrap; }
+.bsim-meta .attr-icon { width:14px; height:14px; }
+.bsim-train { display:flex; flex-direction:column; gap:4px; }
+.bsim-train-row { display:grid; grid-template-columns:44px 1fr 1fr 82px; gap:4px; align-items:center; font-size:0.74rem; color:#94A3B8; }
+.bsim-train-row label { display:flex; align-items:center; gap:3px; white-space:nowrap; }
+.bsim-train-row input { width:100%; min-width:0; padding:3px 4px; font-size:0.8rem; background:#18191C; border:1px solid #4E5058; color:#E2E8F0; border-radius:4px; }
+.bsim-stat-label { font-weight:700; } .bsim-stat-label.hp { color:#34D399; } .bsim-stat-label.ap { color:#F87171; } .bsim-stat-label.spd { color:#38BDF8; }
+.bsim-final { text-align:right; color:#CBD5E1; white-space:nowrap; } .bsim-final strong { color:#FFF; }
+.bsim-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+.bsim-table th, .bsim-table td { padding:4px 6px; border-bottom:1px solid rgba(255,255,255,0.06); text-align:right; }
+.bsim-table th:first-child, .bsim-table td:first-child { text-align:left; }
+.bsim-table th { color:#94A3B8; font-weight:600; }
+.bsim-run { display:flex; gap:8px; }
+.bsim-run .digi-list-btn { flex:1; padding:9px; font-size:0.85rem; background:#9F1239; border-color:#FB7185; color:#FFF; }
+.bsim-bar { display:flex; height:10px; border-radius:5px; overflow:hidden; background:#33363D; }
+.bsim-bar .a { background:#38BDF8; } .bsim-bar .b { background:#FB7185; }
+.bsim-wins { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0 4px; }
+.bsim-wins > div { display:flex; flex-direction:column; }
+.bsim-wins > div:last-child { text-align:right; }
+.bsim-wins strong { font-size:1.6rem; line-height:1.2; }
+.bsim-wins small, .bsim-wins .muted, .bsim-meta .muted { color:#94A3B8; font-size:0.74rem; }
+.bsim-note { font-size:0.7rem; color:#64748B; margin:0; }
+@media (max-width:768px) {
+  .bsim-sides { grid-template-columns:1fr; }
+  .bsim-swap { justify-self:center; }
+}
+.bsim-toggle { display:flex; align-items:center; gap:5px; font-size:0.76rem; color:#E2E8F0; cursor:pointer; }
+.bsim-toggle .muted { color:#64748B; font-size:0.7rem; }
+.bsim-manual { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px; }
+.bsim-manual label { display:flex; flex-direction:column; gap:2px; font-size:0.72rem; }
+.bsim-manual input, .bsim-manual select { width:100%; min-width:0; padding:4px; font-size:0.82rem; background:#18191C; border:1px solid #4E5058; color:#E2E8F0; border-radius:4px; }
+.bsim-nostat { color:#FCD34D; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.4); border-radius:6px; padding:4px 8px; cursor:default; }
+.bsim-dex-img { cursor:pointer; border-radius:6px; outline:1px dashed rgba(251,113,133,0.5); outline-offset:2px; }
+.bsim-dex-img:hover { background:rgba(251,113,133,0.12); }
+.bsim-dex-btn { margin-left:4px; padding:1px 6px; font-size:0.68rem; font-weight:600; background:rgba(251,113,133,0.15); border:1px solid #FB7185; color:#FDA4AF; border-radius:4px; cursor:pointer; vertical-align:middle; }
+.bsim-help-btn { align-self:flex-start; padding:6px 12px; font-size:0.8rem; font-weight:700; background:rgba(88,101,242,0.2); border:1px solid #5865F2; color:#C7D2FE; border-radius:6px; cursor:pointer; }
+.bsim-help { background:#232428; border:1px solid #33363D; border-radius:8px; padding:10px 14px; font-size:0.78rem; color:#CBD5E1; line-height:1.55; }
+.bsim-help p { margin:0 0 6px; } .bsim-help .muted { color:#64748B; font-size:0.72rem; }
+.bsim-help h4 { margin:10px 0 4px; font-size:0.8rem; color:#E2E8F0; }
+.bsim-help ul { margin:0; padding-left:18px; }
+.bsim-help code { background:#18191C; padding:0 4px; border-radius:3px; color:#FDA4AF; }
+.bsim-invite { display:flex; gap:6px; margin-bottom:4px; }
+.bsim-invite input { flex:1; min-width:0; padding:5px 8px; font-size:0.72rem; background:#18191C; border:1px solid #4E5058; color:#94A3B8; border-radius:4px; }
+.bsim-warn { background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.45); border-radius:6px; padding:6px 10px; margin-bottom:6px; font-size:0.74rem; color:#FCD34D; }
+.bsim-warn ul { margin:2px 0; padding-left:16px; color:#FDE68A; }
+.bsim-warn .muted { color:#94A3B8; font-size:0.7rem; }
+.bsim-help .need { display:block; color:#93C5FD; font-size:0.74rem; }

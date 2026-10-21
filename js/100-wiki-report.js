@@ -492,7 +492,8 @@
       const localDiffSummary = diffParts.length > 0 ? diffParts.join(", ") : "조건/스탯 갱신";
 
       // 2. 즉시 낙관적(Optimistic) 로컬 히스토리 기록 (0ms 즉시 역사 반영)
-      const localRevId = "R" + (currentWikiHistoryCache.length + 1) + " (방금)";
+      // 서버 리비전 번호는 저장 후에야 정해지므로 임시 표시. pendingAt 으로 서버 확인 시한을 잼
+      const localRevId = "저장 중 (방금)";
       const nowStr = new Date().toLocaleString();
       const clientFullId = getClientFullIdentifier();
 
@@ -506,7 +507,8 @@
         prevData: prevSnapshot,
         newData: newSnapshot,
         uid: clientFullId,
-        comment: inputComment
+        comment: inputComment,
+        pendingAt: Date.now()
       };
 
       currentWikiHistoryCache.unshift(optimisticHistoryItem);
@@ -665,7 +667,16 @@
             return !alreadySaved;
           });
 
-          currentWikiHistoryCache = [...pendingLocal, ...data.history];
+          // 10분이 지나도 서버에 없으면 저장 실패로 보고 목록에서 뺌 (pendingAt 이 없는 예전 항목도 실패로 봄)
+          const PENDING_TTL = 10 * 60 * 1000;
+          const expired = pendingLocal.filter(h => !h.pendingAt || Date.now() - h.pendingAt > PENDING_TTL);
+          if (expired.length) {
+            const names = [...new Set(expired.map(h => h.toName).filter(Boolean))].join(", ");
+            showToast(`서버에 저장되지 않은 편집 ${expired.length}건을 목록에서 정리했습니다${names ? ` (${escapeHtml(names)})` : ""}. 필요하면 다시 입력해 주세요.`);
+          }
+          const stillPending = pendingLocal.filter(h => !expired.includes(h));
+
+          currentWikiHistoryCache = [...stillPending, ...data.history];
           try {
             localStorage.setItem("digipet_wiki_history_cache", JSON.stringify(currentWikiHistoryCache.slice(0, 100)));
           } catch (e) {}
@@ -1114,7 +1125,7 @@
       showToast(`[<strong>${escapeHtml(item.toName)}</strong>] 디지몬이 성공적으로 복구되었습니다!`);
 
       // 1-C. 롤백 이력 즉시 낙관적 로컬 반영 (0ms 화면 갱신)
-      const revertLocalId = "R" + (currentWikiHistoryCache.length + 1) + " (방금)";
+      const revertLocalId = "저장 중 (방금)";
       const revertHistItem = {
         revisionId: revertLocalId,
         timestamp: new Date().toLocaleString(),
@@ -1125,7 +1136,8 @@
         prevData: item.newData,
         newData: dataToApply,
         uid: getClientFullIdentifier(),
-        comment: `리비전 #${item.revisionId} (${formattedTs}) ${mode === "restore" ? "버전 내용으로 복구" : "편집 직전 상태로 복구"}`
+        comment: `리비전 #${item.revisionId} (${formattedTs}) ${mode === "restore" ? "버전 내용으로 복구" : "편집 직전 상태로 복구"}`,
+        pendingAt: Date.now()
       };
       currentWikiHistoryCache.unshift(revertHistItem);
       try {

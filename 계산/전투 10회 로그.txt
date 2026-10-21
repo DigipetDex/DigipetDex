@@ -1,0 +1,99 @@
+부계 사이크로몬 훈련 X 포만100
+체145 전40 속50
+
+본계 아르마리자몬 포만100
+체185 전65 속105
+
+사이크로몬이 상성유리
+1
+[1턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:50)
+[1턴] helper의 사이크로몬의 공격! (:crossed_swords:29)
+[2턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:46)
+[2턴] helper의 사이크로몬의 공격! (:crossed_swords:31)
+[3턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:49)
+코퍼님의 승리입니다.
+
+2
+[1턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:52)
+[1턴] helper의 사이크로몬의 공격이 빗나갔다...
+[2턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:52)
+[2턴] helper의 사이크로몬의 공격! (:crossed_swords:30)
+[3턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:41)
+코퍼님의 승리입니다.
+
+3
+[1턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:49)
+[1턴] helper의 사이크로몬의 공격! (:crossed_swords:28)
+[2턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:54)
+[2턴] helper의 사이크로몬의 공격! (:crossed_swords:29)
+[3턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:42)
+코퍼님의 승리입니다.
+
+4
+[1턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:50)
+[1턴] helper의 사이크로몬의 공격이 빗나갔다...
+[2턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:49)
+[2턴] helper의 사이크로몬의 공격이 빗나갔다...
+[3턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:46)
+코퍼님의 승리입니다.
+
+
+5
+[1턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:49)
+[1턴] helper의 사이크로몬의 공격! (:crossed_swords:34)
+[2턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:51)
+[2턴] helper의 사이크로몬의 공격! (:crossed_swords:32)
+[3턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:45)
+코퍼님의 승리입니다.
+
+
+
+6
+[1턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:51)
+[1턴] helper의 사이크로몬의 공격! (:crossed_swords:29)
+[2턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:48)
+[2턴] helper의 사이크로몬의 공격이 빗나갔다..
+[3턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:46)
+코퍼님의 승리입니다.
+
+
+
+7
+[1턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:46)
+[1턴] helper의 사이크로몬의 공격! (:crossed_swords:29)
+[2턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:46)
+[2턴] helper의 사이크로몬의 공격이 빗나갔다...
+[2턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:46)
+[2턴] helper의 사이크로몬의 공격이 빗나갔다...
+[3턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:53)
+코퍼님의 승리입니다.
+
+
+8
+[1턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:54)
+[1턴] helper의 사이크로몬의 공격! (:crossed_swords:28)
+[2턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:52)
+[2턴] helper의 사이크로몬의 공격! (:crossed_swords:29)
+[3턴] 코퍼의 아르마리자몬의 공격이 빗나갔다...
+[3턴] helper의 사이크로몬의 공격! (:crossed_swords:32)
+[4턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:39)
+코퍼님의 승리입니다.
+
+
+9
+[1턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:53)
+[1턴] helper의 사이크로몬의 공격! (:crossed_swords:30)
+[2턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:47)
+[2턴] helper의 사이크로몬의 공격이 빗나갔다...
+[3턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:45)
+코퍼님의 승리입니다.
+
+
+
+10
+[1턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:52)
+[1턴] helper의 사이크로몬의 공격! (:crossed_swords:35)
+[2턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:51)
+[2턴] helper의 사이크로몬의 공격! (:crossed_swords:32)
+[3턴] 코퍼의 아르마리자몬의 공격! (:crossed_swords:42)
+코퍼님의 승리입니다.
