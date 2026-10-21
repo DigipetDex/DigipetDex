@@ -2692,6 +2692,8 @@
 }
 .bsim-toggle { display:flex; align-items:center; gap:5px; font-size:0.76rem; color:#E2E8F0; cursor:pointer; }
 .bsim-toggle .muted { color:#64748B; font-size:0.7rem; }
+.bsim-crest { display:flex; align-items:center; gap:6px; margin-top:8px; font-size:0.76rem; }
+.bsim-crest select { flex:1; min-width:0; }
 .bsim-manual { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px; }
 .bsim-manual label { display:flex; flex-direction:column; gap:2px; font-size:0.72rem; }
 .bsim-manual input, .bsim-manual select { width:100%; min-width:0; padding:4px; font-size:0.82rem; background:#18191C; border:1px solid #4E5058; color:#E2E8F0; border-radius:4px; }

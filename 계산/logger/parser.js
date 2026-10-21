@@ -2,8 +2,8 @@ import fs from 'node:fs';
 
 const HEADS = {
   events: 'battle_no,turn,owner,digimon,result,dmg,hp1_after,hp2_after',
-  battles: 'battle_no,t,mode,name1,attr1,stage1,hp1,atk1,spd1,name2,attr2,stage2,hp2,atk2,spd2,relation,winner,owner1,owner2,invoker',
-  status: 't,name,attr,stage,vital,friend,full,pp,hp,atk,spd,battles,winrate,training',
+  battles: 'battle_no,t,mode,name1,attr1,stage1,hp1,atk1,spd1,name2,attr2,stage2,hp2,atk2,spd2,relation,winner,owner1,owner2,invoker,crest1,crest2',
+  status: 't,name,attr,stage,vital,friend,full,pp,hp,atk,spd,battles,winrate,training,crest',
 };
 
 const q = v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
@@ -16,12 +16,14 @@ const field = (e, pred) => (e.fields || []).find(f => pred(f.name));
 // "[3턴] 코퍼의 아구몬의 공격! (⚔️27)" / "[3턴] 코퍼의 아구몬의 공격이 빗나갔다..."
 // 탐험의 적 공격 줄은 주인 없이 나올 수 있어서 행위자 전체를 잡은 뒤 첫 "의 "로 나눔
 const LOG_RE = /^\[(\d+)턴\] (.+)의 공격(?:! \(.*?(\d+)\)|이 빗나갔다)/u;
+// 문장: 상태/팀 설명 줄의 커스텀 이모지 <:crest_love:123> 또는 :crest_love: 에서 love만 뽑음
+const crestOf = s => s?.match(/:crest_([a-z]+)/i)?.[1]?.toLowerCase() ?? '';
 const splitActor = a => { const i = a.indexOf('의 '); return i < 0 ? ['야생', a] : [a.slice(0, i), a.slice(i + 2)]; };
 
 function teamInfo(v) {
   const l = v.split('\n');
   const [attr, stage] = (l[0] || '').split(' / ');
-  return { attr, stage, hp: num(v, /체력: (\d+)/), atk: num(v, /전투력: (\d+)/), spd: num(v, /속도: (\d+)/) };
+  return { attr, stage, crest: crestOf(l[0]), hp: num(v, /체력: (\d+)/), atk: num(v, /전투력: (\d+)/), spd: num(v, /속도: (\d+)/) };
 }
 
 // dir마다 독립된 CSV와 상태를 가진 파서를 만든다 (채널별 기록용)
@@ -89,7 +91,7 @@ export function createParser(dir = 'logs') {
         const invokerName = s.info.invoker || invoker || '';
         // 탐험은 승자 문구가 없어서 내 HP로 판정
         const w = mode === 'explore' ? (Number(s.hp?.[0]) > 0 ? (me || 'me') : '야생') : res.value.match(/^(.+?)님의 승리/)?.[1] || '';
-        write('battles', [s.battleNo, kst(t0), mode, n1, f1.attr, f1.stage, f1.hp, f1.atk, f1.spd, n2, f2.attr, f2.stage, f2.hp, f2.atk, f2.spd, rel, w, mode === 'explore' ? (me || owner1) : owner1, owner2, invokerName]);
+        write('battles', [s.battleNo, kst(t0), mode, n1, f1.attr, f1.stage, f1.hp, f1.atk, f1.spd, n2, f2.attr, f2.stage, f2.hp, f2.atk, f2.spd, rel, w, mode === 'explore' ? (me || owner1) : owner1, owner2, invokerName, f1.crest, f2.crest]);
         return { battleNo: s.battleNo, mode, n1, n2, f1, f2, winner: w };
       }
       return;
@@ -102,7 +104,7 @@ export function createParser(dir = 'logs') {
       const etc = field(e, n => n === '기타')?.value || '';
       const [attr, stage] = (e.description || '').split(' / ');
       const row = [e.title, attr, stage, num(raise.value, /바이탈: (\d+)/), num(raise.value, /우호도: (\d+)/), num(raise.value, /포만도: (\d+)/), num(raise.value, /PP: (\d+)/),
-        num(fight.value, /체력: (\d+)/), num(fight.value, /전투력: (\d+)/), num(fight.value, /속도: (\d+)/), num(fight.value, /배틀: (\d+)/), num(fight.value, /승률: (\d+)/), num(etc, /훈련: (\d+)/)];
+        num(fight.value, /체력: (\d+)/), num(fight.value, /전투력: (\d+)/), num(fight.value, /속도: (\d+)/), num(fight.value, /배틀: (\d+)/), num(fight.value, /승률: (\d+)/), num(etc, /훈련: (\d+)/), crestOf(e.description)];
       const key = row.join('|');
       if (key !== s.lastStatus) { s.lastStatus = key; write('status', [kst(t), ...row]); }
     }

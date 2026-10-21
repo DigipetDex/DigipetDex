@@ -11,6 +11,17 @@
     const BSIM_TRAIN = { hp: [15, 25], ap: [5, 10], spd: [5, 10] };
     const BSIM_STAT_LABELS = { hp: "체력", ap: "전투력", spd: "속도" };
     const BSIM_BEATS = { vaccine: "virus", virus: "data", data: "vaccine" };
+    // 문장 (성장기부터 발현). 전투 화면 스탯에 이미 들어가는지, 소수점 처리(일단 버림)는 미확인
+    // mul: 항상 적용되는 배율, hope: 체력 50% 이하일 때 전투력·속도 배율. 나머지 문장은 정규전에 영향 없음
+    const BSIM_CRESTS = {
+      "": { label: "없음" },
+      courage: { label: "용기 (전투력 +5%)", mul: { ap: 1.05 } },
+      friendship: { label: "우정 (속도 +5%)", mul: { spd: 1.05 } },
+      miracles: { label: "기적 (체력 +5%)", mul: { hp: 1.05 } },
+      love: { label: "사랑 (우호도 90 이상 가정, 모든 능력치 +3%)", mul: { hp: 1.03, ap: 1.03, spd: 1.03 } },
+      hope: { label: "희망 (체력 50% 이하에서 전투력·속도 +3%)", hope: 1.03 },
+      other: { label: "그 외 (순수·지식·성실·친절·빛: 전투 영향 없음)" },
+    };
 
     // 상성: 백신>바이러스>데이터>백신, 프리는 전부 중립, 불명은 백신·바이러스·데이터에 유리
     function bsimRelation(a, d) {
@@ -33,33 +44,52 @@
     }
 
     // 1회 전투. 반환: { w: "A"|"B"|"D", turns }
+    // pa·pb: [A희망][B희망] 명중률, da: [A희망] 데미지, db: [B희망] 데미지 (희망 아니면 두 칸이 같음)
     function bsimFight(A, B, pa, pb, da, db, m = BSIM_MODEL) {
       let ha = A.hp, hb = B.hp;
+      const ia = () => (A.hope && ha * 2 <= A.hp ? 1 : 0), ib = () => (B.hope && hb * 2 <= B.hp ? 1 : 0);
       const aFirst = A.spd > B.spd || (A.spd === B.spd && Math.random() < 0.5);
       const roll = () => Math.floor(Math.random() * (2 * m.spread + 1)) - m.spread;
       for (let t = 1; t <= 500; t++) {
         for (const side of aFirst ? "AB" : "BA") {
-          if (side === "A") { if (Math.random() < pa) hb -= Math.max(1, da + roll()); if (hb <= 0) return { w: "A", turns: t }; }
-          else { if (Math.random() < pb) ha -= Math.max(1, db + roll()); if (ha <= 0) return { w: "B", turns: t }; }
+          if (side === "A") { if (Math.random() < pa[ia()][ib()]) hb -= Math.max(1, da[ia()] + roll()); if (hb <= 0) return { w: "A", turns: t }; }
+          else { if (Math.random() < pb[ia()][ib()]) ha -= Math.max(1, db[ib()] + roll()); if (ha <= 0) return { w: "B", turns: t }; }
         }
       }
       return { w: "D", turns: 500 };
     }
 
     function bsimRun(A, B, n) {
-      const pa = bsimHitP(A, B), pb = bsimHitP(B, A), da = bsimBaseDmg(A, B), db = bsimBaseDmg(B, A);
+      const pa = [0, 1].map(i => [0, 1].map(j => bsimHitP(bsimHope(A, i), bsimHope(B, j))));
+      const pb = [0, 1].map(i => [0, 1].map(j => bsimHitP(bsimHope(B, j), bsimHope(A, i))));
+      const da = [0, 1].map(i => bsimBaseDmg(bsimHope(A, i), B)), db = [0, 1].map(j => bsimBaseDmg(bsimHope(B, j), A));
       let wa = 0, wb = 0, dr = 0, turns = 0;
       for (let i = 0; i < n; i++) {
         const r = bsimFight(A, B, pa, pb, da, db);
         if (r.w === "A") wa++; else if (r.w === "B") wb++; else dr++;
         turns += r.turns;
       }
-      return { n, wa, wb, dr, turns: turns / n, pa, pb, da, db };
+      return { n, wa, wb, dr, turns: turns / n };
+    }
+
+    // 희망 발동 상태의 스탯 (on=0이면 그대로)
+    function bsimHope(X, on) {
+      if (!on || !X.hope) return X;
+      return { ...X, ap: Math.floor(X.ap * X.hope), spd: Math.floor(X.spd * X.hope) };
+    }
+
+    // 최종 스탯에 문장 배율 적용
+    function bsimApplyCrest(f, crest) {
+      const c = BSIM_CRESTS[crest] || BSIM_CRESTS[""];
+      f.crest = crest || "";
+      if (c.mul) Object.keys(c.mul).forEach(k => { f[k] = Math.floor(f[k] * c.mul[k]); });
+      if (c.hope) f.hope = c.hope;
+      return f;
     }
 
     // ---------- 입력 상태 ----------
     // manual: 스탯 직접 입력 (켜면 종족값·훈련 대신 이 값을 그대로 씀)
-    const bsimEmptySide = () => ({ name: "", train: { hp: [0, 0], ap: [0, 0], spd: [0, 0] }, manual: { on: false, hp: 100, ap: 20, spd: 40, attr: "vaccine" } });
+    const bsimEmptySide = () => ({ name: "", crest: "", train: { hp: [0, 0], ap: [0, 0], spd: [0, 0] }, manual: { on: false, hp: 100, ap: 20, spd: 40, attr: "vaccine" } });
     let bsimState = { A: bsimEmptySide(), B: bsimEmptySide() };
     try {
       const saved = JSON.parse(localStorage.getItem(BSIM_PREF_KEY) || "null");
@@ -93,8 +123,8 @@
       if (s.manual.on) {
         const m = s.manual, any = bsimFindAnyEntry(s.name);
         if (!(m.hp > 0 && m.ap > 0 && m.spd > 0)) return null;
-        return { name: s.name || "직접 입력", attr: m.attr, stage: any ? any.stage : "", img: any ? any.rep.img : "", manual: true,
-          base: { hp: m.hp, ap: m.ap, spd: m.spd }, hp: m.hp, ap: m.ap, spd: m.spd };
+        return bsimApplyCrest({ name: s.name || "직접 입력", attr: m.attr, stage: any ? any.stage : "", img: any ? any.rep.img : "", manual: true,
+          base: { hp: m.hp, ap: m.ap, spd: m.spd }, hp: m.hp, ap: m.ap, spd: m.spd }, s.crest);
       }
       const e = bsimFindEntry(s.name);
       if (!e) return null;
@@ -103,7 +133,7 @@
         const [succ, great] = s.train[k];
         f[k] = e[k] + succ * BSIM_TRAIN[k][0] + great * BSIM_TRAIN[k][1];
       });
-      return f;
+      return bsimApplyCrest(f, s.crest);
     }
 
     function renderBsimSide(sideKey) {
@@ -127,7 +157,7 @@
       wrap.querySelector(".bsim-info").innerHTML = f
         ? `<img src="${encodeURI(f.img || "")}" alt=""${dexDigi ? ` class="bsim-dex-img" data-side="${sideKey}" title="눌러서 종족값 입력·수정"` : ""} onerror="this.style.visibility='hidden'"><div><strong>${escapeHtml(f.name)}</strong> ${dexBtn}
            <div class="bsim-meta">${f.stage ? escapeHtml(f.stage) + " · " : ""}${icon}${DIGI_LIST_ATTR_LABELS[attrKey]}</div>
-           <div class="bsim-meta">체력 ${f.hp} · 전투력 ${f.ap} · 속도 ${f.spd} <span class="muted">(${f.manual ? "직접 입력" : `훈련 ${trainCount}회`})</span></div></div>`
+           <div class="bsim-meta">체력 ${f.hp} · 전투력 ${f.ap} · 속도 ${f.spd} <span class="muted">(${f.manual ? "직접 입력" : `훈련 ${trainCount}회`}${f.crest && f.crest !== "other" ? ` · ${BSIM_CRESTS[f.crest].label.split(" ")[0]} 적용` : ""})</span></div></div>`
         : `<div class="bsim-meta">${s.manual.on ? "체력·전투력·속도를 1 이상으로 입력하세요." : "디지몬을 선택하세요."}</div>`;
       wrap.querySelectorAll(".bsim-dex-img, .bsim-dex-btn").forEach(el => el.addEventListener("click", () => openBsimDexReport(sideKey)));
       const m = s.manual;
@@ -136,16 +166,19 @@
       if (noStats) m.on = true;
       const toggleHtml = noStats
         ? `<div class="bsim-toggle bsim-nostat">도감에 스탯이 미기재된 디지몬 · 스탯을 직접 입력하세요</div>`
-        : `<label class="bsim-toggle"><input type="checkbox" data-side="${sideKey}" data-manual-toggle${m.on ? " checked" : ""}> 스탯 직접 입력 <span class="muted">(훈련 후 최종 스탯을 알 때)</span></label>`;
+        : `<label class="bsim-toggle"><input type="checkbox" data-side="${sideKey}" data-manual-toggle${m.on ? " checked" : ""}> 스탯 직접 입력 <span class="muted">(훈련 후 최종 스탯을 알 때, 문장 효과 제외)</span></label>`;
       const manualRows = `
         <div class="bsim-manual">
           ${["hp", "ap", "spd"].map(k => `<label><span class="bsim-stat-label ${k}">${BSIM_STAT_LABELS[k]}</span><input type="number" min="1" max="9999" value="${m[k]}" data-side="${sideKey}" data-manual="${k}"></label>`).join("")}
           <label><span class="bsim-stat-label">속성</span><select data-side="${sideKey}" data-manual="attr">${["vaccine", "data", "virus", "free", "unknown"].map(a => `<option value="${a}"${m.attr === a ? " selected" : ""}>${DIGI_LIST_ATTR_LABELS[a]}</option>`).join("")}</select></label>
         </div>`;
+      const crestHtml = `<label class="bsim-crest"><span class="bsim-stat-label">문장</span><select data-side="${sideKey}" data-crest>${Object.keys(BSIM_CRESTS).map(c => `<option value="${c}"${(s.crest || "") === c ? " selected" : ""}>${BSIM_CRESTS[c].label}</option>`).join("")}</select></label>`;
       wrap.querySelector(".bsim-train").innerHTML = `
         ${toggleHtml}
-        ${m.on ? manualRows : trainRows}`;
+        ${m.on ? manualRows : trainRows}
+        ${crestHtml}`;
       const rerender = () => { saveBsimState(); renderBsimSide(sideKey); renderBsimPreview(); };
+      wrap.querySelector("[data-crest]").addEventListener("change", e => { s.crest = e.target.value; rerender(); });
       const toggle = wrap.querySelector("[data-manual-toggle]");
       if (toggle) toggle.addEventListener("change", () => {
         // 켤 때는 지금 보이는 최종 스탯과 속성으로 칸을 채움
@@ -184,7 +217,8 @@
       const warns = bsimWarnings(A, B);
       const warnHtml = warns.length ? `<div class="bsim-warn"><b>예측이 불안정할 수 있는 대진</b><ul>${warns.map(w => `<li>${w}</li>`).join("")}</ul><span class="muted">아래 '데이터 수집에 도움을 주세요!'에서 자세히</span></div>` : "";
       el.innerHTML = warnHtml + `<table class="bsim-table"><tr><th>공격</th><th>명중률</th><th>데미지</th><th>상대 쓰러뜨리기</th></tr>${line(A, B)}${line(B, A)}</table>
-        <div class="bsim-meta">A 기준 상성: ${rel > 0 ? "유리" : rel < 0 ? "불리" : "중립"} · 선공: ${escapeHtml(first)}${A.name === B.name ? " · 같은 종 보정(명중 −8.6%p) 적용" : ""}</div>`;
+        <div class="bsim-meta">A 기준 상성: ${rel > 0 ? "유리" : rel < 0 ? "불리" : "중립"} · 선공: ${escapeHtml(first)}${A.name === B.name ? " · 같은 종 보정(명중 −8.6%p) 적용" : ""}</div>
+        ${[A, B].filter(X => X.hope).map(X => `<div class="bsim-meta">희망: ${escapeHtml(X.name)} 체력 ${Math.floor(X.hp / 2)} 이하에서 전투력 ${bsimHope(X, 1).ap} · 속도 ${bsimHope(X, 1).spd}</div>`).join("")}`;
     }
 
     // 공식이 아직 불안정한 조건 (실측이 부족하거나 개발자 수치와 어긋나는 구간)
@@ -198,6 +232,7 @@
       const edge = (X, Y) => { const d = bsimBaseDmg(X, Y), n = Math.round(Y.hp / d); return n >= 2 && n <= 5 && Math.abs(Y.hp - n * d) <= Math.max(2, d * 0.03); };
       if (edge(A, B) || edge(B, A)) w.push("타수 경계: 데미지가 1만 달라도 필요 타수가 바뀌어 승률이 크게 변함");
       if (Math.min(A.spd, B.spd) * 2 <= Math.max(A.spd, B.spd)) w.push("속도 차이 2배 이상: 이 구간 명중률 기록이 적음");
+      if ([A, B].some(X => X.crest && X.crest !== "other")) w.push("문장: 효과가 전투 화면 스탯에 이미 포함되는지, 소수점 처리, 희망 발동 시점이 미확인");
       return w;
     }
 

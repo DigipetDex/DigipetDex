@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
   <title>디지몬 진화트리 &amp; 스프레드시트 편집기</title>
-  <script src="js/05-img-fallback.js?v=v1.3.120"></script>
-  <script src="digimon_db.js?v=v1.3.120"></script>
-  <script src="project_data.js?v=v1.3.120"></script>
+  <script src="js/05-img-fallback.js?v=v1.3.121"></script>
+  <script src="digimon_db.js?v=v1.3.121"></script>
+  <script src="project_data.js?v=v1.3.121"></script>
   <script src="xlsx.full.min.js"></script>
-  <link rel="stylesheet" href="css/editor.css?v=v1.3.120">
+  <link rel="stylesheet" href="css/editor.css?v=v1.3.121">
 </head>
 <body>
 
   <!-- 헤더 툴바 -->
   <header>
     <div class="logo-area">
-      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.120</span></h1>
+      <h1 id="header-logo-title">디지펫 바이탈 링크 <span class="badge" id="header-logo-badge" style="background: var(--primary);">트리 &amp; 시트 편집기</span> <span id="app-version-tag" style="font-size:0.68rem; color:#94A3B8; font-weight:600; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; letter-spacing:0.3px;">v1.3.121</span></h1>
       <div style="display:flex; align-items:center; gap:6px; margin-left:15px;" class="dim-selector-group">
         <span class="dim-selector-label" style="font-size:0.8rem; color:var(--text-sub); font-weight:600;">DiM:</span>
         <select id="filter-dim" class="form-control" style="width:140px; padding:4px 8px; font-size:0.8rem; background:#18191C;"></select>
@@ -1028,7 +1028,7 @@
             <li>초대 후 설정 없이 평소처럼 <code>/배틀</code>, <code>/탐험</code>을 하면 끝난 전투가 자동으로 기록됩니다. 각자의 포럼 포스트에서도 됩니다.</li>
             <li><code>/통계</code> — 최근 전투와 같은 조건(같은 디지몬·스탯)의 명중률·데미지·승률</li>
             <li><code>/통계 범위:전체</code> — 이 채널의 조건별 통계</li>
-            <li><code>/알림 상태:켜기 간격:10</code> — 10전마다 통계 자동 알림 (기본 꺼짐)</li>
+            <li><code>/알림 상태:켜기 간격:10</code> — 같은 디지몬·스탯으로 10전마다 통계 자동 알림 (기본 꺼짐). 디지몬을 바꾸면 횟수는 자동으로 처음부터, <code>/알림 상태:횟수 초기화</code>로 직접 초기화도 가능</li>
             <li>같은 디지몬·같은 스탯으로 20판 이상 하면 정확한 통계가 나옵니다.</li>
           </ul>
           <h4>예측이 불안정한 경우와 필요한 기록</h4>
@@ -1385,25 +1385,25 @@
     </div>
   </div>
 
-  <script src="js/00-config.js?v=v1.3.120"></script>
-  <script src="js/10-search-utils.js?v=v1.3.120"></script>
-  <script src="js/20-mode.js?v=v1.3.120"></script>
-  <script src="js/30-state-conditions.js?v=v1.3.120"></script>
-  <script src="js/40-render-tree.js?v=v1.3.120"></script>
-  <script src="js/50-node-sidebar.js?v=v1.3.120"></script>
-  <script src="js/60-condition-clipboard.js?v=v1.3.120"></script>
-  <script src="js/70-digimon-crud.js?v=v1.3.120"></script>
-  <script src="js/80-export.js?v=v1.3.120"></script>
-  <script src="js/90-zoom-mobile.js?v=v1.3.120"></script>
-  <script src="js/95-training-calc.js?v=v1.3.120"></script>
-  <script src="js/96-mode-save-deploy.js?v=v1.3.120"></script>
-  <script src="js/100-wiki-report.js?v=v1.3.120"></script>
-  <script src="js/105-status-board.js?v=v1.3.120"></script>
-  <script src="js/106-attr-chart.js?v=v1.3.120"></script>
-  <script src="js/107-digimon-list.js?v=v1.3.120"></script>
-  <script src="js/108-battle-sim.js?v=v1.3.120"></script>
-  <script src="js/110-planner.js?v=v1.3.120"></script>
-  <script src="js/120-planner-canvas.js?v=v1.3.120"></script>
+  <script src="js/00-config.js?v=v1.3.121"></script>
+  <script src="js/10-search-utils.js?v=v1.3.121"></script>
+  <script src="js/20-mode.js?v=v1.3.121"></script>
+  <script src="js/30-state-conditions.js?v=v1.3.121"></script>
+  <script src="js/40-render-tree.js?v=v1.3.121"></script>
+  <script src="js/50-node-sidebar.js?v=v1.3.121"></script>
+  <script src="js/60-condition-clipboard.js?v=v1.3.121"></script>
+  <script src="js/70-digimon-crud.js?v=v1.3.121"></script>
+  <script src="js/80-export.js?v=v1.3.121"></script>
+  <script src="js/90-zoom-mobile.js?v=v1.3.121"></script>
+  <script src="js/95-training-calc.js?v=v1.3.121"></script>
+  <script src="js/96-mode-save-deploy.js?v=v1.3.121"></script>
+  <script src="js/100-wiki-report.js?v=v1.3.121"></script>
+  <script src="js/105-status-board.js?v=v1.3.121"></script>
+  <script src="js/106-attr-chart.js?v=v1.3.121"></script>
+  <script src="js/107-digimon-list.js?v=v1.3.121"></script>
+  <script src="js/108-battle-sim.js?v=v1.3.121"></script>
+  <script src="js/110-planner.js?v=v1.3.121"></script>
+  <script src="js/120-planner-canvas.js?v=v1.3.121"></script>
 
   <div id="global-toast" class="toast-msg">최신 데이터가 내장된 배포용 'index.html' 파일이 다운로드되었습니다!
   (폴더의 index.html에 덮어쓰거나 그대로 웹에 업로드하시면 됩니다)</div>

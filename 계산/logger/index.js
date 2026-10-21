@@ -21,7 +21,8 @@ function chan(msgOrIt) {
     const parser = createParser(dir);
     const name = `${msgOrIt.guild?.name ?? 'DM'} / #${msgOrIt.channel?.name ?? id}`;
     fs.writeFileSync(`${dir}/channel.txt`, `${name}\n${id}\n`);
-    channels.set(id, { dir, parser, finished: 0, lastDone: null, lastComp: new Map() });
+    // streak: 같은 조건(디지몬·스탯)으로 연속 진행한 판수. 조건이 바뀌거나 /알림 상태:횟수 초기화로 0부터
+    channels.set(id, { dir, parser, finished: 0, streak: 0, streakKey: null, lastDone: null, lastComp: new Map() });
   }
   return channels.get(id);
 }
@@ -71,7 +72,7 @@ function chunks(parts, limit = 1900) {
 function notify(c, msg, done) {
   const key = condKey(done.mode, done.n1, done.f1, done.n2, done.f2);
   const cond = collect(c.dir).get(key);
-  const head = `배틀 ${c.finished}회 기록됨 (battle_no ${done.battleNo})`;
+  const head = `배틀 ${c.streak}회 기록됨 (이 조건 연속, battle_no ${done.battleNo})`;
   const body = cond ? formatCond(cond) : `${done.n1} vs ${done.n2}`;
   msg.channel.send(head + '\n```\n' + body + '\n```')
     .catch(err => console.error('notify failed (Send Messages 권한 확인):', err.message));
@@ -94,8 +95,11 @@ function record(kind, msg) {
   if (!done) return;
   c.finished++;
   c.lastDone = done;
+  const key = condKey(done.mode, done.n1, done.f1, done.n2, done.f2);
+  if (key !== c.streakKey) { c.streakKey = key; c.streak = 0; }
+  c.streak++;
   const s = chSettings(msg.channelId);
-  if (s.notify && c.finished % s.every === 0) {
+  if (s.notify && c.streak % s.every === 0) {
     try { notify(c, msg, done); } catch (err) { console.error('notify error', err); }
   }
 }
@@ -107,8 +111,8 @@ const commands = [
       { name: '현재 조건', value: 'current' }, { name: '전체', value: 'all' }))
     .addIntegerOption(o => o.setName('개수').setDescription('전체 보기에서 표시할 조건 수 (기본 10)').setMinValue(1).setMaxValue(50)),
   new SlashCommandBuilder().setName('알림').setDescription('이 채널의 N회마다 통계 알림 설정')
-    .addStringOption(o => o.setName('상태').setDescription('켜기/끄기').setRequired(true).addChoices(
-      { name: '켜기', value: 'on' }, { name: '끄기', value: 'off' }))
+    .addStringOption(o => o.setName('상태').setDescription('켜기/끄기/횟수 초기화').setRequired(true).addChoices(
+      { name: '켜기', value: 'on' }, { name: '끄기', value: 'off' }, { name: '횟수 초기화', value: 'reset' }))
     .addIntegerOption(o => o.setName('간격').setDescription('몇 전마다 알릴지 (기본 10)').setMinValue(1).setMaxValue(500)),
 ].map(c => c.toJSON());
 
@@ -124,7 +128,12 @@ client.on(Events.InteractionCreate, async it => {
   if (!it.isChatInputCommand()) return;
   try {
     const id = it.channelId;
-    if (it.commandName === '알림') {
+    if (it.commandName === '알림' && it.options.getString('상태') === 'reset') {
+      // 기록은 그대로 두고 알림용 연속 횟수만 0으로
+      const c = channels.get(id);
+      if (c) { c.streak = 0; c.streakKey = null; }
+      await it.reply('이 채널의 배틀 횟수를 0부터 다시 셉니다 (기록·통계는 그대로)');
+    } else if (it.commandName === '알림') {
       const cur = chSettings(id);
       const every = it.options.getInteger('간격');
       settings.channels[id] = { notify: it.options.getString('상태') === 'on', every: every ?? cur.every };

@@ -10,9 +10,14 @@ const read = (p) => {
 
 // 조건 키: 모드 | 1팀 이름 체/전/속 | 2팀 이름 체/전/속
 // 탐험의 야생 적은 스탯이 매번 랜덤이라 상대를 '야생' 하나로 묶음
+// 문장이 있으면 스탯 뒤에 [문장]을 붙여 따로 집계 (문장 없던 예전 기록은 키 그대로)
+const CREST_KO = { courage: '용기', friendship: '우정', love: '사랑', purity: '순수', innocence: '순수', knowledge: '지식',
+  sincerity: '순수', reliability: '성실', hope: '희망', light: '빛', kindness: '친절', miracle: '기적', miracles: '기적' };
+export const crestName = c => (c ? CREST_KO[c] ?? c : '');
+const st = f => `${f.hp}/${f.atk}/${f.spd}${f.crest ? `[${crestName(f.crest)}]` : ''}`;
 export const condKey = (mode, n1, f1, n2, f2) => mode === 'explore'
-  ? `explore|${n1} ${f1.hp}/${f1.atk}/${f1.spd}|야생`
-  : `${mode || 'regular'}|${n1} ${f1.hp}/${f1.atk}/${f1.spd}|${n2} ${f2.hp}/${f2.atk}/${f2.spd}`;
+  ? `explore|${n1} ${st(f1)}|야생`
+  : `${mode || 'regular'}|${n1} ${st(f1)}|${n2} ${st(f2)}`;
 
 const newSide = () => ({ n: 0, hit: 0, p: 0, v: 0, dmg: [], pd: [] });
 function add(s, hit, p, dmg, pd) {
@@ -31,7 +36,7 @@ export function collect(dir = 'logs') {
       { name: b[3], attr: b[4], hp: +b[6], atk: +b[7], spd: +b[8], owner: b[17] },
       { name: b[9], attr: b[10], hp: +b[12], atk: +b[13], spd: +b[14], owner: b[18] || (explore ? '야생' : '') },
     ];
-    const key = condKey(mode, b[3], { hp: b[6], atk: b[7], spd: b[8] }, b[9], { hp: b[12], atk: b[13], spd: b[14] });
+    const key = condKey(mode, b[3], { hp: b[6], atk: b[7], spd: b[8], crest: b[20] }, b[9], { hp: b[12], atk: b[13], spd: b[14], crest: b[21] });
     if (!conds.has(key)) conds.set(key, { key, battles: 0, wins: {}, att: {}, list: [], last: b[1] });
     const c = conds.get(key);
     c.battles++; c.last = b[1];
