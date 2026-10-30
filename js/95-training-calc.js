@@ -31,6 +31,13 @@
     function openTrainingCalcModal() {
       const modal = document.getElementById("training-calc-modal");
       if (modal) {
+        fillTrainingDigiList();
+        const inp = document.getElementById("calc-digi-name");
+        if (inp) {
+          let nm = "";
+          try { nm = (typeof selectedDigiId !== "undefined" && selectedDigiId && project.digimons[selectedDigiId]?.name) || localStorage.getItem(TRAINING_STORAGE_KEY + "_digi") || ""; } catch (e) {}
+          inp.value = nm;
+        }
         syncTrainingInputsFromState();
         updateTrainingCalc();
         modal.style.display = "flex";
@@ -270,12 +277,43 @@
         }
       }
 
+      updateTrainingDigiResult(cHp, pAtk, dSpd);
+
       // 리셋 권장 경고 (손해 복구 불가 시)
       const elResetWarn = document.getElementById("calc-reset-warning");
       if (elResetWarn) {
         const isUnrecoverable = (totalUsed > 0 && netProfitTurns + remain < -0.05);
         elResetWarn.style.display = isUnrecoverable ? "block" : "none";
       }
+    }
+
+    // 선택 디지몬 종족값 + 훈련 증가량 = 예상 최종 능력치
+    function trainingFindEntry(name) {
+      const n = String(name || "").trim();
+      if (!n || typeof collectDigimonListEntries !== "function") return null;
+      return collectDigimonListEntries().find(e => e.name === n && e.hp !== null && e.ap !== null && e.spd !== null) || null;
+    }
+
+    function fillTrainingDigiList() {
+      const dl = document.getElementById("calc-digi-datalist");
+      if (!dl || typeof collectDigimonListEntries !== "function") return;
+      dl.innerHTML = collectDigimonListEntries()
+        .filter(e => e.hp !== null && e.ap !== null && e.spd !== null)
+        .sort((a, b) => a.name.localeCompare(b.name, "ko"))
+        .map(e => `<option value="${String(e.name).replace(/"/g, "&quot;")}"></option>`).join("");
+    }
+
+    function updateTrainingDigiResult(addHp, addAtk, addSpd) {
+      const el = document.getElementById("calc-digi-result");
+      const inp = document.getElementById("calc-digi-name");
+      if (!el || !inp) return;
+      try { localStorage.setItem(TRAINING_STORAGE_KEY + "_digi", inp.value); } catch (e) {}
+      const name = inp.value.trim();
+      if (!name) { el.textContent = "디지몬을 선택하면 훈련 반영 능력치가 표시됩니다."; return; }
+      const e = trainingFindEntry(name);
+      if (!e) { el.textContent = "스탯이 등록된 디지몬이 아님"; return; }
+      const row = (label, base, add) => `<span style="margin-right:12px;">${label} <span style="color:#94A3B8;">${base}</span> <span style="color:#4ADE80;">+${add}</span> → <strong style="color:#FFF;">${base + add}</strong></span>`;
+      el.innerHTML = row("HP", e.hp, addHp) + row("ATK", e.ap, addAtk) + row("SPD", e.spd, addSpd);
     }
 
     function resetTrainingCalc() {
@@ -308,6 +346,9 @@
 
       const btnResetCalc = document.getElementById("btn-calc-reset");
       if (btnResetCalc) btnResetCalc.addEventListener("click", resetTrainingCalc);
+
+      const digiInp = document.getElementById("calc-digi-name");
+      if (digiInp) digiInp.addEventListener("input", updateTrainingCalc);
 
       document.querySelectorAll(".calc-num-input").forEach(input => {
         input.addEventListener("input", updateTrainingCalc);
